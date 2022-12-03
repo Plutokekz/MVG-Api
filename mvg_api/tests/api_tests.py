@@ -1,10 +1,10 @@
 import datetime
 from typing import List
 
-from api.api import Api
-from main import LocationNotFound
-from models.route import LocationList, LocationType, Connections
-from models.ticker import TickerList, SlimList
+from mvg_api.api.api import Api
+from mvg_api.mvg import LocationNotFound
+from mvg_api.models.route import LocationList, LocationType, Connections
+from mvg_api.models.ticker import TickerList, SlimList
 
 
 def test_get_ticker():

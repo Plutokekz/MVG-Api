@@ -3,8 +3,8 @@ import time
 import datetime
 
 import httpx
-from models.ticker import TickerList, Station, SlimList
-from models.route import Connections, LocationList
+from mvg_api.models.ticker import TickerList, Station, SlimList
+from mvg_api.models.route import Connections, LocationList
 
 
 class RequestFailed(Exception):

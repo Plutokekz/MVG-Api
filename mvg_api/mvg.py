@@ -1,7 +1,7 @@
 from Levenshtein import ratio
 
-from api.api import Api
-from models.route import Location, LocationType
+from mvg_api.api.api import Api
+from mvg_api.models.route import Location, LocationType
 
 
 class LocationNotFound(Exception):
