@@ -40,6 +40,15 @@ class MVG:
             location_to = (to_.latitude, to_.longitude)
         return self.api.get_route(location_from, location_to)
 
+    def get_ticker(self):
+        return self.api.get_ticker()
+
+    def get_slim(self):
+        return self.api.get_slim()
+
+    def get_location(self, name: str):
+        return self.get_location(name)
+
 
 if __name__ == "__main__":
     mvg = MVG()
