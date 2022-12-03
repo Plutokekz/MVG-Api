@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mvg-api"
+name = "async_mvg_api"
 version = "0.1.0"
 description = ""
 authors = ["Lukas Mahr <lukas@yousuckatprogramming.de>"]
