@@ -60,7 +60,7 @@ class Api:
         response = self._send_request(".rest/zdm/mvgStationGlobalIds")
         return list(response)
 
-    def get_slim(self) -> Any:
+    def get_slim(self) -> SlimList:
         """
         A small version of the ticker, the model for the endpoint is not implemented
         :return:
