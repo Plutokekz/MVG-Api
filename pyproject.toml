@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "async_mvg_api"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Lukas Mahr <lukas@yousuckatprogramming.de>"]
 readme = "README.md"
