@@ -160,7 +160,7 @@ class AsyncApi:
 
     async def _send_request(self, endpoint) -> Any:
         headers = {
-            "accept": "application/json",
+            "accept": "application/json, text/plain, */*",
             "accept-language": "de-DE,de;q=0.8",
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
@@ -198,12 +198,13 @@ class AsyncApi:
         response = await self._send_request(".rest/zdm/mvgStationGlobalIds")
         return list(response)
 
-    async def get_slim(self) -> Any:
+    async def get_slim(self) -> SlimList:
         """
         A small version of the ticker, the model for the endpoint is not implemented
         :return:
         """
-        return await self._send_request("api/ems/slim")
+        response = await self._send_request("api/ems/slim")
+        return SlimList(__root__=response)
 
     async def get_route(
         self,
