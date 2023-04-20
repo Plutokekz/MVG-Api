@@ -8,10 +8,10 @@ packages = [{include = "mvg_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pydantic = "^1.10.2"
-httpx = "^0.23.1"
-levenshtein = "^0.20.8"
-black = "^22.10.0"
+pydantic = "^1.10.7"
+httpx = "^0.24.0"
+levenshtein = "^0.21.0"
+black = "^23.3.0"
 pylint = "^2.15.7"
 pytest = "^7.2.0"
 
