@@ -17,8 +17,9 @@ class Lines(BaseModel):
 
 
 class LocationType(Enum):
-    STATION = "station"
-    ADDRESS = "address"
+    STATION = "STATION"
+    ADDRESS = "ADDRESS"
+    POI = "POI"
 
 
 class Products(Enum):
@@ -30,25 +31,18 @@ class Products(Enum):
 
 
 class Location(BaseModel):
-    id: Optional[str]
+    globalId: Optional[str]
     type: LocationType
     latitude: float
     longitude: float
     divaId: Optional[int]
     place: str
     name: Optional[str]
-    hasLiveData: Optional[bool]
     hasZoomData: Optional[bool]
-    products: Optional[List[Products]]
-    efaLon: Optional[float]
-    efaLat: Optional[float]
-    link: Optional[str]
     tariffZones: Optional[str]
-    occupancy: Optional[str]
-    lines: Optional[Lines]
     aliases: Optional[str]
-    poi: Optional[bool]
-    street: Optional[str]
+    transportTypes: Optional[List[str]]
+    surroundingPlanLink: Optional[str]
 
     @classmethod
     @validator("id")
@@ -138,7 +132,7 @@ class SapTicketMappingDto(BaseModel):
     zones: Optional[str]
 
 
-class Connection(BaseModel):
+class _Connection(BaseModel):
     zoomNoticeFrom: Optional[bool]
     zoomNoticeTo: Optional[bool]
     zoomNoticeFromEscalator: Optional[bool]
@@ -158,9 +152,76 @@ class Connection(BaseModel):
     oldTarif: Optional[bool]
 
 
-class Connections(BaseModel):
-    connectionList: Optional[List[Connection]]
+class _Connections(BaseModel):
+    connectionList: Optional[List[_Connection]]
 
 
 class LocationList(BaseModel):
     locations: Optional[List[Location]]
+
+
+class ConnectionLocation(BaseModel):
+    latitude: float
+    longitude: float
+    stationGlobalId: str
+    stationDivaId: int
+    place: str
+    name: str
+    plannedDeparture: str
+    departureDelayInMinutes: Optional[int] = None
+    transportTypes: List[str]
+    surroundingPlanLink: str
+    occupancy: str
+    hasZoomData: bool
+    hasOutOfOrderEscalator: bool
+    hasOutOfOrderElevator: bool
+    platform: Optional[int] = None
+
+
+class Line(BaseModel):
+    label: str
+    transportType: str
+    destination: str
+    trainType: str
+    network: str
+    sev: bool
+
+
+class PathDescriptionItem(BaseModel):
+    fromPathCoordIdx: int
+    toPathCoordIdx: int
+    level: int
+
+
+class Part(BaseModel):
+    from_: ConnectionLocation = Field(..., alias="from")
+    to: ConnectionLocation
+    intermediateStops: List[ConnectionLocation]
+    noChangeRequired: bool
+    line: Line
+    pathPolyline: str
+    interchangePathPolyline: str
+    pathDescription: List[PathDescriptionItem]
+    exitLetter: str
+    distance: float
+    occupancy: str
+    messages: List
+    arrivalStopPositionNumber: Optional[int] = None
+
+
+class TicketingInformation(BaseModel):
+    zones: List[int]
+    alternativeZones: List
+    unifiedTicketIds: List[str]
+
+
+class Connection(BaseModel):
+    uniqueId: int
+    parts: List[Part]
+    ticketingInformation: TicketingInformation
+    distance: float
+    bannerHash: str
+
+
+class Connections(BaseModel):
+    connectionList: List[Connection]

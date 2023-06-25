@@ -1,9 +1,8 @@
-from typing import Any, Tuple, List
-import time
+from typing import Any, List
 import datetime
 
 import httpx
-from mvg_api.models.ticker import TickerList, Station, SlimList
+from mvg_api.models.ticker import TickerList, SlimList
 from mvg_api.models.route import Connections, LocationList
 
 
@@ -70,74 +69,29 @@ class Api:
 
     def get_route(
         self,
-        station_from: str | Tuple[float, float],
-        station_to: str | Tuple[float, float],
-        *,
-        _time: datetime.datetime = None,
-        sap_tickets: bool = False,
-        transport_type_call_taxi: bool = False,
-        arrival_time: bool = False,
-        max_walk_time_to_start: int = None,
-        max_walk_time_to_dest: int = None,
-        change_limit: int = None,
-        ubahn: bool = True,
-        bus: bool = True,
-        tram: bool = True,
-        sbahn: bool = True,
+        origin_station_global_id: str,
+        destination_station_global_id: str,
+        routing_date_time: datetime.datetime | None = None,
+        routing_date_time_is_arrival: bool = False,
+        transport_types: str = "SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS",
     ):
         """
         Get all available routes from one destination to another
-        :param station_from: id from station
-        :param station_to: id from station
-        :param _time: departure time
-        :param sap_tickets: also return the available tickets for the rout
-        :param transport_type_call_taxi: allow taxies in the rout
-        :param arrival_time: make the departure timer the arrival time
-        :param max_walk_time_to_start: max walking time to departure destination in minutes
-        :param max_walk_time_to_dest: max walking time to arrival destination in minutes
-        :param change_limit: max changes
-        :param ubahn: use ubahn in rout
-        :param bus: use bus in rout
-        :param tram: use tram in rout
-        :param sbahn: use sbahn in rout
         :return:
         """
+        if routing_date_time is None:
+            routing_date_time = self.get_current_date()
+            routing_date_time = routing_date_time.strftime("%Y-%m-%dT%H:%M:%S.000%zZ")
 
-        args = "?"
-        if isinstance(station_from, Tuple):
-            args += f"fromLatitude={station_from[0]}&fromLongitude={station_from[1]}"
-        else:
-            Station.valid_id(_id=station_from)
-            args += f"fromStation={station_from}"
-        if isinstance(station_to, Tuple):
-            args += f"toLatitude={station_to[0]}&toLongitude={station_to[1]}"
-        else:
-            Station.valid_id(_id=station_to)
-            args += f"&toStation={station_to}"
-        if _time is not None:
-            args += f"&time={int(time.mktime(_time.timetuple()) * 1000)}"
-        if sap_tickets is not None:
-            args += f"&sapTickets={str(sap_tickets).lower()}"
-        if transport_type_call_taxi is not None:
-            args += f"&transportTypeCallTaxi={str(transport_type_call_taxi).lower()}"
-        if arrival_time is not None:
-            args += f"&arrival={str(arrival_time).lower()}"
-        if max_walk_time_to_start is not None:
-            args += f"&maxTravelTimeFootwayToStation={max_walk_time_to_start}"
-        if max_walk_time_to_dest is not None:
-            args += f"&maxTravelTimeFootwayToDestination={max_walk_time_to_dest}"
-        if change_limit is not None:
-            args += f"&changeLimit={change_limit}"
-        if ubahn is not None:
-            args += f"&transportTypeUnderground={str(ubahn).lower()}"
-        if bus is not None:
-            args += f"&transportTypeBus={str(bus).lower()}"
-        if tram is not None:
-            args += f"&transportTypeTram={str(tram).lower()}"
-        if sbahn is not None:
-            args += f"&transportTypeSBahn={str(sbahn).lower()}"
-        response = self._send_request("api/fahrinfo/routing/" + args)
-        return Connections(**response)
+        args = (
+            f"?originStationGlobalId={origin_station_global_id}"
+            f"&destinationStationGlobalId={destination_station_global_id}"
+            f"&transportTypes={transport_types}"
+            f"&routingDateTime={routing_date_time}"
+            f"&routingDateTimeIsArrival={str(routing_date_time_is_arrival).lower()}"
+        )
+        response = self._send_request("api/fib/v2/connection" + args)
+        return Connections(connectionList=response)
 
     def get_location(self, name: str):
         """
@@ -145,8 +99,8 @@ class Api:
         :param name: name of the location / Station
         :return: a list of Locations
         """
-        response = self._send_request(f"api/fahrinfo/location/queryWeb?q={name}")
-        return LocationList(**response)
+        response = self._send_request(f"api/fib/v2/location?query={name}")
+        return LocationList(locations=response)
 
 
 class AsyncApi:
@@ -208,74 +162,29 @@ class AsyncApi:
 
     async def get_route(
         self,
-        station_from: str | Tuple[float, float],
-        station_to: str | Tuple[float, float],
-        *,
-        _time: datetime.datetime = None,
-        sap_tickets: bool = False,
-        transport_type_call_taxi: bool = False,
-        arrival_time: bool = False,
-        max_walk_time_to_start: int = None,
-        max_walk_time_to_dest: int = None,
-        change_limit: int = None,
-        ubahn: bool = True,
-        bus: bool = True,
-        tram: bool = True,
-        sbahn: bool = True,
+        origin_station_global_id: str,
+        destination_station_global_id: str,
+        routing_date_time: datetime.datetime | None = None,
+        routing_date_time_is_arrival: bool = False,
+        transport_types: str = "SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS",
     ):
         """
         Get all available routes from one destination to another
-        :param station_from: id from station
-        :param station_to: id from station
-        :param _time: departure time
-        :param sap_tickets: also return the available tickets for the rout
-        :param transport_type_call_taxi: allow taxies in the rout
-        :param arrival_time: make the departure timer the arrival time
-        :param max_walk_time_to_start: max walking time to departure destination in minutes
-        :param max_walk_time_to_dest: max walking time to arrival destination in minutes
-        :param change_limit: max changes
-        :param ubahn: use ubahn in rout
-        :param bus: use bus in rout
-        :param tram: use tram in rout
-        :param sbahn: use sbahn in rout
         :return:
         """
+        if routing_date_time is None:
+            routing_date_time = await self.get_current_date()
+            routing_date_time = routing_date_time.strftime("%Y-%m-%dT%H:%M:%S.000%zZ")
 
-        args = "?"
-        if isinstance(station_from, Tuple):
-            args += f"fromLatitude={station_from[0]}&fromLongitude={station_from[1]}"
-        else:
-            Station.valid_id(_id=station_from)
-            args += f"fromStation={station_from}"
-        if isinstance(station_to, Tuple):
-            args += f"toLatitude={station_to[0]}&toLongitude={station_to[1]}"
-        else:
-            Station.valid_id(_id=station_to)
-            args += f"&toStation={station_to}"
-        if _time is not None:
-            args += f"&time={int(time.mktime(_time.timetuple()) * 1000)}"
-        if sap_tickets is not None:
-            args += f"&sapTickets={str(sap_tickets).lower()}"
-        if transport_type_call_taxi is not None:
-            args += f"&transportTypeCallTaxi={str(transport_type_call_taxi).lower()}"
-        if arrival_time is not None:
-            args += f"&arrival={str(arrival_time).lower()}"
-        if max_walk_time_to_start is not None:
-            args += f"&maxTravelTimeFootwayToStation={max_walk_time_to_start}"
-        if max_walk_time_to_dest is not None:
-            args += f"&maxTravelTimeFootwayToDestination={max_walk_time_to_dest}"
-        if change_limit is not None:
-            args += f"&changeLimit={change_limit}"
-        if ubahn is not None:
-            args += f"&transportTypeUnderground={str(ubahn).lower()}"
-        if bus is not None:
-            args += f"&transportTypeBus={str(bus).lower()}"
-        if tram is not None:
-            args += f"&transportTypeTram={str(tram).lower()}"
-        if sbahn is not None:
-            args += f"&transportTypeSBahn={str(sbahn).lower()}"
-        response = await self._send_request("api/fahrinfo/routing/" + args)
-        return Connections(**response)
+        args = (
+            f"?originStationGlobalId={origin_station_global_id}"
+            f"&destinationStationGlobalId={destination_station_global_id}"
+            f"&transportTypes={transport_types}"
+            f"&routingDateTime={routing_date_time}"
+            f"&routingDateTimeIsArrival={str(routing_date_time_is_arrival).lower()}"
+        )
+        response = await self._send_request("api/fib/v2/connection" + args)
+        return Connections(connectionList=response)
 
     async def get_location(self, name: str):
         """
@@ -283,5 +192,5 @@ class AsyncApi:
         :param name: name of the location / Station
         :return: a list of Locations
         """
-        response = await self._send_request(f"api/fahrinfo/location/queryWeb?q={name}")
-        return LocationList(**response)
+        response = await self._send_request(f"api/fib/v2/location?query={name}")
+        return LocationList(locations=response)

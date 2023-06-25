@@ -37,31 +37,15 @@ class MVG:
         location_to,
         *,
         _time: datetime.datetime = None,
-        sap_tickets: bool = False,
-        transport_type_call_taxi: bool = False,
         arrival_time: bool = False,
-        max_walk_time_to_start: int = None,
-        max_walk_time_to_dest: int = None,
-        change_limit: int = None,
-        ubahn: bool = True,
-        bus: bool = True,
-        tram: bool = True,
-        sbahn: bool = True,
+        transport_types: str = "SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS",
     ) -> Connections:
         """
         Get a MVG rout, starting at the location_from and ending at location_to, if one of the given strings don't match
         any location a LocationNotFound Exception will be raised
-        :param sbahn: use sbahn
-        :param tram: use tram
-        :param bus: use bus
-        :param ubahn: use ubahn
-        :param change_limit: max changes between start and end destination
-        :param max_walk_time_to_dest: max walk time in minutes to start location
-        :param max_walk_time_to_start: max walk time in minutes to end location
+        :param transport_types:
         :param arrival_time: make the _time the arrival time not the start time
-        :param transport_type_call_taxi: use taxi
         :param _time: datetime for the start of the rout
-        :param sap_tickets: show available tickets
         :param location_from: your starting location
         :param location_to:  your destination
         :return: a list of possible connections
@@ -69,27 +53,15 @@ class MVG:
         from_ = self._match_location(location_from)
         to_ = self._match_location(location_to)
         if from_.type == LocationType.STATION:
-            location_from = from_.id
-        else:
-            location_from = (from_.latitude, from_.longitude)
+            location_from = from_.globalId
         if to_.type == LocationType.STATION:
-            location_to = to_.id
-        else:
-            location_to = (to_.latitude, to_.longitude)
+            location_to = to_.globalId
         return self.api.get_route(
-            location_from,
-            location_to,
-            _time=_time,
-            sap_tickets=sap_tickets,
-            transport_type_call_taxi=transport_type_call_taxi,
-            arrival_time=arrival_time,
-            max_walk_time_to_start=max_walk_time_to_start,
-            max_walk_time_to_dest=max_walk_time_to_dest,
-            change_limit=change_limit,
-            ubahn=ubahn,
-            sbahn=sbahn,
-            tram=tram,
-            bus=bus,
+            origin_station_global_id=location_from,
+            destination_station_global_id=location_to,
+            routing_date_time=_time,
+            transport_types=transport_types,
+            routing_date_time_is_arrival=arrival_time,
         )
 
     def get_ticker(self) -> TickerList:
@@ -152,31 +124,15 @@ class AsyncMVG:
         location_to,
         *,
         _time: datetime.datetime = None,
-        sap_tickets: bool = False,
-        transport_type_call_taxi: bool = False,
         arrival_time: bool = False,
-        max_walk_time_to_start: int = None,
-        max_walk_time_to_dest: int = None,
-        change_limit: int = None,
-        ubahn: bool = True,
-        bus: bool = True,
-        tram: bool = True,
-        sbahn: bool = True,
+        transport_types: str = "SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS",
     ) -> Connections:
         """
         Get a MVG rout, starting at the location_from and ending at location_to, if one of the given strings don't match
         any location a LocationNotFound Exception will be raised
-        :param sbahn: use sbahn
-        :param tram: use tram
-        :param bus: use bus
-        :param ubahn: use ubahn
-        :param change_limit: max changes between start and end destination
-        :param max_walk_time_to_dest: max walk time in minutes to start location
-        :param max_walk_time_to_start: max walk time in minutes to end location
+        :param transport_types:
         :param arrival_time: make the _time the arrival time not the start time
-        :param transport_type_call_taxi: use taxi
         :param _time: datetime for the start of the rout
-        :param sap_tickets: show available tickets
         :param location_from: your starting location
         :param location_to:  your destination
         :return: a list of possible connections
@@ -184,27 +140,15 @@ class AsyncMVG:
         from_ = await self._match_location(location_from)
         to_ = await self._match_location(location_to)
         if from_.type == LocationType.STATION:
-            location_from = from_.id
-        else:
-            location_from = (from_.latitude, from_.longitude)
+            location_from = from_.globalId
         if to_.type == LocationType.STATION:
-            location_to = to_.id
-        else:
-            location_to = (to_.latitude, to_.longitude)
+            location_to = to_.globalId
         return await self.api.get_route(
-            location_from,
-            location_to,
-            _time=_time,
-            sap_tickets=sap_tickets,
-            transport_type_call_taxi=transport_type_call_taxi,
-            arrival_time=arrival_time,
-            max_walk_time_to_start=max_walk_time_to_start,
-            max_walk_time_to_dest=max_walk_time_to_dest,
-            change_limit=change_limit,
-            ubahn=ubahn,
-            sbahn=sbahn,
-            tram=tram,
-            bus=bus,
+            origin_station_global_id=location_from,
+            destination_station_global_id=location_to,
+            routing_date_time=_time,
+            transport_types=transport_types,
+            routing_date_time_is_arrival=arrival_time,
         )
 
     async def get_ticker(self) -> TickerList:
@@ -247,8 +191,7 @@ class AsyncMVG:
 if __name__ == "__main__":
     mvg = MVG()
     for connection in mvg.get_rout("Holzkirchen", "Garching").connectionList:
-        print(f"Von {connection.from_.name} nach {connection.to.name}")
-        print(f"Abfahrt {connection.arrival - connection.departure}")
-        for connection_part in connection.connectionPartList:
+        for connection_part in connection.parts:
+            print(connection_part.exitLetter)
             print(f"{connection_part.from_.name}->{connection_part.to.name}")
-        print(f"Ankunft {connection.arrival}")
+        print(f"Entfernung {connection.distance}")
