@@ -35,16 +35,7 @@ def test_get_slim():
 
 def test_get_route():
     api = Api()
-    response = api.get_route(
-        "de:09162:6",
-        "de:09162:50",
-        sap_tickets=True,
-        _time=datetime.datetime.now(),
-        transport_type_call_taxi=True,
-        max_walk_time_to_dest=5,
-        max_walk_time_to_start=5,
-        change_limit=3,
-    )
+    response = api.get_route("de:09162:6", "de:09162:50")
     assert isinstance(response, Connections)
 
 
@@ -86,18 +77,7 @@ def test_get_slim_async():
 
 def test_get_route_async():
     api = AsyncApi()
-    response = asyncio.run(
-        api.get_route(
-            "de:09162:6",
-            "de:09162:50",
-            sap_tickets=True,
-            _time=datetime.datetime.now(),
-            transport_type_call_taxi=True,
-            max_walk_time_to_dest=5,
-            max_walk_time_to_start=5,
-            change_limit=3,
-        )
-    )
+    response = asyncio.run(api.get_route("de:09162:6", "de:09162:50"))
     assert isinstance(response, Connections)
 
 
