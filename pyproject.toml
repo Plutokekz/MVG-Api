@@ -284,9 +284,6 @@ max-statements = 50
 # Minimum number of public methods for a class (see R0903).
 min-public-methods = 1
 
-[tool.pylint.exceptions]
-# Exceptions that will emit a warning when caught.
-overgeneral-exceptions = ["BaseException", "Exception"]
 
 [tool.pylint.format]
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
