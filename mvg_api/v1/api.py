@@ -2,8 +2,8 @@ from typing import Any, List
 import datetime
 
 import httpx
-from mvg_api.models.ticker import TickerList, SlimList
-from mvg_api.models.route import Connections, LocationList
+from mvg_api.v1.schemas.ticker import TickerList, SlimList
+from mvg_api.v1.schemas.route import Connections, LocationList
 
 
 class RequestFailed(Exception):
