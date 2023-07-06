@@ -81,7 +81,7 @@ ignore-patterns = ["^\\.#"]
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-# init-hook =
+init-hook = 'import sys; sys.path.append("."); sys.path.append("mvg_api")'
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
