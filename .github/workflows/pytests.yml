@@ -23,4 +23,4 @@ jobs:
     - name: Install dependencies
       run: poetry install --no-root --no-cache
     - name: Running pytest
-      run: poetry run pytest ./mvg_api/v1/tests/api_tests.py
+      run: poetry run pytest ./mvg_api/v1/tests/api_tests.py ./mvg_api/v2/tests/api_tests.py
