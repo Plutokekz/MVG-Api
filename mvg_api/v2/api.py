@@ -104,7 +104,7 @@ class MVGRequests:
                 "query": query,
                 "limitAddressPoi": limit_address_poi,
                 "limitStations": limit_stations,
-                "locationTypes": ",".join([x.value for x in location_types]),
+                "locationTypes": ",".join([x.value for x in location_types]) if location_types is not None else None,
             }
         )
         return httpx.Request(
