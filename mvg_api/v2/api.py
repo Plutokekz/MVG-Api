@@ -20,6 +20,7 @@ from mvg_api.v2.schemas import (
     messages,
     out_of_order,
 )
+from mvg_api.v2.schemas.location import LocationType
 
 
 class RequestFailed(Exception):
@@ -95,7 +96,7 @@ class MVGRequests:
         query: str,
         limit_address_poi: int,
         limit_stations: int,
-        location_types: List[str],
+        location_types: List[LocationType],
         headers: Dict[str, str],
     ) -> httpx.Request:
         param = httpx.QueryParams(
@@ -103,7 +104,7 @@ class MVGRequests:
                 "query": query,
                 "limitAddressPoi": limit_address_poi,
                 "limitStations": limit_stations,
-                "locationTypes": location_types,
+                "locationTypes": ",".join([x.value for x in location_types]),
             }
         )
         return httpx.Request(
@@ -292,7 +293,7 @@ class SyncApi:
         response = self._send_request(MVGRequests.station(station_id, self.headers))
         return station.Station(**response)
 
-    def departures(
+    def get_departures(
         self,
         station_id: str,
         *,
@@ -362,7 +363,7 @@ class SyncApi:
         query: str,
         limit_address_poi: Optional[int] = None,
         limit_stations: Optional[int] = None,
-        location_types: Optional[List[str]] = None,
+        location_types: Optional[List[LocationType]] = None,
     ) -> location.Locations:
         """
         Get the location of a query, it can be a station name or a street name or a POI
@@ -589,7 +590,7 @@ class AsyncApi:
         )
         return station.Station(**response)
 
-    async def departures(
+    async def get_departures(
         self,
         station_id: str,
         *,

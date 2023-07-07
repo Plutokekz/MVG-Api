@@ -26,7 +26,7 @@ def test_get_station():
 
 def test_departures():
     api = SyncApi()
-    result = api.departures("de:09162:6", limit=1)
+    result = api.get_departures("de:09162:6", limit=1)
     assert isinstance(result, departure.Departures)
     assert len(result.__root__) == 1
 
@@ -151,7 +151,7 @@ def test_get_station_async():
 
 def test_departures_async():
     api = AsyncApi()
-    result = asyncio.run(api.departures("de:09162:6", limit=1))
+    result = asyncio.run(api.get_departures("de:09162:6", limit=1))
     assert isinstance(result, departure.Departures)
     assert len(result.__root__) == 1
 
