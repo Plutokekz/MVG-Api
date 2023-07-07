@@ -2,10 +2,10 @@ import asyncio
 import datetime
 from typing import List
 
-from mvg_api.api.api import Api, AsyncApi
-from mvg_api.mvg import LocationNotFound
-from mvg_api.models.route import LocationList, LocationType, Connections
-from mvg_api.models.ticker import TickerList, SlimList
+from mvg_api.v1.api import Api, AsyncApi
+from mvg_api.v1.mvg import LocationNotFound
+from mvg_api.v1.schemas.route import LocationList, LocationType, Connections
+from mvg_api.v1.schemas.ticker import TickerList, SlimList
 
 
 def test_get_ticker():

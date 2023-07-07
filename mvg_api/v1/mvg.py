@@ -3,9 +3,9 @@ from typing import List
 
 from Levenshtein import ratio
 
-from mvg_api.api.api import Api, AsyncApi
-from mvg_api.models.route import Location, LocationType, Connections, LocationList
-from mvg_api.models.ticker import TickerList, SlimList
+from mvg_api.v1.api import Api, AsyncApi
+from mvg_api.v1.schemas.route import Location, LocationType, Connections, LocationList
+from mvg_api.v1.schemas.ticker import TickerList, SlimList
 
 
 class LocationNotFound(Exception):
