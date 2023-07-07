@@ -11,11 +11,12 @@ from mvg_api.v2.schemas.location import LocationType, Location
 
 
 class SyncMVG(SyncApi):
-
     def __init__(self):
         super().__init__()
 
-    def _match_location(self, location_str: str, location_types: Optional[List[LocationType]] = None) -> Location:
+    def _match_location(
+        self, location_str: str, location_types: Optional[List[LocationType]] = None
+    ) -> Location:
         locations = self.get_location(location_str, location_types=location_types)
         for location in locations.__root__:
             if location.type == LocationType.STATION:
@@ -35,7 +36,9 @@ class SyncMVG(SyncApi):
         location = self._match_location(name, location_types=[LocationType.STATION])
         return self.get_departures(location.globalId, **kwargs)
 
-    def _location_to_connection_args(self, start_location: Location, stop_location: Location):
+    def _location_to_connection_args(
+        self, start_location: Location, stop_location: Location
+    ):
         args = {}
         if start_location.type == LocationType.STATION:
             args["origin_station_id"] = start_location.globalId
@@ -49,8 +52,14 @@ class SyncMVG(SyncApi):
             args["destination_longitude"] = stop_location.longitude
         return args
 
-    def get_connection_by_name(self, start: str, stop: str, start_datetime: Optional[datetime.datetime] = None,
-                               date_time_is_arrival: bool = False, **kwargs) -> Connections:
+    def get_connection_by_name(
+        self,
+        start: str,
+        stop: str,
+        start_datetime: Optional[datetime.datetime] = None,
+        date_time_is_arrival: bool = False,
+        **kwargs,
+    ) -> Connections:
         """
         Get a connection between two locations by the station or address name, the keyword arguments are the same as in
         get_connection
@@ -61,28 +70,35 @@ class SyncMVG(SyncApi):
         :param kwargs: the keyword arguments for the get_connection method, they will overwrite the default values
         :return: a list of connections
         """
-        start_location = self._match_location(start, location_types=[LocationType.STATION, LocationType.ADDRESS])
-        stop_location = self._match_location(stop, location_types=[LocationType.STATION, LocationType.ADDRESS])
+        start_location = self._match_location(
+            start, location_types=[LocationType.STATION, LocationType.ADDRESS]
+        )
+        stop_location = self._match_location(
+            stop, location_types=[LocationType.STATION, LocationType.ADDRESS]
+        )
 
         args = self._location_to_connection_args(start_location, stop_location)
 
         if start_datetime is None:
-            start_datetime = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            start_datetime = datetime.datetime.utcnow().strftime(
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
 
         args["routing_date_time"] = start_datetime
         args["routing_date_time_is_arrival"] = date_time_is_arrival
 
         args.update(kwargs)
 
-        return self.get_connection(**args)
+        return self.get_connection(**args)  # pylint: disable=missing-kwoa
 
 
 class AsyncMVG(AsyncApi):
-
     def __init__(self):
         super().__init__()
 
-    async def _match_location(self, location_str: str, location_types: Optional[List[LocationType]] = None) -> Location:
+    async def _match_location(
+        self, location_str: str, location_types: Optional[List[LocationType]] = None
+    ) -> Location:
         locations = await self.get_location(location_str, location_types=location_types)
         for location in locations.__root__:
             if location.type == LocationType.STATION:
@@ -99,10 +115,14 @@ class AsyncMVG(AsyncApi):
         :param name: of the station
         :return: a list of departures
         """
-        location = await self._match_location(name, location_types=[LocationType.STATION])
+        location = await self._match_location(
+            name, location_types=[LocationType.STATION]
+        )
         return await self.get_departures(location.globalId, **kwargs)
 
-    def _location_to_connection_args(self, start_location: Location, stop_location: Location):
+    def _location_to_connection_args(
+        self, start_location: Location, stop_location: Location
+    ):
         args = {}
         if start_location.type == LocationType.STATION:
             args["origin_station_id"] = start_location.globalId
@@ -116,8 +136,14 @@ class AsyncMVG(AsyncApi):
             args["destination_longitude"] = stop_location.longitude
         return args
 
-    async def get_connection_by_name(self, start: str, stop: str, start_datetime: Optional[datetime.datetime] = None,
-                               date_time_is_arrival: bool = False, **kwargs) -> Connections:
+    async def get_connection_by_name(
+        self,
+        start: str,
+        stop: str,
+        start_datetime: Optional[datetime.datetime] = None,
+        date_time_is_arrival: bool = False,
+        **kwargs,
+    ) -> Connections:
         """
         Get a connection between two locations by the station or address name, the keyword arguments are the same as in
         get_connection
@@ -128,20 +154,26 @@ class AsyncMVG(AsyncApi):
         :param kwargs: the keyword arguments for the get_connection method, they will overwrite the default values
         :return: a list of connections
         """
-        start_location = await self._match_location(start, location_types=[LocationType.STATION, LocationType.ADDRESS])
-        stop_location = await self._match_location(stop, location_types=[LocationType.STATION, LocationType.ADDRESS])
+        start_location = await self._match_location(
+            start, location_types=[LocationType.STATION, LocationType.ADDRESS]
+        )
+        stop_location = await self._match_location(
+            stop, location_types=[LocationType.STATION, LocationType.ADDRESS]
+        )
 
         args = self._location_to_connection_args(start_location, stop_location)
 
         if start_datetime is None:
-            start_datetime = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            start_datetime = datetime.datetime.utcnow().strftime(
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
 
         args["routing_date_time"] = start_datetime
         args["routing_date_time_is_arrival"] = date_time_is_arrival
 
         args.update(kwargs)
 
-        return await self.get_connection(**args)
+        return await self.get_connection(**args)  # pylint: disable=missing-kwoa
 
 
 if __name__ == "__main__":
@@ -149,6 +181,7 @@ if __name__ == "__main__":
     print(sync_mvg.get_departures_by_name("Marienplatz"))
     print(sync_mvg.get_connection_by_name("Marienplatz", "Hauptbahnhof"))
     import asyncio
+
     async_mvg = AsyncMVG()
     print(asyncio.run(async_mvg.get_departures_by_name("Marienplatz")))
     async_mvg = AsyncMVG()
