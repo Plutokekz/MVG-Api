@@ -2,6 +2,11 @@
 
 An async and sync wrapper for the MVG endpoints, with data validation over pydantic
 
+## Breaking Changes
+
+between version 0.1.5 and 0.2.0 the api has changed a lot. The api is now split into versions.
+The old api is available under mvg_api.v1 and the new api is available under mvg_api.v2.
+
 ## Features
 
 - Sync and async support: You can use this wrapper to make API calls synchronously or asynchronously based on your needs.
