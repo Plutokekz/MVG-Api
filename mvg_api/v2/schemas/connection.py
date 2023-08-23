@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, RootModel
 
 
 class Station(BaseModel):
@@ -70,5 +70,14 @@ class Connection(BaseModel):
     bannerHash: str
 
 
-class Connections(BaseModel):
-    __root__: List[Connection]
+class Connections(RootModel):
+    root: List[Connection]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

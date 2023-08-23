@@ -281,7 +281,7 @@ class SyncApi:
         :return: a list es messages
         """
         response = self._send_request(MVGRequests.ticker(self.headers))
-        return ems.Messages(__root__=response)
+        return ems.Messages(response)
 
     def get_station(self, station_id: str) -> station.Station:
         """
@@ -324,7 +324,7 @@ class SyncApi:
                 language=language,
             )
         )
-        return departure.Departures(__root__=response)
+        return departure.Departures(response)
 
     def get_escalators_and_elevators(
         self, efa_id: int
@@ -348,7 +348,7 @@ class SyncApi:
         :return: a list of aushaenge
         """
         response = self._send_request(MVGRequests.aushang(plan_id, self.headers))
-        return aushang.Aushaenge(__root__=response)
+        return aushang.Aushaenge(response)
 
     def get_station_ids(self) -> List[str]:
         """
@@ -378,7 +378,7 @@ class SyncApi:
                 query, limit_address_poi, limit_stations, location_types, self.headers
             )
         )
-        return location.Locations(__root__=response)
+        return location.Locations(response)
 
     def get_messages(self, message_type=Optional[str]) -> messages.Messages:
         """
@@ -388,7 +388,7 @@ class SyncApi:
         :return: a list of messages
         """
         response = self._send_request(MVGRequests.messages(self.headers, message_type))
-        return messages.Messages(__root__=response)
+        return messages.Messages(response)
 
     def get_connection(
         self,
@@ -432,7 +432,7 @@ class SyncApi:
                 destination_longitude=destination_longitude,
             )
         )
-        return connection.Connections(__root__=response)
+        return connection.Connections(response)
 
     def get_lineinfo(self, language: Optional[str]) -> lineinfo.Infos:
         """
@@ -441,7 +441,7 @@ class SyncApi:
         :return: a list of line info
         """
         response = self._send_request(MVGRequests.lineinfo(self.headers, language))
-        return lineinfo.Infos(__root__=response)
+        return lineinfo.Infos(response)
 
     def get_stations(
         self, hash_: Optional[str] = None, world: Optional[bool] = None
@@ -462,7 +462,7 @@ class SyncApi:
         :return: a list of lines
         """
         response = self._send_request(MVGRequests.lines(self.headers))
-        return line.Lines(__root__=response)
+        return line.Lines(response)
 
     def get_zoom_station(self, div_id: int) -> zoom_station.ZoomStation:
         """
@@ -541,7 +541,7 @@ class SyncApi:
         response = self._send_request(
             MVGRequests.surrounding_plans(self.headers, world)
         )
-        return surounding_plans.Plans(__root__=response)
+        return surounding_plans.Plans(response)
 
 
 class AsyncApi:
@@ -576,7 +576,7 @@ class AsyncApi:
         :return: a list es messages
         """
         response = await self._send_request(MVGRequests.ticker(self.headers))
-        return ems.Messages(__root__=response)
+        return ems.Messages(response)
 
     async def get_station(self, station_id: str) -> station.Station:
         """
@@ -621,7 +621,7 @@ class AsyncApi:
                 language=language,
             )
         )
-        return departure.Departures(__root__=response)
+        return departure.Departures(response)
 
     async def get_escalators_and_elevators(
         self, efa_id: int
@@ -646,7 +646,7 @@ class AsyncApi:
         :return: a list of aushaenge
         """
         response = await self._send_request(MVGRequests.aushang(plan_id, self.headers))
-        return aushang.Aushaenge(__root__=response)
+        return aushang.Aushaenge(response)
 
     async def get_station_ids(self) -> List[str]:
         """
@@ -676,7 +676,7 @@ class AsyncApi:
                 query, limit_address_poi, limit_stations, location_types, self.headers
             )
         )
-        return location.Locations(__root__=response)
+        return location.Locations(response)
 
     async def get_messages(self, message_type=Optional[str]) -> messages.Messages:
         """
@@ -688,7 +688,7 @@ class AsyncApi:
         response = await self._send_request(
             MVGRequests.messages(self.headers, message_type)
         )
-        return messages.Messages(__root__=response)
+        return messages.Messages(response)
 
     async def get_connection(
         self,
@@ -732,7 +732,7 @@ class AsyncApi:
                 destination_longitude=destination_longitude,
             )
         )
-        return connection.Connections(__root__=response)
+        return connection.Connections(response)
 
     async def get_lineinfo(self, language: Optional[str]) -> lineinfo.Infos:
         """
@@ -743,7 +743,7 @@ class AsyncApi:
         response = await self._send_request(
             MVGRequests.lineinfo(self.headers, language)
         )
-        return lineinfo.Infos(__root__=response)
+        return lineinfo.Infos(response)
 
     async def get_stations(
         self, hash_: Optional[str] = None, world: Optional[bool] = None
@@ -766,7 +766,7 @@ class AsyncApi:
         :return: a list of lines
         """
         response = await self._send_request(MVGRequests.lines(self.headers))
-        return line.Lines(__root__=response)
+        return line.Lines(response)
 
     async def get_zoom_station(self, div_id: int) -> zoom_station.ZoomStation:
         """
@@ -847,4 +847,4 @@ class AsyncApi:
         response = await self._send_request(
             MVGRequests.surrounding_plans(self.headers, world)
         )
-        return surounding_plans.Plans(__root__=response)
+        return surounding_plans.Plans(response)

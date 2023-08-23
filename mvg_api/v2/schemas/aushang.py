@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class Aushang(BaseModel):
@@ -12,5 +12,14 @@ class Aushang(BaseModel):
     direction: str
 
 
-class Aushaenge(BaseModel):
-    __root__: List[Aushang]
+class Aushaenge(RootModel):
+    root: List[Aushang]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

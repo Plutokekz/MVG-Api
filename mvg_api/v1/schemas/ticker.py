@@ -2,7 +2,7 @@ import re
 from typing import List, Optional
 from datetime import datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, RootModel, field_validator
 
 
 class Station(BaseModel):
@@ -10,7 +10,7 @@ class Station(BaseModel):
     name: str
 
     @classmethod
-    @validator("id")
+    @field_validator("id")
     def valid_id(cls, _id):
         if re.fullmatch(r"^[a-z]{2}:\d{5}:\d{1,5}", _id) is None:
             raise ValueError(f"{_id} is not a valid id")
@@ -22,8 +22,17 @@ class Slim(BaseModel):
     title: str
 
 
-class SlimList(BaseModel):
-    __root__: Optional[List[Slim]]
+class SlimList(RootModel):
+    root: Optional[List[Slim]]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)
 
 
 class Line(BaseModel):
@@ -51,8 +60,8 @@ class Link(BaseModel):
 
 class DownloadLink(BaseModel):
     id: str
-    minType: Optional[str]
     name: str
+    minType: Optional[str] = None
 
 
 class Ticker(BaseModel):
@@ -64,11 +73,20 @@ class Ticker(BaseModel):
     lines: Optional[List[Line]] = None
     incidents: Optional[List[str]] = None
     links: Optional[List[Link]] = None
-    downloadLinks: Optional[List[DownloadLink]] = None
+    downloadLinks: Optional[List[Optional[DownloadLink]]] = None
     incidentDuration: Optional[List[IncidentDurationItem]] = None
     activeDuration: Optional[ActiveDuration] = None
-    modificationDate: Optional[datetime]
+    modificationDate: Optional[datetime] = None
 
 
-class TickerList(BaseModel):
-    __root__: List[Ticker]
+class TickerList(RootModel):
+    root: List[Ticker]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

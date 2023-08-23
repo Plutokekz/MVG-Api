@@ -28,7 +28,7 @@ def test_departures():
     api = SyncApi()
     result = api.get_departures("de:09162:6", limit=1)
     assert isinstance(result, departure.Departures)
-    assert len(result.__root__) == 1
+    assert len(result) == 1
 
 
 def test_get_escalators_and_elevators():
@@ -41,7 +41,7 @@ def test_get_escalators_and_elevators():
 def test_get_aushang():
     api = SyncApi()
     result = api.get_aushang("KA")
-    assert len(result.__root__) != 0
+    assert len(result) != 0
 
 
 def test_get_station_ids():
@@ -54,15 +54,15 @@ def test_get_station_ids():
 def test_get_location():
     api = SyncApi()
     result = api.get_location("Hauptbahnhof")
-    assert len(result.__root__) != 0
-    assert isinstance(result.__root__[0], location.Location)
+    assert len(result) != 0
+    assert isinstance(result[0], location.Location)
 
 
 def test_get_messages():
     api = SyncApi()
     result = api.get_messages()
-    assert len(result.__root__) != 0
-    assert isinstance(result.__root__[0], Message)
+    assert len(result) != 0
+    assert isinstance(result[0], Message)
 
 
 def test_get_connection():
@@ -132,8 +132,8 @@ def test_get_surrounding_plan():
 def test_get_surrounding_plans():
     api = SyncApi()
     result = api.get_surrounding_plans()
-    assert len(result.__root__) != 0
-    assert isinstance(result.__root__[0], BasePlan)
+    assert len(result) != 0
+    assert isinstance(result[0], BasePlan)
 
 
 def test_get_ticker_async():
@@ -153,7 +153,7 @@ def test_departures_async():
     api = AsyncApi()
     result = asyncio.run(api.get_departures("de:09162:6", limit=1))
     assert isinstance(result, departure.Departures)
-    assert len(result.__root__) == 1
+    assert len(result) == 1
 
 
 def test_get_escalators_and_elevators_async():
@@ -166,7 +166,7 @@ def test_get_escalators_and_elevators_async():
 def test_get_aushang_async():
     api = AsyncApi()
     result = asyncio.run(api.get_aushang("KA"))
-    assert len(result.__root__) != 0
+    assert len(result) != 0
 
 
 def test_get_station_ids_async():
@@ -179,15 +179,15 @@ def test_get_station_ids_async():
 def test_get_location_async():
     api = AsyncApi()
     result = asyncio.run(api.get_location("Hauptbahnhof"))
-    assert len(result.__root__) != 0
-    assert isinstance(result.__root__[0], location.Location)
+    assert len(result) != 0
+    assert isinstance(result[0], location.Location)
 
 
 def test_get_messages_async():
     api = AsyncApi()
     result = asyncio.run(api.get_messages())
-    assert len(result.__root__) != 0
-    assert isinstance(result.__root__[0], Message)
+    assert len(result) != 0
+    assert isinstance(result[0], Message)
 
 
 def test_get_connection_async():
@@ -261,5 +261,5 @@ def test_get_surrounding_plan_async():
 def test_get_surrounding_plans_async():
     api = AsyncApi()
     result = asyncio.run(api.get_surrounding_plans())
-    assert len(result.__root__) != 0
-    assert isinstance(result.__root__[0], BasePlan)
+    assert len(result) != 0
+    assert isinstance(result[0], BasePlan)

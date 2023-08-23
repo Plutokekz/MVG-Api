@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class BasePlan(BaseModel):
@@ -20,5 +20,14 @@ class Plan(BasePlan):
     content: str
 
 
-class Plans(BaseModel):
-    __root__: List[BasePlan]
+class Plans(RootModel):
+    root: List[BasePlan]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class BaseStation(BaseModel):
@@ -56,5 +56,14 @@ class Message(BaseModel):
     modificationDate: str
 
 
-class Messages(BaseModel):
-    __root__: List[Message]
+class Messages(RootModel):
+    root: List[Message]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

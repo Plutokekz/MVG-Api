@@ -18,7 +18,7 @@ class SyncMVG(SyncApi):
         self, location_str: str, location_types: Optional[List[LocationType]] = None
     ) -> Location:
         locations = self.get_location(location_str, location_types=location_types)
-        for location in locations.__root__:
+        for location in locations:
             if location.type == LocationType.STATION:
                 if ratio(location_str, location.name) > 0.8:
                     return location
@@ -100,7 +100,7 @@ class AsyncMVG(AsyncApi):
         self, location_str: str, location_types: Optional[List[LocationType]] = None
     ) -> Location:
         locations = await self.get_location(location_str, location_types=location_types)
-        for location in locations.__root__:
+        for location in locations:
             if location.type == LocationType.STATION:
                 if ratio(location_str, location.name) > 0.8:
                     return location

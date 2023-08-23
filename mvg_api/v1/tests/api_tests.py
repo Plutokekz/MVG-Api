@@ -43,7 +43,7 @@ def test_get_location():
     api = Api()
     response = api.get_location("Marienplatz")
     assert isinstance(response, LocationList)
-    for location in response.locations:
+    for location in response:
         if location.type == LocationType.STATION:
             if location.name == "Marienplatz":
                 return
@@ -85,7 +85,7 @@ def test_get_location_async():
     api = AsyncApi()
     response = asyncio.run(api.get_location("Marienplatz"))
     assert isinstance(response, LocationList)
-    for location in response.locations:
+    for location in response:
         if location.type == LocationType.STATION:
             if location.name == "Marienplatz":
                 return

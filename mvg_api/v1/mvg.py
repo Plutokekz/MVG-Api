@@ -22,7 +22,7 @@ class MVG:
 
     def _match_location(self, location_str: str) -> Location:
         locations = self.api.get_location(location_str)
-        for location in locations.locations:
+        for location in locations:
             if location.type == LocationType.STATION:
                 if ratio(location_str, location.name) > 0.8:
                     return location
@@ -109,7 +109,7 @@ class AsyncMVG:
 
     async def _match_location(self, location_str: str) -> Location:
         locations = await self.api.get_location(location_str)
-        for location in locations.locations:
+        for location in locations:
             if location.type == LocationType.STATION:
                 if ratio(location_str, location.name) > 0.8:
                     return location

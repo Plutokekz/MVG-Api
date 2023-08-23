@@ -40,7 +40,8 @@ class Api:
         :return:
         """
         response = self._send_request("api/ems/tickers")
-        return TickerList(__root__=response)
+        print(response)
+        return TickerList(response)
 
     def get_current_date(self) -> datetime.datetime:
         """
@@ -65,7 +66,7 @@ class Api:
         :return:
         """
         response = self._send_request("api/ems/slim")
-        return SlimList(__root__=response)
+        return SlimList(response)
 
     def get_route(
         self,
@@ -100,7 +101,8 @@ class Api:
         :return: a list of Locations
         """
         response = self._send_request(f"api/fib/v2/location?query={name}")
-        return LocationList(locations=response)
+        print(response)
+        return LocationList(response)
 
 
 class AsyncApi:
@@ -133,7 +135,7 @@ class AsyncApi:
         :return:
         """
         response = await self._send_request("api/ems/tickers")
-        return TickerList(__root__=response)
+        return TickerList(response)
 
     async def get_current_date(self) -> datetime.datetime:
         """
@@ -158,7 +160,7 @@ class AsyncApi:
         :return:
         """
         response = await self._send_request("api/ems/slim")
-        return SlimList(__root__=response)
+        return SlimList(response)
 
     async def get_route(
         self,
@@ -193,4 +195,4 @@ class AsyncApi:
         :return: a list of Locations
         """
         response = await self._send_request(f"api/fib/v2/location?query={name}")
-        return LocationList(locations=response)
+        return LocationList(response)

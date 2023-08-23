@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 
 class LocationType(str, Enum):
@@ -30,5 +30,14 @@ class Location(BaseModel):
     houseNumber: Optional[str] = None
 
 
-class Locations(BaseModel):
-    __root__: List[Location]
+class Locations(RootModel):
+    root: List[Location]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

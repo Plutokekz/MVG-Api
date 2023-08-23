@@ -1,9 +1,9 @@
 import datetime
 import re
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Iterator
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, RootModel
 
 
 class Lines(BaseModel):
@@ -31,21 +31,23 @@ class Products(Enum):
 
 
 class Location(BaseModel):
-    globalId: Optional[str]
+
     type: LocationType
     latitude: float
     longitude: float
-    divaId: Optional[int]
+
     place: str
-    name: Optional[str]
-    hasZoomData: Optional[bool]
-    tariffZones: Optional[str]
-    aliases: Optional[str]
-    transportTypes: Optional[List[str]]
-    surroundingPlanLink: Optional[str]
+    globalId: Optional[str] = None
+    divaId: Optional[int] = None
+    name: Optional[str] = None
+    hasZoomData: Optional[bool] = None
+    tariffZones: Optional[str] = None
+    aliases: Optional[str] = None
+    transportTypes: Optional[List[str]] = None
+    surroundingPlanLink: Optional[str] = None
 
     @classmethod
-    @validator("id")
+    @field_validator("globalId")
     def valid_id(cls, _id):
         if re.fullmatch(r"^[a-z]{2}:\d{5}:\d{1,5}", _id) is None:
             raise ValueError(f"{_id} is not a valid id")
@@ -156,8 +158,17 @@ class _Connections(BaseModel):
     connectionList: Optional[List[_Connection]]
 
 
-class LocationList(BaseModel):
-    locations: Optional[List[Location]]
+class LocationList(RootModel):
+    root: List[Location]
+
+    def __iter__(self) -> Iterator[Location]:
+        return iter(self.root)
+
+    def __getitem__(self, item) -> Location:
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)
 
 
 class ConnectionLocation(BaseModel):
