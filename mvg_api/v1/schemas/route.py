@@ -31,7 +31,6 @@ class Products(Enum):
 
 
 class Location(BaseModel):
-
     type: LocationType
     latitude: float
     longitude: float
