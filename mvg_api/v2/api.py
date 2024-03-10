@@ -275,7 +275,7 @@ class SyncApi:
             )
         try:
             return response.json()
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             return response.content
 
     def get_ticker(self) -> ems.Messages:
@@ -570,7 +570,7 @@ class AsyncApi:
             )
         try:
             return response.json()
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             return response.content
 
     async def get_ticker(self) -> ems.Messages:
@@ -791,6 +791,7 @@ class AsyncApi:
         :return: bytes of the pdf file
         """
         response = await self._send_request(MVGRequests.plan(div_id, self.headers))
+        print(response)
         return bytes(response)
 
     async def get_zoom_station_out_of_order(
