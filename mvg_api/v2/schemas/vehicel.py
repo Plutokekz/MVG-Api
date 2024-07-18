@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 
 class Deeplinks(BaseModel):
-    androidDeeplink: str
-    iosDeeplink: str
+    androidDeepLink: str
+    iosDeepLink: str
 
 
 class Vehicle(BaseModel):
@@ -16,8 +16,6 @@ class Vehicle(BaseModel):
     type: str
     deeplinks: Deeplinks
     externalId: str
-    idForBooking: str
-    idForReservation: str
 
 
 class SharingStation(BaseModel):
