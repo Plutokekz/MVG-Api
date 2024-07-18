@@ -424,6 +424,7 @@ For Endpoint Information and Code snippets
 ## ACHTUNG:
 Unsere Systeme dienen der direkten Kundeninteraktion. Die Verarbeitung unserer Inhalte oder Daten durch Dritte erfordert unsere ausdrückliche Zustimmung. Für private, nicht-kommerzielle Zwecke, wird eine gemäßigte Nutzung ohne unsere ausdrückliche Zustimmung geduldet. Jegliche Form von Data-Mining stellt keine gemäßigte Nutzung dar. Wir behalten uns vor, die Duldung grundsätzlich oder in Einzelfällen zu widerrufen. Fragen richten Sie bitte gerne an: redaktion@mvg.de.
 
-In other words: Private, noncomercial, moderate use of the API is tolerated. They don't consider data mining as moderate use.
+In other words: Private, noncommercial, moderate use of the API is tolerated.
+They do not consider data mining as a moderate use.
 
-(Disclaimer: I am not a lawyer, this isn't legal advice)
+(Disclaimer: I am not a lawyer, this is not legal advice)
