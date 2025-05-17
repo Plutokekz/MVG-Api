@@ -3,7 +3,6 @@ import datetime
 
 import httpx
 from mvg_api.v1.schemas.ticker import TickerList, SlimList
-from mvg_api.v1.schemas.route import Connections, LocationList
 
 
 class RequestFailed(Exception):
@@ -68,42 +67,6 @@ class Api:
         response = self._send_request("api/ems/slim")
         return SlimList(response)
 
-    def get_route(
-        self,
-        origin_station_global_id: str,
-        destination_station_global_id: str,
-        routing_date_time: datetime.datetime | None = None,
-        routing_date_time_is_arrival: bool = False,
-        transport_types: str = "SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS",
-    ):
-        """
-        Get all available routes from one destination to another
-        :return:
-        """
-        if routing_date_time is None:
-            routing_date_time = self.get_current_date()
-            routing_date_time = routing_date_time.strftime("%Y-%m-%dT%H:%M:%S.000%zZ")
-
-        args = (
-            f"?originStationGlobalId={origin_station_global_id}"
-            f"&destinationStationGlobalId={destination_station_global_id}"
-            f"&transportTypes={transport_types}"
-            f"&routingDateTime={routing_date_time}"
-            f"&routingDateTimeIsArrival={str(routing_date_time_is_arrival).lower()}"
-        )
-        response = self._send_request("api/fib/v2/connection" + args)
-        return Connections(connectionList=response)
-
-    def get_location(self, name: str):
-        """
-        Get a list of locations by name
-        :param name: name of the location / Station
-        :return: a list of Locations
-        """
-        response = self._send_request(f"api/fib/v2/location?query={name}")
-        print(response)
-        return LocationList(response)
-
 
 class AsyncApi:
     __slots__ = ("client",)
@@ -161,38 +124,3 @@ class AsyncApi:
         """
         response = await self._send_request("api/ems/slim")
         return SlimList(response)
-
-    async def get_route(
-        self,
-        origin_station_global_id: str,
-        destination_station_global_id: str,
-        routing_date_time: datetime.datetime | None = None,
-        routing_date_time_is_arrival: bool = False,
-        transport_types: str = "SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS",
-    ):
-        """
-        Get all available routes from one destination to another
-        :return:
-        """
-        if routing_date_time is None:
-            routing_date_time = await self.get_current_date()
-            routing_date_time = routing_date_time.strftime("%Y-%m-%dT%H:%M:%S.000%zZ")
-
-        args = (
-            f"?originStationGlobalId={origin_station_global_id}"
-            f"&destinationStationGlobalId={destination_station_global_id}"
-            f"&transportTypes={transport_types}"
-            f"&routingDateTime={routing_date_time}"
-            f"&routingDateTimeIsArrival={str(routing_date_time_is_arrival).lower()}"
-        )
-        response = await self._send_request("api/fib/v2/connection" + args)
-        return Connections(connectionList=response)
-
-    async def get_location(self, name: str):
-        """
-        Get a list of locations by name
-        :param name: name of the location / Station
-        :return: a list of Locations
-        """
-        response = await self._send_request(f"api/fib/v2/location?query={name}")
-        return LocationList(response)

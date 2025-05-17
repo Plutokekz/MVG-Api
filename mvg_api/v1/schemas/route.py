@@ -1,4 +1,3 @@
-import datetime
 import re
 from enum import Enum
 from typing import List, Optional, Iterator
@@ -6,28 +5,10 @@ from typing import List, Optional, Iterator
 from pydantic import BaseModel, Field, field_validator, RootModel
 
 
-class Lines(BaseModel):
-    tram: Optional[List[str]]
-    nachttram: Optional[List[str]]
-    sbahn: Optional[List[str]]
-    ubahn: Optional[List[str]]
-    bus: Optional[List[str]]
-    nachtbus: Optional[List[str]]
-    otherlines: Optional[List[str]]
-
-
 class LocationType(Enum):
     STATION = "STATION"
     ADDRESS = "ADDRESS"
     POI = "POI"
-
-
-class Products(Enum):
-    BUS = "BUS"
-    TRAM = "TRAM"
-    UBAHN = "UBAHN"
-    SBAHN = "SBAHN"
-    BAHN = "BAHN"
 
 
 class Location(BaseModel):
@@ -53,68 +34,6 @@ class Location(BaseModel):
         return _id
 
 
-class PathItem(BaseModel):
-    type: str
-    latitude: float
-    longitude: float
-
-
-class PathDescription(BaseModel):
-    from_: int = Field(None, alias="from")
-    to: int
-    level: int
-
-
-class InterchangePath(BaseModel):
-    latitude: float
-    longitude: float
-    type: str
-
-
-class Stop(BaseModel):
-    arrDelay: Optional[int]
-    cancelled: bool
-    delay: Optional[int]
-    time: int
-    location: Location
-
-
-class ConnectionPart(BaseModel):
-    stops: Optional[List[Stop]]
-    from_: Location = Field(None, alias="from")
-    to: Location
-    path: Optional[List[PathItem]]
-    pathDescription: Optional[List[PathDescription]]
-    interchangePath: Optional[List[InterchangePath]] = None
-    departure: float
-    arrival: float
-    delay: Optional[float]
-    arrDelay: Optional[float]
-    cancelled: bool
-    product: Optional[Products]
-    label: Optional[str]
-    network: Optional[str]
-    connectionPartType: Optional[str]
-    serverId: Optional[str]
-    destination: Optional[str]
-    lineDirection: Optional[str]
-    sev: Optional[bool]
-    zoomNoticeDeparture: Optional[bool]
-    zoomNoticeArrival: Optional[bool]
-    zoomNoticeDepartureEscalator: Optional[bool]
-    zoomNoticeArrivalEscalator: Optional[bool]
-    zoomNoticeDepartureElevator: Optional[bool]
-    zoomNoticeArrivalElevator: Optional[bool]
-    departurePlatform: Optional[str]
-    departureStopPositionNumber: Optional[int]
-    arrivalPlatform: Optional[str]
-    arrivalStopPositionNumber: Optional[int]
-    noChangingRequired: Optional[bool]
-    fromId: Optional[str]
-    departureId: Optional[str]
-    occupancy: Optional[str]
-
-
 class SapTicketMappingDto(BaseModel):
     sapId: int
     sapName: Optional[str]
@@ -131,30 +50,6 @@ class SapTicketMappingDto(BaseModel):
     ticketAggregationGroup: Optional[str]
     tarifLevel: Optional[str]
     zones: Optional[str]
-
-
-class _Connection(BaseModel):
-    zoomNoticeFrom: Optional[bool]
-    zoomNoticeTo: Optional[bool]
-    zoomNoticeFromEscalator: Optional[bool]
-    zoomNoticeToEscalator: Optional[bool]
-    zoomNoticeFromElevator: Optional[bool]
-    zoomNoticeToElevator: Optional[bool]
-    from_: Location = Field(None, alias="from")
-    to: Location
-    departure: Optional[datetime.datetime]
-    arrival: Optional[datetime.datetime]
-    connectionPartList: List[ConnectionPart]
-    efaTicketIds: Optional[List[str]]
-    serverId: Optional[int]
-    ringFrom: Optional[int]
-    ringTo: Optional[int]
-    sapTicketMappingDtos: Optional[List[SapTicketMappingDto]]
-    oldTarif: Optional[bool]
-
-
-class _Connections(BaseModel):
-    connectionList: Optional[List[_Connection]]
 
 
 class LocationList(RootModel):
