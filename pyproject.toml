@@ -1,17 +1,23 @@
 [project]
 name = "async_mvg_api"
-version = "0.2.4"
+version = "0.2.6"
 description = ""
-authors = ["Lukas Mahr <lukas@yousuckatprogramming.de>"]
+authors = [
+    {name = "Lukas Mahr", email = "lukas@yousuckatprogramming.de"}
+]
 readme = "README.md"
-packages = [{ include = "mvg_api" }]
 requires-python = ">=3.13"
 dependencies = [
     "dill>=0.4.0",
     "httpx>=0.28.1",
     "levenshtein>=0.27.1",
     "pydantic>=2.11.4",
+    "setuptools>=78.1.0",
+    "wheel>=0.45.1",
 ]
+
+[tool.setuptools.packages.find]
+include = ["mvg_api*"]
 
 [dependency-groups]
 dev = [
@@ -20,6 +26,11 @@ dev = [
     "pytest>=8.3.5",
     "vulture>=2.14",
 ]
+
+[build-system]
+requires = ["setuptools>=78.1.0", "wheel>=0.45.1"]
+build-backend = "setuptools.build_meta"
+
 
 
 [tool.pytest.ini_options]
