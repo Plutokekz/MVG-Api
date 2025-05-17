@@ -1,31 +1,30 @@
-[tool.poetry]
+[project]
 name = "async_mvg_api"
 version = "0.2.4"
 description = ""
 authors = ["Lukas Mahr <lukas@yousuckatprogramming.de>"]
 readme = "README.md"
-packages = [{include = "mvg_api"}]
+packages = [{ include = "mvg_api" }]
+requires-python = ">=3.13"
+dependencies = [
+    "dill>=0.4.0",
+    "httpx>=0.28.1",
+    "levenshtein>=0.27.1",
+    "pydantic>=2.11.4",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-pydantic = "^2.6.3"
-httpx = "^0.27.0"
-levenshtein = "^0.25.0"
-dill = "^0.3.8"
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pylint>=3.3.7",
+    "pytest>=8.3.5",
+    "vulture>=2.14",
+]
 
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.2.0"
-pylint = "^3.1.0"
-pytest = "^8.1.1"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 pythonpath = [
-  ".", "mvg_api",
+    ".", "mvg_api",
 ]
 
 [tool.pylint.main]
@@ -375,7 +374,7 @@ confidence = ["HIGH", "CONTROL_FLOW", "INFERENCE", "INFERENCE_FAILURE", "UNDEFIN
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable = ["similarities", "missing-function-docstring","missing-class-docstring","missing-module-docstring", "raw-checker-failed", "bad-inline-option", "locally-disabled", "file-ignored", "suppressed-message", "useless-suppression", "deprecated-pragma", "use-symbolic-message-instead"]
+disable = ["similarities", "missing-function-docstring", "missing-class-docstring", "missing-module-docstring", "raw-checker-failed", "bad-inline-option", "locally-disabled", "file-ignored", "suppressed-message", "useless-suppression", "deprecated-pragma", "use-symbolic-message-instead"]
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -553,3 +552,4 @@ ignored-argument-names = "_.*|^ignored_|^unused_"
 # List of qualified module names which can have objects that can redefine
 # builtins.
 redefining-builtins-modules = ["six.moves", "past.builtins", "future.builtins", "builtins", "io"]
+

@@ -22,7 +22,7 @@ The old api is available under mvg_api.v1 and the new api is available under mvg
 
 ## Installation
 Install it over pip or from source by cloning the repository and installing 
-the dependencies with [poetry](https://python-poetry.org/).
+the dependencies with [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 ```bash
 pip install async-mvg-api
@@ -33,7 +33,7 @@ or
 ```bash
 git clone https://github.com/Plutokekz/MVG-Api.git
 cd MVG-Api
-poetry install
+uv sync
 ```
 ## Usage
 
@@ -102,7 +102,7 @@ Get all the station ids
 ## Tests
 
 ```bash
-poetry run pytest mvg_api/v1/tests/api_tests.py mvg_api/v2/tests/api_tests.py
+uv run pytest mvg_api/v1/tests/api_tests.py mvg_api/v2/tests/api_tests.py
 ```
 
 # Credit
