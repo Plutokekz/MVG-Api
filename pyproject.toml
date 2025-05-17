@@ -1,6 +1,6 @@
 [project]
 name = "async_mvg_api"
-version = "0.2.6"
+version = "0.2.8"
 description = ""
 authors = [
     {name = "Lukas Mahr", email = "lukas@yousuckatprogramming.de"}
@@ -15,6 +15,10 @@ dependencies = [
     "setuptools>=78.1.0",
     "wheel>=0.45.1",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/Plutokekz/MVG-Api"
+"Source" = "https://github.com/Plutokekz/MVG-Api"
 
 [tool.setuptools.packages.find]
 include = ["mvg_api*"]
