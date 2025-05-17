@@ -34,7 +34,7 @@ wheels = [
 
 [[package]]
 name = "async-mvg-api"
-version = "0.2.6"
+version = "0.2.8"
 source = { editable = "." }
 dependencies = [
     { name = "dill" },
