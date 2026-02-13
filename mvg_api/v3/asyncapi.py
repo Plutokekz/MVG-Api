@@ -44,6 +44,17 @@ class AsyncApi:
         except (json.JSONDecodeError, UnicodeDecodeError):
             return response.content
 
+    async def get_aushang(self, plan_id: str) -> aushang.Aushaenge:
+        """
+        Get the aushang for a station, get all Playn that a currently active in a stations blackboard.
+        :param plan_id: I am not sure bit it seems to be the first 2 letters of the station name in uppercase.
+         For example
+        KA for Karlsplatz
+        :return: a list of aushaenge
+        """
+        response = await self._send_request(MVGRequests.aushang(self.headers, plan_id))
+        return aushang.Aushaenge(response)
+
     async def get_ticker(self) -> ems.Messages:
         """
         Get ticker messages, updates about the disruptions and planed works on the MVG train network
@@ -78,17 +89,6 @@ class AsyncApi:
             MVGRequests.escalators_and_elevators(efa_id, self.headers)
         )
         return transportdevice.StationTransportDevices(**response)
-
-    async def get_aushang(self, plan_id: str) -> aushang.Aushaenge:
-        """
-        Get the aushang for a station, get all Playn that a currently active in a stations blackboard.
-        :param plan_id: I am not sure bit it seems to be the first 2 letters of the station name in uppercase.
-         For example
-        KA for Karlsplatz
-        :return: a list of aushaenge
-        """
-        response = await self._send_request(MVGRequests.aushang(plan_id, self.headers))
-        return aushang.Aushaenge(response)
 
     async def get_station_ids(self) -> List[str]:
         """

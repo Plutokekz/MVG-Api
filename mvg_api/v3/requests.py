@@ -20,6 +20,15 @@ class MVGRequests:
     url: str = "https://www.mvg.de/"
 
     @staticmethod
+    def aushang(headers: Dict[str, str], plan_id: str) -> httpx.Request:
+        return httpx.Request(
+            "GET",
+            f"{MVGRequests.url}.rest/aushang/stations",
+            headers=headers,
+            params={"id": plan_id},
+        )
+
+    @staticmethod
     def ticker(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers
@@ -37,15 +46,6 @@ class MVGRequests:
             "GET",
             f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}",
             headers=headers,
-        )
-
-    @staticmethod
-    def aushang(plan_id: str, headers: Dict[str, str]) -> httpx.Request:
-        return httpx.Request(
-            "GET",
-            f"{MVGRequests.url}.rest/aushang/stations",
-            headers=headers,
-            params={"id": plan_id},
         )
 
     @staticmethod
