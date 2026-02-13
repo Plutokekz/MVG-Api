@@ -1,4 +1,5 @@
-from mvg_api.v3.api import SyncApi, AsyncApi
+from mvg_api.v3.asyncapi import AsyncApi
+from mvg_api.v3.syncapi import SyncApi
 
 
 class SyncMVG(SyncApi):
