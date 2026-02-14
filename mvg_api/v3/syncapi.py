@@ -12,10 +12,12 @@ from .requests import MVGRequests, RequestFailed
 import httpx
 
 from mvg_api.v3.schemas import (
+    aushang,
+    connection,
     ems,
     station,
     transportdevice,
-    aushang,
+    location,
 )
 from mvg_api.v3.schemas.location import LocationType
 
@@ -55,6 +57,100 @@ class SyncApi:
         """
         response = self._send_request(MVGRequests.aushang(self.headers, plan_id))
         return aushang.Aushaenge(response)
+
+    def get_connections(
+        self,
+        origin_station_id: str,
+        destination_station_id: str,
+        routing_date_time: str,
+        *,
+        routing_date_time_is_arrival: bool,
+        transport_types: Optional[str] = None,
+        origin_latitude: Optional[float] = None,
+        origin_longitude: Optional[float] = None,
+        destination_latitude: Optional[float] = None,
+        destination_longitude: Optional[float] = None,
+    ) -> connection.Connections:
+        """
+        Get the connections between two stations or coordinates.
+        You can use either station_id to station_id or coordinates to coordinates or station_id to coordinates.
+        :param origin_station_id: the station id of the origin station
+        :param destination_station_id: the station id of the destination station
+        :param routing_date_time: the date and time of the departure or arrival for example 2023-06-25T20:04:47.552Z
+        :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
+        :param transport_types: the transport types to use, available types are SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS
+        ,REGIONAL_BUS
+        :param origin_latitude: the latitude of the origin station
+        :param origin_longitude: the longitude of the origin station
+        :param destination_latitude: the latitude of the destination station
+        :param destination_longitude: the longitude of the destination station
+        :return: a list of connections
+        """
+        response = self._send_request(
+            MVGRequests.connections(
+                self.headers,
+                origin_station_id,
+                destination_station_id,
+                routing_date_time,
+                routing_date_time_is_arrival=routing_date_time_is_arrival,
+                transport_types=transport_types,
+                origin_latitude=origin_latitude,
+                origin_longitude=origin_longitude,
+                destination_latitude=destination_latitude,
+                destination_longitude=destination_longitude,
+            )
+        )
+        return connection.Connections(response)
+
+    def get_connections_by_name(
+        self,
+        origin_station_name: str,
+        destination_station_name: str,
+        routing_date_time: str,
+        *,
+        routing_date_time_is_arrival: bool,
+        transport_types: Optional[str] = None,
+        origin_latitude: Optional[float] = None,
+        origin_longitude: Optional[float] = None,
+        destination_latitude: Optional[float] = None,
+        destination_longitude: Optional[float] = None,
+    ) -> connection.Connections:
+        """
+        Get the connections between two stations or coordinates.
+        You can use either station_id to station_id or coordinates to coordinates or station_id to coordinates.
+        :param origin_station_name: the station name of the origin station
+        :param destination_station_name: the station name of the destination station
+        :param routing_date_time: the date and time of the departure or arrival for example 2023-06-25T20:04:47.552Z
+        :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
+        :param transport_types: the transport types to use, available types are SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS
+        ,REGIONAL_BUS
+        :param origin_latitude: the latitude of the origin station
+        :param origin_longitude: the longitude of the origin station
+        :param destination_latitude: the latitude of the destination station
+        :param destination_longitude: the longitude of the destination station
+        :return: a list of connections
+        """
+        origin_stations = self.get_locations(origin_station_name)
+        origin_station_id = origin_stations[0].globalId if origin_stations else None
+        destination_stations = self.get_locations(destination_station_name)
+        destination_station_id = destination_stations[0].globalId if destination_stations else None
+        if origin_station_id is None or destination_station_id is None:
+            raise RequestFailed(f"Unable to look up origin and/or destination; origin_station_name={origin_station_name} destination_station_name={destination_station_name}")
+        response = self._send_request(
+            MVGRequests.connections(
+                self.headers,
+                origin_station_id,
+                destination_station_id,
+                routing_date_time,
+                routing_date_time_is_arrival=routing_date_time_is_arrival,
+                transport_types=transport_types,
+                origin_latitude=origin_latitude,
+                origin_longitude=origin_longitude,
+                destination_latitude=destination_latitude,
+                destination_longitude=destination_longitude,
+            )
+        )
+        return connection.Connections(response)
 
     def get_ticker(self) -> ems.Messages:
         """
@@ -98,3 +194,25 @@ class SyncApi:
         """
         response = self._send_request(MVGRequests.station_ids(self.headers))
         return list(response)
+
+    def get_locations(
+        self,
+        query: str,
+        limit_address_poi: Optional[int] = None,
+        limit_stations: Optional[int] = None,
+        location_types: Optional[List[str]] = None,
+    ) -> location.Locations:
+        """
+        Get the location of a query, it can be a station name or a street name or a POI
+        :param query: the Address or the station name or the POI name
+        :param limit_address_poi: limit the number of addresses or POIs to return
+        :param limit_stations: limit the number of stations to return
+        :param location_types: limit the location types to return, available types are STATION,POI,ADDRESS
+        :return: a list of locations
+        """
+        response = self._send_request(
+            MVGRequests.location(
+                query, limit_address_poi, limit_stations, location_types, self.headers
+            )
+        )
+        return location.Locations(response)
