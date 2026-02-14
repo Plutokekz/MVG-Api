@@ -18,8 +18,9 @@ from mvg_api.v3.schemas import (
     line,
     location,
     messages,
-    ems,
     station,
+    stations,
+    ticker,
     transportdevice,
 )
 from mvg_api.v3.schemas.location import LocationType
@@ -264,6 +265,14 @@ class SyncApi:
         response = self._send_request(MVGRequests.messages(self.headers, message_type))
         return messages.Messages(response)
 
+    def get_station_ids(self) -> List[str]:
+        """
+        Get all the station ids
+        :return: returns a list of strings with all the station ids that are available
+        """
+        response = self._send_request(MVGRequests.station_ids(self.headers))
+        return list(response)
+
     def get_station(self, station_id: str) -> station.Station:
         """
         Get a station by its id the Station id can be found in the get_all_stations list, or it can be obtained from a
@@ -274,22 +283,29 @@ class SyncApi:
         response = self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
 
-    def get_station_ids(self) -> List[str]:
+    def get_stations(
+        self, hash_: Optional[str] = None, world: Optional[bool] = None
+    ) -> stations.Locations:
         """
-        Get all the station ids
-        :return: returns a list of strings with all the station ids that are available
+        Get all the stations, like get_station_ids but with the hole station information.
+        :param hash_: I don't know for what this hash is. (In the response is a hash, but if you send it again you get
+        no response, so keep it empty)
+        :param world: you can set the world to true or false. Maybe some day the MVG is operating worldwide.
+        :return: a list of stations
         """
-        response = self._send_request(MVGRequests.station_ids(self.headers))
-        return list(response)
+        response = self._send_request(
+            MVGRequests.stations(self.headers, hash_, world)
+        )
+        return stations.Locations(**response)
 
-    def get_ticker(self) -> ems.Messages:
+    def get_ticker(self) -> ticker.Messages:
         """
         Get ticker messages, updates about the disruptions and planed works on the MVG train network
         There 2 types of messages DISRUPTION and PLANNED
         :return: a list es messages
         """
         response = self._send_request(MVGRequests.ticker(self.headers))
-        return ems.Messages(response)
+        return ticker.Messages(response)
 
     def get_escalators_and_elevators(
         self, efa_id: int

@@ -19,7 +19,7 @@ from mvg_api.v3.schemas import (
     messages,
     station,
     stations,
-    ems,
+    ticker,
     transportdevice,
 )
 from mvg_api.v3.schemas.location import LocationType
@@ -297,14 +297,14 @@ class AsyncApi:
         )
         return stations.Locations(**response)
 
-    async def get_ticker(self) -> ems.Messages:
+    async def get_ticker(self) -> ticker.Messages:
         """
         Get ticker messages, updates about the disruptions and planed works on the MVG train network
         There 2 types of messages DISRUPTION and PLANNED
         :return: a list es messages
         """
         response = await self._send_request(MVGRequests.ticker(self.headers))
-        return ems.Messages(response)
+        return ticker.Messages(response)
 
     async def get_escalators_and_elevators(
         self, efa_id: int
