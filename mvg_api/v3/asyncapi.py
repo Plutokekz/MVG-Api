@@ -17,8 +17,9 @@ from mvg_api.v3.schemas import (
     line,
     location,
     messages,
-    ems,
     station,
+    stations,
+    ems,
     transportdevice,
 )
 from mvg_api.v3.schemas.location import LocationType
@@ -263,6 +264,14 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.messages(self.headers, message_type))
         return messages.Messages(response)
 
+    async def get_station_ids(self) -> List[str]:
+        """
+        Get all the station ids
+        :return: returns a list of strings with all the station ids that are available
+        """
+        response = await self._send_request(MVGRequests.station_ids(self.headers))
+        return list(response)
+
     async def get_station(self, station_id: str) -> station.Station:
         """
         Get a station by its id the Station id can be found in the get_all_stations list, or it can be obtained from a
@@ -273,13 +282,20 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
 
-    async def get_station_ids(self) -> List[str]:
+    async def get_stations(
+        self, hash_: Optional[str] = None, world: Optional[bool] = None
+    ) -> stations.Locations:
         """
-        Get all the station ids
-        :return: returns a list of strings with all the station ids that are available
+        Get all the stations, like get_station_ids but with the hole station information.
+        :param hash_: I don't know for what this hash is. (In the response is a hash, but if you send it again you get
+        no response, so keep it empty)
+        :param world: you can set the world to true or false. Maybe some day the MVG is operating worldwide.
+        :return: a list of stations
         """
-        response = await self._send_request(MVGRequests.station_ids(self.headers))
-        return list(response)
+        response = await self._send_request(
+            MVGRequests.stations(self.headers, hash_, world)
+        )
+        return stations.Locations(**response)
 
     async def get_ticker(self) -> ems.Messages:
         """

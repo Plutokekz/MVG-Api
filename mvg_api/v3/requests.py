@@ -131,15 +131,24 @@ class MVGRequests:
         )
 
     @staticmethod
+    def station_ids(headers: Dict[str, str]) -> httpx.Request:
+        return httpx.Request(
+            "GET", f"{MVGRequests.url}.rest/zdm/mvgStationGlobalIds", headers=headers
+        )
+
+    @staticmethod
     def station(headers: Dict[str, str], station_id: str) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}.rest/zdm/stations/{station_id}", headers=headers
         )
 
     @staticmethod
-    def station_ids(headers: Dict[str, str]) -> httpx.Request:
+    def stations(
+        headers: Dict[str, str], hash_: Optional[str], world: Optional[bool]
+    ) -> httpx.Request:
+        param = httpx.QueryParams({"hash": hash_, "world": world})
         return httpx.Request(
-            "GET", f"{MVGRequests.url}.rest/zdm/mvgStationGlobalIds", headers=headers
+            "GET", f"{MVGRequests.url}api/fib/v2/station", headers=headers, params=param
         )
 
     @staticmethod
@@ -160,15 +169,6 @@ class MVGRequests:
     def lineinfo(headers: Dict[str, str], language: Optional[str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/fib/v2/lineinfo/{language}", headers=headers
-        )
-
-    @staticmethod
-    def stations(
-        headers: Dict[str, str], hash_: Optional[str], world: Optional[bool]
-    ) -> httpx.Request:
-        param = httpx.QueryParams({"hash": hash_, "world": world})
-        return httpx.Request(
-            "GET", f"{MVGRequests.url}api/fib/v2/station", headers=headers, params=param
         )
 
     @staticmethod
