@@ -1,12 +1,12 @@
-# sync and async api are identical except for async/await keywords
-# use the following command to quickly generate the sync variant from the async variant when functions were changed
+# Please note: the sync and async api variants are identical except for async/await keywords.
+# To reduce manual editing the both apis, only edit the async variant.
+# Then use the following command to quickly generate the sync variant from the async variant.
 #
-# echo "# DO NOT EDIT - DERIVED FROM asyncapi.py" > syncapi.py && sed -e 's/async def/def/g' -e 's/= await/=/g' -e 's/AsyncApi/SyncApi/g' -e 's/AsyncClient/Client/g' asyncapi.py >> syncapi.py
+# [ -f asyncapi.py ] && echo "# DO NOT EDIT - DERIVED FROM asyncapi.py" > syncapi.py && sed -e 's/async def/def/g' -e 's/= await/=/g' -e 's/AsyncApi/SyncApi/g' -e 's/AsyncClient/Client/g' asyncapi.py >> syncapi.py
 
 
 import json
 from typing import Dict, Any, Optional, List
-from .requests import MVGRequests, RequestFailed
 
 import httpx
 
@@ -22,7 +22,7 @@ from mvg_api.v3.schemas import (
     ticker,
     zoom,
 )
-from mvg_api.v3.schemas.location import LocationType
+from mvg_api.v3.requests import MVGRequests, RequestFailed
 
 
 class AsyncApi:
@@ -208,8 +208,8 @@ class AsyncApi:
         didn't see any difference when I changed it
         :return: a list of departures
         """
-        stations = self.get_locations(station_name)
-        station_id = stations[0].globalId if stations else None
+        matching_stations = self.get_locations(station_name)
+        station_id = matching_stations[0].globalId if matching_stations else None
         if station_id is None:
             raise RequestFailed(f"Unable to look up station; station_name={station_name}")
         response = await self._send_request(

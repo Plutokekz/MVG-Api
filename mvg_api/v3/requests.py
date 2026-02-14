@@ -1,4 +1,3 @@
-import json
 from typing import Dict, Any, Optional, List
 
 import httpx
@@ -7,7 +6,9 @@ from mvg_api.v3.schemas.location import LocationType
 
 
 class RequestFailed(Exception):
-    pass
+    """
+    Exception when a request to the MVG api was not successful for any reason.
+    """
 
 
 class MVGRequests:
