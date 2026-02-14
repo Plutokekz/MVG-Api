@@ -131,15 +131,15 @@ class MVGRequests:
         )
 
     @staticmethod
-    def ticker(headers: Dict[str, str]) -> httpx.Request:
+    def station(headers: Dict[str, str], station_id: str) -> httpx.Request:
         return httpx.Request(
-            "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers
+            "GET", f"{MVGRequests.url}.rest/zdm/stations/{station_id}", headers=headers
         )
 
     @staticmethod
-    def station(station_id: str, headers: Dict[str, str]) -> httpx.Request:
+    def ticker(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
-            "GET", f"{MVGRequests.url}.rest/zdm/stations/{station_id}", headers=headers
+            "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers
         )
 
     @staticmethod

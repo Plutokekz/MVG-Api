@@ -261,10 +261,18 @@ class SyncApi:
         :param message_type: the type of the message, available types are INCIDENT,SCHEDULE_CHANGE
         :return: a list of messages
         """
-        response = self._send_request(
-            MVGRequests.messages(self.headers, message_type)
-        )
+        response = self._send_request(MVGRequests.messages(self.headers, message_type))
         return messages.Messages(response)
+
+    def get_station(self, station_id: str) -> station.Station:
+        """
+        Get a station by its id the Station id can be found in the get_all_stations list, or it can be obtained from a
+        location method wenn the found Location is of the type STATION
+        :param station_id: for example de:09162:6 for Hauptbahnhof
+        :return: a Station
+        """
+        response = self._send_request(MVGRequests.station(self.headers, station_id))
+        return station.Station(**response)
 
     def get_ticker(self) -> ems.Messages:
         """
@@ -274,18 +282,6 @@ class SyncApi:
         """
         response = self._send_request(MVGRequests.ticker(self.headers))
         return ems.Messages(response)
-
-    def get_station(self, station_id: str) -> station.Station:
-        """
-        Get a station by its id the Station id can be found in the get_all_stations list, or it can be obtained from a
-        location method wenn the found Location is of the type STATION
-        :param station_id: for example de:09162:6 for Hauptbahnhof
-        :return: a Station
-        """
-        response = self._send_request(
-            MVGRequests.station(station_id, self.headers)
-        )
-        return station.Station(**response)
 
     def get_escalators_and_elevators(
         self, efa_id: int
