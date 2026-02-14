@@ -15,10 +15,10 @@ from mvg_api.v3.schemas import (
     connection,
     departure,
     line,
+    location,
     ems,
     station,
     transportdevice,
-    location,
 )
 from mvg_api.v3.schemas.location import LocationType
 
@@ -136,7 +136,8 @@ class AsyncApi:
         destination_stations = self.get_locations(destination_station_name)
         destination_station_id = destination_stations[0].globalId if destination_stations else None
         if origin_station_id is None or destination_station_id is None:
-            raise RequestFailed(f"Unable to look up origin and/or destination; origin_station_name={origin_station_name} destination_station_name={destination_station_name}")
+            raise RequestFailed(
+                f"Unable to look up origin and/or destination; origin_station_name={origin_station_name} destination_station_name={destination_station_name}")
         response = await self._send_request(
             MVGRequests.connections(
                 self.headers,
@@ -229,6 +230,29 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.lines(self.headers, station_id=station_id))
         return line.Lines(response)
 
+    async def get_locations(
+        self,
+        query: str,
+        limit_address_poi: Optional[int] = None,
+        limit_stations: Optional[int] = None,
+        location_types: Optional[List[str]] = None,
+    ) -> location.Locations:
+        """
+        Get the location of a query, it can be a station name or a street name or a POI
+        :param query: the Address or the station name or the POI name
+        :param limit_address_poi: limit the number of addresses or POIs to return
+        :param limit_stations: limit the number of stations to return
+        :param location_types: limit the location types to return, available types are STATION,POI,ADDRESS
+        :return: a list of locations
+        """
+        if query == "":  # 400 Bad Request - query must not be empty
+            return location.Locations([])
+        response = await self._send_request(
+            MVGRequests.locations(self.headers, query, limit_address_poi, limit_stations, location_types)
+        )
+        return location.Locations(response)
+
+
     async def get_ticker(self) -> ems.Messages:
         """
         Get ticker messages, updates about the disruptions and planed works on the MVG train network
@@ -271,25 +295,3 @@ class AsyncApi:
         """
         response = await self._send_request(MVGRequests.station_ids(self.headers))
         return list(response)
-
-    async def get_locations(
-        self,
-        query: str,
-        limit_address_poi: Optional[int] = None,
-        limit_stations: Optional[int] = None,
-        location_types: Optional[List[str]] = None,
-    ) -> location.Locations:
-        """
-        Get the location of a query, it can be a station name or a street name or a POI
-        :param query: the Address or the station name or the POI name
-        :param limit_address_poi: limit the number of addresses or POIs to return
-        :param limit_stations: limit the number of stations to return
-        :param location_types: limit the location types to return, available types are STATION,POI,ADDRESS
-        :return: a list of locations
-        """
-        response = await self._send_request(
-            MVGRequests.location(
-                query, limit_address_poi, limit_stations, location_types, self.headers
-            )
-        )
-        return location.Locations(response)

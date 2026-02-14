@@ -94,6 +94,33 @@ class MVGRequests:
         )
 
     @staticmethod
+    def locations(
+        headers: Dict[str, str],
+        query: str,
+        limit_address_poi: int,
+        limit_stations: int,
+        location_types: List[LocationType],
+    ) -> httpx.Request:
+        param = httpx.QueryParams(
+            {
+                "query": query,
+                "limitAddressPoi": limit_address_poi,
+                "limitStations": limit_stations,
+                "locationTypes": (
+                    ",".join([x.value for x in location_types])
+                    if location_types is not None
+                    else None
+                ),
+            }
+        )
+        return httpx.Request(
+            "GET",
+            f"{MVGRequests.url}api/bgw-pt/v3/locations",
+            params=param,
+            headers=headers,
+        )
+
+    @staticmethod
     def ticker(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers
@@ -117,33 +144,6 @@ class MVGRequests:
     def station_ids(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}.rest/zdm/mvgStationGlobalIds", headers=headers
-        )
-
-    @staticmethod
-    def location(
-        query: str,
-        limit_address_poi: int,
-        limit_stations: int,
-        location_types: List[LocationType],
-        headers: Dict[str, str],
-    ) -> httpx.Request:
-        param = httpx.QueryParams(
-            {
-                "query": query,
-                "limitAddressPoi": limit_address_poi,
-                "limitStations": limit_stations,
-                "locationTypes": (
-                    ",".join([x.value for x in location_types])
-                    if location_types is not None
-                    else None
-                ),
-            }
-        )
-        return httpx.Request(
-            "GET",
-            f"{MVGRequests.url}api/fib/v2/location",
-            params=param,
-            headers=headers,
         )
 
     @staticmethod
@@ -237,32 +237,5 @@ class MVGRequests:
             "GET",
             f"{MVGRequests.url}api/fib/v2/surroundingplan",
             params=params,
-            headers=headers,
-        )
-
-    @staticmethod
-    def location(
-        query: str,
-        limit_address_poi: int,
-        limit_stations: int,
-        location_types: List[LocationType],
-        headers: Dict[str, str],
-    ) -> httpx.Request:
-        param = httpx.QueryParams(
-            {
-                "query": query,
-                "limitAddressPoi": limit_address_poi,
-                "limitStations": limit_stations,
-                "locationTypes": (
-                    ",".join([x.value for x in location_types])
-                    if location_types is not None
-                    else None
-                ),
-            }
-        )
-        return httpx.Request(
-            "GET",
-            f"{MVGRequests.url}api/bgw-pt/v3/locations",
-            params=param,
             headers=headers,
         )
