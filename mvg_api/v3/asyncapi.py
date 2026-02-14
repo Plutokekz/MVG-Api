@@ -259,6 +259,20 @@ class AsyncApi:
         )
         return zoom.ZoomStation(**response)
 
+    async def find_location(self, query: str) -> location.Location:
+        """
+        Search a location.
+        Selects the first matching one from the list of locations returned by get_locations.
+
+        :param query: a query string with a station name, address, etc
+        :return: the first matching location or None
+        """
+
+        matching_locations = await self.get_locations(query)
+        if matching_locations:
+            return matching_locations[0]
+        return None
+
     async def find_location_station(self, query: str) -> location.Location:
         """
         Search a location of type station.
@@ -268,8 +282,8 @@ class AsyncApi:
         :return: the first matching location or None
         """
 
-        locations = await self.get_locations(query)
-        matching_stations = [l for l in locations if l.type == location.LocationType.STATION]
+        matching_locations = await self.get_locations(query)
+        matching_stations = [l for l in matching_locations if l.type == location.LocationType.STATION]
         if matching_stations:
             return matching_stations[0]
         return None
