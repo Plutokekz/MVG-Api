@@ -8,8 +8,9 @@
 
 import json
 from typing import Dict, Any, Optional, List
-
+from pathlib import Path
 import httpx
+import datetime
 
 from mvg_api.v3.schemas import (
     aushang,
@@ -27,22 +28,50 @@ from mvg_api.v3.requests import MVGRequests, RequestFailed
 
 
 class SyncApi:
-    __slots__ = ("client", "headers")
+    __slots__ = ("client", "do_log_responses", "headers")
 
     client: httpx.Client
+    do_log_responses: bool
     headers: Dict[str, str]
-    url: str = "https://www.mvg.de/"
 
-    def __init__(self, client: httpx.Client = None):
+    def __init__(self, client: httpx.Client = None, do_log_responses: bool = False):
+        """
+        Creates a new API instance to send requests the MVG backend.
+        This instance can be used to send multiple requests, thereby reusing the http client.
+
+        :param client: a specific client instance, otherwise a new client is created.
+        :param do_log_responses: whether the responses of the MVG api should be logged for debugging purposes.
+        """
         self.client = client if client is not None else httpx.Client()
+        self.do_log_responses = do_log_responses
         self.headers = {
             "accept": "application/json, text/plain, */*",
             "sec-gpc": "1",
         }
 
+    def _log_response(self, request: httpx.Request, response: httpx.Response):
+        """
+        Logs the response of an MVG api request to a file in the dir `responselog` for inspection and debugging
+        """
+        if not (Path.cwd() / "responselog").exists():
+            (Path.cwd() / "responselog").mkdir()
+        output = "responselog/response-"
+        output += datetime.datetime.now().strftime("%Y%m%d-T%H%M%S") + "-"
+        url = str(request.url).replace("/", "-").replace(":", "-")
+        if len(url) > 80:
+            url = url[:80]
+        output += url + ".json"
+
+        with open(output, "w", encoding="utf-8") as f:
+            json.dump(response.json(), f, indent=2)
+
     def _send_request(self, request: httpx.Request) -> Any:
         response = self.client.send(request)
+        if self.do_log_responses:
+            self._log_response(request, response)
+
         if response.status_code != 200:
+            self._log_response(request, response)
             raise RequestFailed(
                 f"Request failed with status code: {response.status_code} and response {response.text}"
             )
