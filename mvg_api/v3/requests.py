@@ -3,13 +3,6 @@ from typing import Dict, Any, Optional, List
 
 import httpx
 
-from mvg_api.v3.schemas import (
-    aushang,
-    connection,
-    ems,
-    station,
-    transportdevice,
-)
 from mvg_api.v3.schemas.location import LocationType
 
 
@@ -92,6 +85,15 @@ class MVGRequests:
         )
 
     @staticmethod
+    def lines(headers: Dict[str, str], station_id: Optional[str]):
+        url = f"{MVGRequests.url}api/bgw-pt/v3/lines/{station_id}"
+        if station_id is None:
+            url = f"{MVGRequests.url}api/bgw-pt/v3/lines"
+        return httpx.Request(
+            "GET", url, headers=headers
+        )
+
+    @staticmethod
     def ticker(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers
@@ -167,12 +169,6 @@ class MVGRequests:
         param = httpx.QueryParams({"hash": hash_, "world": world})
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/fib/v2/station", headers=headers, params=param
-        )
-
-    @staticmethod
-    def lines(headers: Dict[str, str]):
-        return httpx.Request(
-            "GET", f"{MVGRequests.url}api/fib/v2/line", headers=headers
         )
 
     @staticmethod

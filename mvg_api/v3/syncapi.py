@@ -15,6 +15,7 @@ from mvg_api.v3.schemas import (
     aushang,
     connection,
     departure,
+    line,
     ems,
     station,
     transportdevice,
@@ -220,6 +221,14 @@ class SyncApi:
             )
         )
         return departure.Departures(response)
+
+    def get_lines(self, station_id: Optional[str] = None) -> line.Lines:
+        """
+        Get all the lines
+        :return: a list of lines
+        """
+        response = self._send_request(MVGRequests.lines(self.headers, station_id=station_id))
+        return line.Lines(response)
 
     def get_ticker(self) -> ems.Messages:
         """
