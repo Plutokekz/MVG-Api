@@ -66,6 +66,32 @@ class MVGRequests:
         )
 
     @staticmethod
+    def departures(
+        headers: Dict[str, str],
+        station_id: str,
+        *,
+        limit: Optional[int] = None,
+        offset_minutes: Optional[int] = None,
+        transport_types: Optional[Any] = None,
+        language: Optional[str] = None,
+    ) -> httpx.Request:
+        param = httpx.QueryParams(
+            {
+                "globalId": station_id,
+                "limit": limit,
+                "offsetInMinutes": offset_minutes,
+                "transportTypes": transport_types,
+                "language": language,
+            }
+        )
+        return httpx.Request(
+            "GET",
+            f"{MVGRequests.url}api/bgw-pt/v3/departures",
+            params=param,
+            headers=headers,
+        )
+
+    @staticmethod
     def ticker(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers

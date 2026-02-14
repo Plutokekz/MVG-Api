@@ -13,6 +13,7 @@ import httpx
 from mvg_api.v3.schemas import (
     aushang,
     connection,
+    departure,
     ems,
     station,
     transportdevice,
@@ -150,6 +151,74 @@ class AsyncApi:
             )
         )
         return connection.Connections(response)
+
+    async def get_departures(
+        self,
+        station_id: str,
+        *,
+        limit: Optional[int] = None,
+        offset_minutes: Optional[int] = None,
+        transport_types: Optional[Any] = None,
+        language: Optional[str] = None,
+    ) -> departure.Departures:
+        """
+        Get the departures for a station
+        :param station_id: the same id as in get_station, for example de:09162:6 for Hauptbahnhof, and it can be
+         obtained
+        from a location method wenn the found Location is of the type STATION or from the get_all_stations method
+        :param limit: the maximum number of departures to return
+        :param offset_minutes: the offset in minutes from now for the departures
+        :param transport_types: select specific transport types, available types are UBAHN,TRAM,BUS,SBAHN,SCHIFF
+        :param language: the language ? I have no idea why this is here maybe for the language in the response. But I
+        didn't see any difference when I changed it
+        :return: a list of departures
+        """
+        response = await self._send_request(
+            MVGRequests.departures(
+                self.headers,
+                station_id,
+                limit=limit,
+                offset_minutes=offset_minutes,
+                transport_types=transport_types,
+                language=language,
+            )
+        )
+        return departure.Departures(response)
+
+    async def get_departures_by_name(
+        self,
+        station_name: str,
+        *,
+        limit: Optional[int] = None,
+        offset_minutes: Optional[int] = None,
+        transport_types: Optional[Any] = None,
+        language: Optional[str] = None,
+    ) -> departure.Departures:
+        """
+        Get the departures for a station
+        :param station_name: the name of a station to lookup departures of
+        :param limit: the maximum number of departures to return
+        :param offset_minutes: the offset in minutes from now for the departures
+        :param transport_types: select specific transport types, available types are UBAHN,TRAM,BUS,SBAHN,SCHIFF
+        :param language: the language ? I have no idea why this is here maybe for the language in the response. But I
+        didn't see any difference when I changed it
+        :return: a list of departures
+        """
+        stations = self.get_locations(station_name)
+        station_id = stations[0].globalId if stations else None
+        if station_id is None:
+            raise RequestFailed(f"Unable to look up station; station_name={station_name}")
+        response = await self._send_request(
+            MVGRequests.departures(
+                self.headers,
+                station_id,
+                limit=limit,
+                offset_minutes=offset_minutes,
+                transport_types=transport_types,
+                language=language,
+            )
+        )
+        return departure.Departures(response)
 
     async def get_ticker(self) -> ems.Messages:
         """
