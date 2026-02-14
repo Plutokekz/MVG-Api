@@ -17,7 +17,7 @@ class TransportDevice(BaseModel):
     planned: Any
 
 
-class StationTransportDevices(BaseModel):
+class ZoomStation(BaseModel):
     efaId: int
     name: str
     transportDevices: List[TransportDevice]

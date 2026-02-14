@@ -20,7 +20,7 @@ from mvg_api.v3.schemas import (
     station,
     stations,
     ticker,
-    transportdevice,
+    zoom,
 )
 from mvg_api.v3.schemas.location import LocationType
 
@@ -306,16 +306,14 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.ticker(self.headers))
         return ticker.Messages(response)
 
-    async def get_escalators_and_elevators(
-        self, efa_id: int
-    ) -> transportdevice.StationTransportDevices:
+    async def get_zoom(self, efa_id: int) -> zoom.ZoomStation:
         """
         Get the escalators and elevators location and status for a station
         :param efa_id: an integer number that is associated with a station. It is included in the Station object but
         under the name of divId for some reason.
-        :return: a StationTransportDevices object
+        :return: a ZoomStation object
         """
         response = await self._send_request(
-            MVGRequests.escalators_and_elevators(efa_id, self.headers)
+            MVGRequests.zoom(self.headers, efa_id)
         )
-        return transportdevice.StationTransportDevices(**response)
+        return zoom.ZoomStation(**response)
