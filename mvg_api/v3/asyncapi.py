@@ -105,57 +105,6 @@ class AsyncApi:
         )
         return connection.Connections(response)
 
-    async def get_connections_by_name(
-        self,
-        origin_station_name: str,
-        destination_station_name: str,
-        routing_date_time: str,
-        *,
-        routing_date_time_is_arrival: bool,
-        transport_types: Optional[str] = None,
-        origin_latitude: Optional[float] = None,
-        origin_longitude: Optional[float] = None,
-        destination_latitude: Optional[float] = None,
-        destination_longitude: Optional[float] = None,
-    ) -> connection.Connections:
-        """
-        Get the connections between two stations or coordinates.
-        You can use either station_id to station_id or coordinates to coordinates or station_id to coordinates.
-        :param origin_station_name: the station name of the origin station
-        :param destination_station_name: the station name of the destination station
-        :param routing_date_time: the date and time of the departure or arrival for example 2023-06-25T20:04:47.552Z
-        :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
-        :param transport_types: the transport types to use, available types are SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS
-        ,REGIONAL_BUS
-        :param origin_latitude: the latitude of the origin station
-        :param origin_longitude: the longitude of the origin station
-        :param destination_latitude: the latitude of the destination station
-        :param destination_longitude: the longitude of the destination station
-        :return: a list of connections
-        """
-        origin_stations = self.get_locations(origin_station_name)
-        origin_station_id = origin_stations[0].globalId if origin_stations else None
-        destination_stations = self.get_locations(destination_station_name)
-        destination_station_id = destination_stations[0].globalId if destination_stations else None
-        if origin_station_id is None or destination_station_id is None:
-            raise RequestFailed(
-                f"Unable to look up origin and/or destination; origin_station_name={origin_station_name} destination_station_name={destination_station_name}")
-        response = await self._send_request(
-            MVGRequests.connections(
-                self.headers,
-                origin_station_id,
-                destination_station_id,
-                routing_date_time,
-                routing_date_time_is_arrival=routing_date_time_is_arrival,
-                transport_types=transport_types,
-                origin_latitude=origin_latitude,
-                origin_longitude=origin_longitude,
-                destination_latitude=destination_latitude,
-                destination_longitude=destination_longitude,
-            )
-        )
-        return connection.Connections(response)
-
     async def get_departures(
         self,
         station_id: str,
@@ -177,41 +126,6 @@ class AsyncApi:
         didn't see any difference when I changed it
         :return: a list of departures
         """
-        response = await self._send_request(
-            MVGRequests.departures(
-                self.headers,
-                station_id,
-                limit=limit,
-                offset_minutes=offset_minutes,
-                transport_types=transport_types,
-                language=language,
-            )
-        )
-        return departure.Departures(response)
-
-    async def get_departures_by_name(
-        self,
-        station_name: str,
-        *,
-        limit: Optional[int] = None,
-        offset_minutes: Optional[int] = None,
-        transport_types: Optional[Any] = None,
-        language: Optional[str] = None,
-    ) -> departure.Departures:
-        """
-        Get the departures for a station
-        :param station_name: the name of a station to lookup departures of
-        :param limit: the maximum number of departures to return
-        :param offset_minutes: the offset in minutes from now for the departures
-        :param transport_types: select specific transport types, available types are UBAHN,TRAM,BUS,SBAHN,SCHIFF
-        :param language: the language ? I have no idea why this is here maybe for the language in the response. But I
-        didn't see any difference when I changed it
-        :return: a list of departures
-        """
-        matching_stations = self.get_locations(station_name)
-        station_id = matching_stations[0].globalId if matching_stations else None
-        if station_id is None:
-            raise RequestFailed(f"Unable to look up station; station_name={station_name}")
         response = await self._send_request(
             MVGRequests.departures(
                 self.headers,
@@ -317,3 +231,18 @@ class AsyncApi:
             MVGRequests.zoom(self.headers, efa_id)
         )
         return zoom.ZoomStation(**response)
+
+    async def find_location_station(self, query: str) -> location.Location:
+        """
+        Search a location of type station.
+        Selects the first matching one from the list of locations returned by get_locations.
+
+        :param query: a query string with a station name, address, etc
+        :return: the first matching location or None
+        """
+
+        locations = await self.get_locations(query)
+        matching_stations = [l for l in locations if l.type == location.LocationType.STATION]
+        if matching_stations:
+            return matching_stations[0]
+        return None
