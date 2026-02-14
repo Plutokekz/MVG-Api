@@ -165,4 +165,3 @@ class MVGRequests:
             f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}",
             headers=headers,
         )
-

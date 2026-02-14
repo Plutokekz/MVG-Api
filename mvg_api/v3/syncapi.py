@@ -80,15 +80,13 @@ class SyncApi:
         except (json.JSONDecodeError, UnicodeDecodeError):
             return response.content
 
-    def get_aushang(self, plan_id: str) -> aushang.Aushaenge:
+    def get_aushang(self, mvg_id: str) -> aushang.Aushaenge:
         """
-        Get the aushang for a station, get all Playn that a currently active in a stations blackboard.
-        :param plan_id: I am not sure bit it seems to be the first 2 letters of the station name in uppercase.
-         For example
-        KA for Karlsplatz
+        Get the aushang of a station, like timetables or maps that may be located at an information display case at a station.
+        :param mvg_id: the MVG id of the station.
         :return: a list of aushaenge
         """
-        response = self._send_request(MVGRequests.aushang(self.headers, plan_id))
+        response = self._send_request(MVGRequests.aushang(self.headers, mvg_id))
         return aushang.Aushaenge(response)
 
     def get_connections(

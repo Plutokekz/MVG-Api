@@ -99,6 +99,20 @@ def get_station_ids(self) -> List[str]
 Get all the station ids
 - Returns a list of all station IDs available.
 
+# v3
+
+## Clarification on station ids
+
+There are multiple different identifiers used for station in the MVV and MVG areas
+
+| ID          | Description                                                                       | Code               | Karlsplatz | Sendlinger Tor |
+| ----------- | --------------------------------------------------------------------------------- | ------------------ | ---------- | -------------- |
+| MVG id      | 2-3 capital letters, identifying stations of MVG (typically ubahn, tram and bus)  | `mvg_id`           | KA         | SE (and SU)    |
+| Global id   | IFOPT stop id [^1] in a format like country:region:station; global identification | `global_id`        | de:09162:1 | de:09162:50    |
+| Diva/Efa id | Station part of the IFOPT id                                                      | `diva_id`/`efa_id` | 1          | 50             |
+
+[^1]: https://wiki.openstreetmap.org/wiki/Key:ref:IFOPT
+
 ## Tests
 
 ```bash
