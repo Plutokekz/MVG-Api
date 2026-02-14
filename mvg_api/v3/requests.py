@@ -121,6 +121,16 @@ class MVGRequests:
         )
 
     @staticmethod
+    def messages(headers: Dict[str, str], message_type=Optional[str]) -> httpx.Request:
+        param = httpx.QueryParams({"messageType": message_type})
+        return httpx.Request(
+            "GET",
+            f"{MVGRequests.url}api/bgw-pt/v3/messages",
+            params=param,
+            headers=headers,
+        )
+
+    @staticmethod
     def ticker(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}api/ems/tickers", headers=headers
@@ -144,16 +154,6 @@ class MVGRequests:
     def station_ids(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}.rest/zdm/mvgStationGlobalIds", headers=headers
-        )
-
-    @staticmethod
-    def messages(headers: Dict[str, str], message_type=Optional[str]) -> httpx.Request:
-        param = httpx.QueryParams({"messageType": message_type})
-        return httpx.Request(
-            "GET",
-            f"{MVGRequests.url}api/fib/v2/message",
-            params=param,
-            headers=headers,
         )
 
     @staticmethod

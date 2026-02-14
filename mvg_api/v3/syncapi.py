@@ -17,6 +17,7 @@ from mvg_api.v3.schemas import (
     departure,
     line,
     location,
+    messages,
     ems,
     station,
     transportdevice,
@@ -253,6 +254,17 @@ class SyncApi:
         )
         return location.Locations(response)
 
+    def get_messages(self, message_type: Optional[str] = None) -> messages.Messages:
+        """
+        Get the messages from the message board. Somehow similar to the ems ticker but it has more and different
+         information.
+        :param message_type: the type of the message, available types are INCIDENT,SCHEDULE_CHANGE
+        :return: a list of messages
+        """
+        response = self._send_request(
+            MVGRequests.messages(self.headers, message_type)
+        )
+        return messages.Messages(response)
 
     def get_ticker(self) -> ems.Messages:
         """
