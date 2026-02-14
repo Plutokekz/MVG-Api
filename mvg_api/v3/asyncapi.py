@@ -273,6 +273,14 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
 
+    async def get_station_ids(self) -> List[str]:
+        """
+        Get all the station ids
+        :return: returns a list of strings with all the station ids that are available
+        """
+        response = await self._send_request(MVGRequests.station_ids(self.headers))
+        return list(response)
+
     async def get_ticker(self) -> ems.Messages:
         """
         Get ticker messages, updates about the disruptions and planed works on the MVG train network
@@ -295,11 +303,3 @@ class AsyncApi:
             MVGRequests.escalators_and_elevators(efa_id, self.headers)
         )
         return transportdevice.StationTransportDevices(**response)
-
-    async def get_station_ids(self) -> List[str]:
-        """
-        Get all the station ids
-        :return: returns a list of strings with all the station ids that are available
-        """
-        response = await self._send_request(MVGRequests.station_ids(self.headers))
-        return list(response)
