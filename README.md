@@ -111,6 +111,9 @@ There are multiple different identifiers used for station in the MVV and MVG are
 | Global id   | IFOPT stop id [^1] in a format like country:region:station; global identification | `global_id`        | de:09162:1 | de:09162:50    |
 | Diva/Efa id | Station part of the IFOPT id                                                      | `diva_id`/`efa_id` | 1          | 50             |
 
+Stop points of a station have a more detailed IFOPT id with the suffix :stopgroup:stoppoint.
+For ubahn services, the suffix is :stopgroup:track, where the stopgroup identifies the Bahnsteig (e.g. only one at Universität, but two at Innsbrucker Ring) and the track is typically offset by 50 (e.g. track 1 is :51).
+
 [^1]: https://wiki.openstreetmap.org/wiki/Key:ref:IFOPT
 
 ## Tests

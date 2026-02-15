@@ -108,8 +108,7 @@ class AsyncApi:
         :param destination_station_id: the station id of the destination station
         :param routing_date_time: the date and time of the departure or arrival for example 2023-06-25T20:04:47.552Z
         :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
-        :param transport_types: the transport types to use, available types are SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS
-        ,REGIONAL_BUS
+        :param transport_types: limit departures to specific transport types
         :param origin_latitude: the latitude of the origin station
         :param origin_longitude: the longitude of the origin station
         :param destination_latitude: the latitude of the destination station
@@ -143,14 +142,10 @@ class AsyncApi:
     ) -> departure.Departures:
         """
         Get the departures for a station
-        :param station_id: the same id as in get_station, for example de:09162:6 for Hauptbahnhof, and it can be
-         obtained
-        from a location method wenn the found Location is of the type STATION or from the get_all_stations method
+        :param station_id: global id of the station
         :param limit: the maximum number of departures to return
-        :param offset_minutes: the offset in minutes from now for the departures
-        :param transport_types: select specific transport types, available types are UBAHN,TRAM,BUS,SBAHN,SCHIFF
-        :param language: the language ? I have no idea why this is here maybe for the language in the response. But I
-        didn't see any difference when I changed it
+        :param offset_minutes: an offset in minutes from now
+        :param transport_types: limit departures to specific transport types
         :return: a list of departures
         """
         response = await self._send_request(

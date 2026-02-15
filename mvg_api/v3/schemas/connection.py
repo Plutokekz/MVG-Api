@@ -77,6 +77,21 @@ class PathDescriptionItem(BaseModel):
     """unknown"""
 
 
+class Info(BaseModel):
+    """
+    Information regarding a service in the departure board
+    Examples for encountered messages:
+    {'message': 'Verspätung aus vorheriger Fahrt', 'type': 'INCIDENT', 'network': 'ddb'}
+    {'message': 'Reparatur an einem Signal', 'type': 'INCIDENT', 'network': 'ddb'}
+    """
+    message: str
+    """The message text"""
+    type: str
+    """Type of the message: encountered 'INCIDENT'"""
+    network: str
+    """unknown: provider of the message, encountered 'ddb'"""
+
+
 class Part(BaseModel):
     from_: Station = Field(..., alias="from")
     """Station information about the starting station in this part"""
@@ -107,9 +122,9 @@ class Part(BaseModel):
     occupancy: Occupancy
     """Expected occupancy of the transport medium"""
     messages: List
-    """unknown: messages displayed at mvg.de are preloaded and then mapped to the line"""
-    infos: List
-    """unknown"""
+    """unknown: empty; messages displayed at mvg.de are preloaded and then mapped to the line"""
+    infos: List[Info]
+    """unknown: empty"""
     realTime: bool
     """unknown: presumably whether the departure times are based on real time information"""
 
@@ -136,15 +151,13 @@ class Connection(BaseModel):
     distance: float
     """The travelled distance in meters (not linear distance)"""
     bannerHash: str
-    """unknown"""
+    """unknown: empty"""
     refreshId: str
     """unknown"""
 
 
 class Connections(RootModel):
-    """
-    A list of connections as returned by the API.
-    """
+    """A list of connections as returned by the API."""
     root: List[Connection]
 
     def __iter__(self):

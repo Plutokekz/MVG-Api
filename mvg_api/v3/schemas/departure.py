@@ -5,28 +5,75 @@ from typing import List, Optional
 from pydantic import BaseModel, RootModel
 
 
-class Departure(BaseModel):
-    plannedDepartureTime: int
-    realtime: bool
-    delayInMinutes: Optional[int] = None
-    realtimeDepartureTime: int
-    transportType: str
-    label: str
-    divaId: str
+class Info(BaseModel):
+    """
+    Information regarding a service in the departure board
+    Examples for encountered messages:
+    {'message': 'Verspätung aus vorheriger Fahrt', 'type': 'INCIDENT', 'network': 'ddb'}
+    {'message': 'Reparatur an einem Signal', 'type': 'INCIDENT', 'network': 'ddb'}
+    """
+    message: str
+    """The message text"""
+    type: str
+    """Type of the message: 'INCIDENT'"""
     network: str
+    """unknown: provider of the message"""
+
+
+class Departure(BaseModel):
+    """A departure of a planned service at a station"""
+    plannedDepartureTime: int
+    """The planned departure time as millisecond timestamp (minute precision)"""
+    realtime: bool
+    """Whether there is real time information about the departure time"""
+    delayInMinutes: Optional[int] = None
+    """Expected delay of the departure in minutes"""
+    realtimeDepartureTime: int
+    """Real time departure as millisecond timestamp (second precision)"""
+    transportType: str
+    """Transport type of this service"""
+    label: str
+    """The line number, e.g. U4"""
+    divaId: str
+    """unknown: id identifying the line; enountered '92M07' for S7, '92M01' for S1, '010U6' for U6"""
+    network: str
+    """provider; encountered 'ddb' for Deutsche Bahn, 'swm' for ubahn, 'mvv' for buses, 'unknown' for fussweg"""
     trainType: str
+    """unknown: empty string?"""
     destination: str
+    """Name of the destination station"""
     cancelled: bool
+    """Whether this service was cancelled"""
     sev: bool
+    """unknown: presumably that this service is replaced by SEV or _is_ SEV and replacing a service"""
     platform: Optional[int] = None
+    """Platform number, typically only with train, sbahn and ubahn services"""
+    platformChanged: Optional[bool] = None
+    """Whether the platform has changed"""
     stopPositionNumber: Optional[int] = None
+    """Stop (Haltestelle) position, typically only with tram and bus services"""
     messages: List
+    """unknown: empty"""
+    infos: List[Info]
+    """Information regarding this particular service"""
     bannerHash: str
+    """unknown: empty"""
     occupancy: str
-    stopPointGlobalId: str
+    """Expected occupancy of this service"""
+    stationGlobalId: Optional[str] = None
+    """IFOPT global id of the station"""
+    stopPointGlobalId: Optional[str] = None
+    """IFOPT global id of the stop point"""
+    lineId: Optional[str] = None
+    """Id of this particular service line, presumably matching GTFS data"""
+    tripId: Optional[str] = None
+    """unknown: only set very rarely, primarily encountered on night lines; does not change over days"""
+    tripCode: Optional[int] = None
+    """unknown: presumably identifying this particular service and line on a day (does not change over days)"""
 
 
 class Departures(RootModel):
+    """A list of departures of a station as returned by the API."""
     root: List[Departure]
 
     def __iter__(self):
