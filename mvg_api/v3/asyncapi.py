@@ -177,11 +177,11 @@ class AsyncApi:
         location_types: Optional[List[str]] = None,
     ) -> location.Locations:
         """
-        Get the location of a query, it can be a station name or a street name or a POI
-        :param query: the Address or the station name or the POI name
+        Get all locations for a text query
+        :param query: a text query, that may be a partical address, station name or POI name
         :param limit_address_poi: limit the number of addresses or POIs to return
         :param limit_stations: limit the number of stations to return
-        :param location_types: limit the location types to return, available types are STATION,POI,ADDRESS
+        :param location_types: limit the location types to return; available types are STATION,POI,ADDRESS
         :return: a list of locations
         """
         if query == "":  # 400 Bad Request - query must not be empty
