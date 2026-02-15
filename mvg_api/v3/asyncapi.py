@@ -244,9 +244,8 @@ class AsyncApi:
 
     async def get_zoom(self, efa_id: int) -> zoom.ZoomStation:
         """
-        Get the escalators and elevators location and status for a station
-        :param efa_id: an integer number that is associated with a station. It is included in the Station object but
-        under the name of divId for some reason.
+        Get zoom information of a station that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
+        :param efa_id: divaId/efaId of the station.
         :return: a ZoomStation object
         """
         response = await self._send_request(

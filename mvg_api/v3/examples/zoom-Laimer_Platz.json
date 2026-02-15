@@ -1,0 +1,139 @@
+{
+  "efaId": 280,
+  "name": "Laimer Platz",
+  "transportDevices": [
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP09",
+      "lastUpdate": 1771193640156,
+      "name": "LP09",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 238,
+      "ycoordinate": 325,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP02",
+      "lastUpdate": 1771193640156,
+      "name": "LP02",
+      "status": "IN_BETRIEB",
+      "type": "FAHRSTUHL",
+      "xcoordinate": 830,
+      "ycoordinate": 498,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP04",
+      "lastUpdate": 1771193640156,
+      "name": "LP04",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 797,
+      "ycoordinate": 319,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Bahnsteig und Sperrengeschoss",
+      "identifier": "LP01",
+      "lastUpdate": 1771193640156,
+      "name": "LP01",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 669,
+      "ycoordinate": 400,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Bahnstein mit Sperrengeschoss ",
+      "identifier": "LP01",
+      "lastUpdate": 1771193640156,
+      "name": "LP01",
+      "status": "UNBEKANNT",
+      "type": "FAHRSTUHL",
+      "xcoordinate": 579,
+      "ycoordinate": 373,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP06",
+      "lastUpdate": 1771193640156,
+      "name": "LP06",
+      "status": "AUSSER_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 641,
+      "ycoordinate": 483,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Bahnsteig und Sperrengeschoss",
+      "identifier": "LP02",
+      "lastUpdate": 1771193640156,
+      "name": "LP02",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 736,
+      "ycoordinate": 371,
+      "planned": {
+        "status": "AUSSER_BETRIEB",
+        "since": 1771909200000,
+        "until": 1774364400000,
+        "description": "Erneuerung"
+      }
+    },
+    {
+      "description": "Verbindet Bahnsteig und Sperrengeschoss",
+      "identifier": "LP07",
+      "lastUpdate": 1771193640156,
+      "name": "LP07",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 386,
+      "ycoordinate": 377,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP05",
+      "lastUpdate": 1771193640156,
+      "name": "LP05",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 793,
+      "ycoordinate": 477,
+      "planned": null
+    },
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP03",
+      "lastUpdate": 1771193640156,
+      "name": "LP03",
+      "status": "AUSSER_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 633,
+      "ycoordinate": 244,
+      "planned": {
+        "status": "AUSSER_BETRIEB",
+        "since": 1740722400000,
+        "until": 1798757940000,
+        "description": "Baustelle"
+      }
+    },
+    {
+      "description": "Verbindet Sperrengeschoss und Oberfl\u00e4che",
+      "identifier": "LP08",
+      "lastUpdate": 1771193640156,
+      "name": "LP08",
+      "status": "IN_BETRIEB",
+      "type": "ROLLTREPPE",
+      "xcoordinate": 229,
+      "ycoordinate": 469,
+      "planned": null
+    }
+  ],
+  "aggregatedStatusROLLTREPPE": "AUSSER_BETRIEB",
+  "aggregatedStatusFAHRSTUHL": "AUSSER_BETRIEB"
+}
