@@ -203,8 +203,9 @@ class SyncApi:
 
     def get_station_ids(self) -> List[str]:
         """
-        Get all the station ids
-        :return: returns a list of strings with all the station ids that are available
+        Get all IFOPT global ids of stations in the MVG area; primarily munich.
+        Does not yield station ids in the MVV (except MVG).
+        :return: returns a list of global id strings
         """
         response = self._send_request(MVGRequests.station_ids(self.headers))
         return list(response)
