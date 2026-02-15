@@ -33,9 +33,9 @@ class Departure(BaseModel):
     transportType: str
     """Transport type of this service"""
     label: str
-    """The line number, e.g. U4"""
+    """The line label, e.g. U4"""
     divaId: str
-    """unknown: id identifying the line; enountered '92M07' for S7, '92M01' for S1, '010U6' for U6"""
+    """unknown"""
     network: str
     """provider; encountered 'ddb' for Deutsche Bahn, 'swm' for ubahn, 'mvv' for buses, 'unknown' for fussweg"""
     trainType: str

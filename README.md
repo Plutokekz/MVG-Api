@@ -116,6 +116,11 @@ For ubahn services, the suffix is :stopgroup:track, where the stopgroup identifi
 
 [^1]: https://wiki.openstreetmap.org/wiki/Key:ref:IFOPT
 
+## Clarification on line ids
+
+Among others, there is also a diva id to identify lines (not to be confused with the station diva id):  
+Encountered '92M07' for S7, '92M01' for S1, '010U6' for U6, '' for fussweg
+
 ## Tests
 
 ```bash

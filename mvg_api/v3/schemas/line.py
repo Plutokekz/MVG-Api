@@ -1,21 +1,21 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, RootModel
 
 
 class Line(BaseModel):
     label: str
-    """The line number, e.g. U4"""
+    """The line label, e.g. U4"""
     transportType: str
     """The transport type"""
-    trainType: str
+    trainType: Optional[str] = None
     """unknown"""
     network: str
     """provider; encountered 'DDB' for Deutsche Bahn, 'SWM' for ubahn, 'MVV' for buses, 'MUENCHNER_LINIEN' and 'LUFTHANSA' """
     divaId: str
-    """unknown: id identifying the line"""
+    """unknown"""
     sev: bool
     """unknown"""
 

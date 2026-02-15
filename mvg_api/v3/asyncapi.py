@@ -193,9 +193,8 @@ class AsyncApi:
 
     async def get_messages(self, message_type: Optional[str] = None) -> messages.Messages:
         """
-        Get the messages from the message board. Somehow similar to the ems ticker but it has more and different
-         information.
-        :param message_type: the type of the message, available types are INCIDENT,SCHEDULE_CHANGE
+        Get all messages about incidents or schedule changes.
+        :param message_type: filters messages by type; available types are INCIDENT,SCHEDULE_CHANGE
         :return: a list of messages
         """
         response = await self._send_request(MVGRequests.messages(self.headers, message_type))

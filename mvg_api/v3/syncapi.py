@@ -109,8 +109,7 @@ class SyncApi:
         :param destination_station_id: the station id of the destination station
         :param routing_date_time: the date and time of the departure or arrival for example 2023-06-25T20:04:47.552Z
         :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
-        :param transport_types: the transport types to use, available types are SCHIFF,RUFTAXI,BAHN,UBAHN,TRAM,SBAHN,BUS
-        ,REGIONAL_BUS
+        :param transport_types: limit departures to specific transport types
         :param origin_latitude: the latitude of the origin station
         :param origin_longitude: the longitude of the origin station
         :param destination_latitude: the latitude of the destination station
@@ -144,14 +143,10 @@ class SyncApi:
     ) -> departure.Departures:
         """
         Get the departures for a station
-        :param station_id: the same id as in get_station, for example de:09162:6 for Hauptbahnhof, and it can be
-         obtained
-        from a location method wenn the found Location is of the type STATION or from the get_all_stations method
+        :param station_id: global id of the station
         :param limit: the maximum number of departures to return
-        :param offset_minutes: the offset in minutes from now for the departures
-        :param transport_types: select specific transport types, available types are UBAHN,TRAM,BUS,SBAHN,SCHIFF
-        :param language: the language ? I have no idea why this is here maybe for the language in the response. But I
-        didn't see any difference when I changed it
+        :param offset_minutes: an offset in minutes from now
+        :param transport_types: limit departures to specific transport types
         :return: a list of departures
         """
         response = self._send_request(
@@ -168,7 +163,8 @@ class SyncApi:
 
     def get_lines(self, station_id: Optional[str] = None) -> line.Lines:
         """
-        Get all the lines
+        Get all lines in the MVV area or limited to a specific station
+        :param station_id: global id of a station or none to get all lines
         :return: a list of lines
         """
         response = self._send_request(MVGRequests.lines(self.headers, station_id=station_id))
@@ -182,11 +178,11 @@ class SyncApi:
         location_types: Optional[List[str]] = None,
     ) -> location.Locations:
         """
-        Get the location of a query, it can be a station name or a street name or a POI
-        :param query: the Address or the station name or the POI name
+        Get all locations for a text query
+        :param query: a text query, that may be a partical address, station name or POI name
         :param limit_address_poi: limit the number of addresses or POIs to return
         :param limit_stations: limit the number of stations to return
-        :param location_types: limit the location types to return, available types are STATION,POI,ADDRESS
+        :param location_types: limit the location types to return; available types are STATION,POI,ADDRESS
         :return: a list of locations
         """
         if query == "":  # 400 Bad Request - query must not be empty
@@ -198,9 +194,8 @@ class SyncApi:
 
     def get_messages(self, message_type: Optional[str] = None) -> messages.Messages:
         """
-        Get the messages from the message board. Somehow similar to the ems ticker but it has more and different
-         information.
-        :param message_type: the type of the message, available types are INCIDENT,SCHEDULE_CHANGE
+        Get all messages about incidents or schedule changes.
+        :param message_type: filters messages by type; available types are INCIDENT,SCHEDULE_CHANGE
         :return: a list of messages
         """
         response = self._send_request(MVGRequests.messages(self.headers, message_type))
