@@ -162,7 +162,8 @@ class AsyncApi:
 
     async def get_lines(self, station_id: Optional[str] = None) -> line.Lines:
         """
-        Get all the lines
+        Get all lines in the MVV area or limited to a specific station
+        :param station_id: global id of a station or none to get all lines
         :return: a list of lines
         """
         response = await self._send_request(MVGRequests.lines(self.headers, station_id=station_id))
