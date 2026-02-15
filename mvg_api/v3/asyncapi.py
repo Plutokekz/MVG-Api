@@ -220,18 +220,19 @@ class AsyncApi:
 
     async def get_stations(
         self, hash_: Optional[str] = None, world: Optional[bool] = None
-    ) -> stations.Locations:
+    ) -> stations.Stations:
         """
-        Get all the stations, like get_station_ids but with the hole station information.
-        :param hash_: I don't know for what this hash is. (In the response is a hash, but if you send it again you get
-        no response, so keep it empty)
-        :param world: you can set the world to true or false. Maybe some day the MVG is operating worldwide.
-        :return: a list of stations
+        Get all stations in the MVV. This is more extensive than get_station_ids.
+        This is a huge result of ~13MiB with a total of 44130 stations (as of 2026-02-15).
+
+        :param hash_: A hash, presumably identifying whether there was a change in the station data between two requests, such that no new data has to be sent. When the hash, obtained from the result of a previous request is submitted, the result is empty (perhaps except if there is new data).
+        :param world: unknown, does not change the result, except for a different hash.
+        :return: a list of MVV stations.
         """
         response = await self._send_request(
             MVGRequests.stations(self.headers, hash_, world)
         )
-        return stations.Locations(**response)
+        return stations.Stations(**response)
 
     async def get_ticker(self) -> ticker.Messages:
         """

@@ -149,7 +149,7 @@ class MVGRequests:
     ) -> httpx.Request:
         param = httpx.QueryParams({"hash": hash_, "world": world})
         return httpx.Request(
-            "GET", f"{MVGRequests.url}api/fib/v2/station", headers=headers, params=param
+            "GET", f"{MVGRequests.url}api/bgw-pt/v3/stations", headers=headers, params=param
         )
 
     @staticmethod
