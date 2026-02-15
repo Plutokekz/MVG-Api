@@ -14,6 +14,7 @@ class Link(BaseModel):
 
 
 class Line(BaseModel):
+    "Line affected by the message"
     label: str
     """The line label, e.g. U4"""
     transportType: str
@@ -71,7 +72,7 @@ class Message(BaseModel):
     lines: List[Line]
     """Lines affected"""
     stationGlobalIds: List[str]
-    """Global ids of stations affected"""
+    """IFOPT global ids of stations affected"""
     eventTypes: List[str]
     """General event types, presumably as wrapper for multiple lines; encountered 'STAMMSTRECKE', 'UBAHN', 'BUS', 'TRAM'"""
 

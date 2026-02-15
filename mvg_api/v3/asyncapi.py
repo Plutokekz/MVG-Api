@@ -236,9 +236,8 @@ class AsyncApi:
 
     async def get_ticker(self) -> ticker.Messages:
         """
-        Get ticker messages, updates about the disruptions and planed works on the MVG train network
-        There 2 types of messages DISRUPTION and PLANNED
-        :return: a list es messages
+        Get ticker messages. This is somewhat identical to the result of get_messages but is apparently limited to services of MVG only (i.e. UBAHN, TRAM, BUS <200)
+        :return: a list of messages
         """
         response = await self._send_request(MVGRequests.ticker(self.headers))
         return ticker.Messages(response)
