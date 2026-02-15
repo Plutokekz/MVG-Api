@@ -142,7 +142,7 @@ class AsyncApi:
     ) -> departure.Departures:
         """
         Get the departures for a station
-        :param station_id: global id of the station
+        :param station_id: IFOPT global id of the station
         :param limit: the maximum number of departures to return
         :param offset_minutes: an offset in minutes from now
         :param transport_types: limit departures to specific transport types
@@ -211,10 +211,9 @@ class AsyncApi:
 
     async def get_station(self, station_id: str) -> station.Station:
         """
-        Get a station by its id the Station id can be found in the get_all_stations list, or it can be obtained from a
-        location method wenn the found Location is of the type STATION
-        :param station_id: for example de:09162:6 for Hauptbahnhof
-        :return: a Station
+        Get details about a station by its IFOPT global id.
+        :param station_id: IFOPT global id of a station
+        :return: a single station or None
         """
         response = await self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
