@@ -1,16 +1,10 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Union
+from pydantic import BaseModel, RootModel, Field, field_validator
 
-from pydantic import BaseModel, Field, RootModel
-
-
-class Occupancy(str, Enum):
-    UNKNOWN = "UNKNOWN"
-    LOW = "LOW"
-    MEDIUM = "MEDIUM"
-    HIGH = "HIGH"
+from mvg_api.v3.schemas import create_flexible_enum_validator, OfferedTransportType, TariffZones
 
 
 class Station(BaseModel):
@@ -27,20 +21,20 @@ class Station(BaseModel):
     platformChanged: Optional[bool] = None
     """Whether the platform has changed"""
     place: str
-    """General place of the station"""
+    """Nicetext name of the general place of the station"""
     name: str
-    """Name of the station"""
+    """Nicetext name of the station"""
     plannedDeparture: str
     """Planned departure at the station, zoned date time"""
     departureDelayInMinutes: Optional[int] = None
     """expected delay of the departure at this station in minutes"""
     arrivalDelayInMinutes: Optional[int] = None
     """expected delay of the arrival at this station in minutes"""
-    transportTypes: List[str]
+    transportTypes: List[Union[OfferedTransportType, str]]
     """transport types servicing this station"""
     surroundingPlanLink: str
-    """unknown: presumably obsolete since deprecation of surrounding plan link"""
-    occupancy: Occupancy
+    """unknown: presumably obsolete since deprecation of surrounding plan link endpoint"""
+    occupancy: str
     """expected occupancy of the used transport medium at this station"""
     hasZoomData: bool
     """whether there is zoom data available for this station"""
@@ -48,6 +42,9 @@ class Station(BaseModel):
     """aggregated info whether there is at least one broken escalator at this station"""
     hasOutOfOrderElevator: bool
     """aggregated info whether there is at least one broken elevator at this station"""
+
+    _validate_transportTypes = field_validator('transportTypes', mode='before')(
+        create_flexible_enum_validator(OfferedTransportType, is_list=True))
 
 
 class Line(BaseModel):
@@ -119,7 +116,7 @@ class Part(BaseModel):
     """Identification letter of the exit to exit the building from the previous part to start this part"""
     distance: float
     """Traveled distance of this part in meters (not linear distance)"""
-    occupancy: Occupancy
+    occupancy: str
     """Expected occupancy of the transport medium"""
     messages: List
     """unknown: empty; messages displayed at mvg.de are preloaded and then mapped to the line"""
@@ -136,6 +133,14 @@ class TicketingInformation(BaseModel):
     """unknown"""
     unifiedTicketIds: List[str]
     """unknown"""
+
+    def zones_common(self) -> TariffZones:
+        """Obtain common representation of zones."""
+        return TariffZones(self.zones)
+
+    def alternativeZones_common(self) -> TariffZones:
+        """Obtain common representation of alternativeZones."""
+        return TariffZones(self.alternativeZones)
 
 
 class Connection(BaseModel):
