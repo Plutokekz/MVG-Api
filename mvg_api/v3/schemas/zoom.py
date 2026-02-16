@@ -22,11 +22,12 @@ class PlannedMaintenance(BaseModel):
 class TransportDeviceStatus(Enum):
     """Status of the device. Note that planned is not a status, but may be derived from the planned information."""
     IN_BETRIEB = "IN_BETRIEB"
+    WARTUNG = "WARTUNG"
     AUSSER_BETRIEB = "AUSSER_BETRIEB"
     UNBEKANNT = "UNBEKANNT"
 
 
-class TransportDeviceType(str, Enum):
+class TransportDeviceType(Enum):
     FAHRSTUHL = "FAHRSTUHL"
     ROLLTREPPE = "ROLLTREPPE"
 
@@ -69,7 +70,10 @@ class ZoomStation(BaseModel):
     """Name of the station"""
     transportDevices: List[TransportDevice]
     """All transport devices (escalators and elevators) in this station and their properties"""
-    aggregatedStatusROLLTREPPE: TransportDeviceStatus
+    aggregatedStatusROLLTREPPE: Union[TransportDeviceStatus, str]
     """Aggregated status of escalators: 'AUSSER_BETRIEB' as soon as one is not operational."""
-    aggregatedStatusFAHRSTUHL: TransportDeviceStatus
+    aggregatedStatusFAHRSTUHL: Union[TransportDeviceStatus, str]
     """Aggregated status of elevators: 'AUSSER_BETRIEB' as soon as one is not operational."""
+
+    _validate_aggregatedStatusROLLTREPPE = field_validator('aggregatedStatusROLLTREPPE', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
+    _validate_aggregatedStatusFAHRSTUHL = field_validator('aggregatedStatusFAHRSTUHL', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
