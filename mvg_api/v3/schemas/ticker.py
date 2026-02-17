@@ -1,8 +1,21 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from enum import Enum
+from typing import List, Optional, Union
+import logging
 
-from pydantic import BaseModel, RootModel
+from pydantic import field_validator, BaseModel, RootModel
+
+from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType
+
+logger = logging.getLogger("mvg_api.v3.schemas.ticker")
+logger.setLevel(logging.DEBUG)
+
+
+class TickerMessageType(Enum):
+    """Type of the ticker message."""
+    DISRUPTION = "DISRUPTION"
+    PLANNED = "PLANNED"
 
 
 class Station(BaseModel):
@@ -56,7 +69,7 @@ class Message(BaseModel):
     """A message about service disruptions, both planned disruptions and unplanned incidents."""
     id: str
     """A UUID, presumably to identify the message during its lifetime"""
-    type: str
+    type: Union[TickerMessageType, str]
     """Type of the message: DISRUPTION (unplanned or important) or PLANNED (planned)"""
     title: str
     """A short-ish title describing the message"""
@@ -78,6 +91,17 @@ class Message(BaseModel):
     """Duration during which the message should be displayed."""
     modificationDate: str
     """Modification date, presumably of the last edit, as datetime"""
+
+    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(TickerMessageType))
+
+    def type_common(self) -> MessageType:
+        """Obtain common representation of a message type."""
+        if self.type == TickerMessageType.DISRUPTION:
+            return MessageType.INCIDENT
+        if self.type == TickerMessageType.PLANNED:
+            return MessageType.SCHEDULE_CHANGE
+        logger.warning("Unknown ticker message type %s", self.type)
+        return None
 
 
 class Messages(RootModel):

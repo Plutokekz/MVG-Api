@@ -37,6 +37,12 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
     return validator
 
 
+class MessageType(Enum):
+    """Type of information on a connection or a general message or a ticker message."""
+    INCIDENT = "INCIDENT"
+    SCHEDULE_CHANGE = "SCHEDULE_CHANGE"
+
+
 class Occupancy(str, Enum):
     """Occupancy of a service in general or at a specific station."""
     UNKNOWN = "UNKNOWN"

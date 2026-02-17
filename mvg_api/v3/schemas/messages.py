@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import field_validator, BaseModel, Field, RootModel
 
+from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, OfferedTransportType, TariffZones
 
 class Link(BaseModel):
     """Link to an external resource, typically a pdf showing a line change or a construction timetable"""
@@ -63,7 +64,7 @@ class Message(BaseModel):
     """Incident start timestamp in milliseconds (presumably obsolete since introduction of incident durations)"""
     validTo: Optional[int] = None
     """Incident end timestamp in milliseconds (presumably obsolete since introduction of incident durations)"""
-    type: str
+    type: Union[MessageType, str]
     """Type of the message: INCIDENT (unplanned or important) or SCHEDULE_CHANGE (planned)"""
     provider: str
     """Provider of the information; encountered 'MVG' for mvg services (ubahn, bus<200, tram) and 'DEFAS' for sbahn, bahn, bus>=200)"""
@@ -75,6 +76,8 @@ class Message(BaseModel):
     """IFOPT global ids of stations affected"""
     eventTypes: List[str]
     """General event types, presumably as wrapper for multiple lines; encountered 'STAMMSTRECKE', 'UBAHN', 'BUS', 'TRAM'"""
+
+    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(MessageType))
 
 
 class Messages(RootModel):

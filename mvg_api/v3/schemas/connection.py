@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Optional, Union
 from pydantic import BaseModel, RootModel, Field, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, Occupancy, OfferedTransportType, TariffZones
+from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, OfferedTransportType, TariffZones
 
 
 class Station(BaseModel):
@@ -83,10 +83,12 @@ class Info(BaseModel):
     """
     message: str
     """The message text"""
-    type: str
-    """Type of the message: encountered 'INCIDENT'"""
+    type: Union[MessageType, str]
+    """Type of the message: only encountered 'INCIDENT'"""
     network: str
     """unknown: provider of the message, encountered 'ddb'"""
+
+    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(MessageType))
 
 
 class Part(BaseModel):
