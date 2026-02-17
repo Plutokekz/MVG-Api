@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Union
+from pydantic import field_validator, BaseModel, RootModel
 
-from pydantic import BaseModel, RootModel
+from mvg_api.v3.schemas import create_flexible_enum_validator, Occupancy
 
 
 class Info(BaseModel):
@@ -58,7 +59,7 @@ class Departure(BaseModel):
     """Information regarding this particular service"""
     bannerHash: str
     """unknown: empty"""
-    occupancy: str
+    occupancy: Union[Occupancy, str]
     """Expected occupancy of this service"""
     stationGlobalId: Optional[str] = None
     """IFOPT global id of the station"""
@@ -70,6 +71,8 @@ class Departure(BaseModel):
     """unknown: only set very rarely, primarily encountered on night lines; does not change over days"""
     tripCode: Optional[int] = None
     """unknown: presumably identifying this particular service and line on a day (does not change over days)"""
+
+    _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
 
 
 class Departures(RootModel):

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum
 from typing import List, Optional, Union
 from pydantic import BaseModel, RootModel, Field, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, OfferedTransportType, TariffZones
+from mvg_api.v3.schemas import create_flexible_enum_validator, Occupancy, OfferedTransportType, TariffZones
 
 
 class Station(BaseModel):
@@ -34,7 +33,7 @@ class Station(BaseModel):
     """transport types servicing this station"""
     surroundingPlanLink: str
     """unknown: presumably obsolete since deprecation of surrounding plan link endpoint"""
-    occupancy: str
+    occupancy: Union[Occupancy, str]
     """expected occupancy of the used transport medium at this station"""
     hasZoomData: bool
     """whether there is zoom data available for this station"""
@@ -45,6 +44,7 @@ class Station(BaseModel):
 
     _validate_transportTypes = field_validator('transportTypes', mode='before')(
         create_flexible_enum_validator(OfferedTransportType, is_list=True))
+    _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
 
 
 class Line(BaseModel):
@@ -116,7 +116,7 @@ class Part(BaseModel):
     """Identification letter of the exit to exit the building from the previous part to start this part"""
     distance: float
     """Traveled distance of this part in meters (not linear distance)"""
-    occupancy: str
+    occupancy: Union[Occupancy, str]
     """Expected occupancy of the transport medium"""
     messages: List
     """unknown: empty; messages displayed at mvg.de are preloaded and then mapped to the line"""
@@ -124,6 +124,8 @@ class Part(BaseModel):
     """unknown: empty"""
     realTime: bool
     """unknown: presumably whether the departure times are based on real time information"""
+
+    _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
 
 
 class TicketingInformation(BaseModel):

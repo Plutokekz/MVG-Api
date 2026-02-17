@@ -37,6 +37,14 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
     return validator
 
 
+class Occupancy(str, Enum):
+    """Occupancy of a service in general or at a specific station."""
+    UNKNOWN = "UNKNOWN"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
 class OfferedTransportType(Enum):
     """
     Transport types offered at a station.
