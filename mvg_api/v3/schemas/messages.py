@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import List, Optional, Union
 
 from pydantic import field_validator, BaseModel, Field, RootModel
 
 from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, OfferedTransportType, TariffZones
+
 
 class Link(BaseModel):
     """Link to an external resource, typically a pdf showing a line change or a construction timetable"""
@@ -44,6 +46,25 @@ class IncidentDuration(BaseModel):
     """End timestamp in milliseconds"""
 
 
+class EventType(Enum):
+    UBAHN = "UBAHN"
+    BUS = "BUS"
+    TRAM = "TRAM"
+    SBAHN = "SBAHN"
+    STAMMSTRECKE = "STAMMSTRECKE"
+
+    def to_offered_transport_type(self) -> OfferedTransportType:
+        """Returns the offered transport type corresponding to the incidents type"""
+        mapping = {
+            EventType.UBAHN: OfferedTransportType.UBAHN,
+            EventType.BUS: OfferedTransportType.BUS,
+            EventType.TRAM: OfferedTransportType.TRAM,
+            EventType.SBAHN: OfferedTransportType.SBAHN,
+            EventType.STAMMSTRECKE: OfferedTransportType.SBAHN,
+        }
+        return mapping[self]
+
+
 class Message(BaseModel):
     """
     A message about service disruptions, both planned disruptions and unplanned incidents.
@@ -74,10 +95,16 @@ class Message(BaseModel):
     """Lines affected"""
     stationGlobalIds: List[str]
     """IFOPT global ids of stations affected"""
-    eventTypes: List[str]
-    """General event types, presumably as wrapper for multiple lines; encountered 'STAMMSTRECKE', 'UBAHN', 'BUS', 'TRAM'"""
+    eventTypes: List[Union[EventType, str]]
+    """General event types, presumably as wrapper for multiple lines of the same transport type"""
 
     _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(MessageType))
+    _validate_transportTypes = field_validator('eventTypes', mode='before')(
+        create_flexible_enum_validator(EventType, is_list=True))
+
+    def eventTypes_to_ott(self) -> List[OfferedTransportType]:
+        """Returns the messages event types as offered transport types"""
+        return [et.to_offered_transport_type() for et in self.eventTypes]
 
 
 class Messages(RootModel):

@@ -6,7 +6,7 @@ import logging
 
 from pydantic import field_validator, BaseModel, RootModel
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType
+from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, OfferedTransportType
 
 logger = logging.getLogger("mvg_api.v3.schemas.ticker")
 logger.setLevel(logging.DEBUG)
@@ -38,6 +38,25 @@ class Line(BaseModel):
     """Stations of the line; presumably limiting to stations affected by this message"""
     direction: str
     """Direction of the line; encountered '1' and '2'; presumably mapped to GTFS H(infahrt) and R(ückfahrt)"""
+
+
+class IncidentType(Enum):
+    METRO = "METRO"
+    TRAM = "TRAM"
+    BUS = "BUS"
+    MAIN_LINE = "MAIN_LINE"  # Stammstrecke
+    UNKNOWN = "UNKNOWN"
+
+    def to_offered_transport_type(self) -> OfferedTransportType:
+        """Returns the offered transport type corresponding to the incidents type"""
+        mapping = {
+            IncidentType.METRO: OfferedTransportType.UBAHN,
+            IncidentType.TRAM: OfferedTransportType.TRAM,
+            IncidentType.BUS: OfferedTransportType.BUS,
+            IncidentType.MAIN_LINE: OfferedTransportType.SBAHN,
+            IncidentType.UNKNOWN: OfferedTransportType.SBAHN,
+        }
+        return mapping[self]
 
 
 class DownloadLink(BaseModel):
@@ -79,20 +98,26 @@ class Message(BaseModel):
     """A (sometimes very) long description, formatted has html. It may contain links to pages with more information."""
     lines: List[Line]
     """Lines affected by the message"""
-    incidents: List[str]
-    """unknown: empty"""
+    incidents: List[Union[IncidentType, str]]
+    """General incident types, presumably as wrapper for multiple lines of the same transport type"""
     links: List
     """unknown: empty"""
     downloadLinks: List[DownloadLink]
     """Links to e.g. maps describing changes in the line path"""
-    incidentDuration: List[IncidentDurationItem]
+    incidentDuration: List[Union[IncidentDurationItem, str]]
     """Durations where the described incident is in effect (e.g. multiple ranges of construction works)."""
     activeDuration: ActiveDuration
     """Duration during which the message should be displayed."""
     modificationDate: str
     """Modification date, presumably of the last edit, as datetime"""
 
+    def incidents_to_ott(self) -> List[OfferedTransportType]:
+        """Returns the incident types as list of offered transport types"""
+        return [i.to_offered_transport_type() for i in self.incidents if isinstance(i, IncidentType)]
+
     _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(TickerMessageType))
+    _validate_incidents = field_validator('incidents', mode='before')(
+        create_flexible_enum_validator(IncidentType, is_list=True))
 
     def type_common(self) -> MessageType:
         """Obtain common representation of a message type."""
