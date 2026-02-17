@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional,  Union
+from typing import List, Optional
 
 from pydantic import BaseModel, field_validator
 
@@ -46,9 +46,9 @@ class TransportDevice(BaseModel):
     """Presumably when the last status update was received from the device as millisecond timestamp"""
     name: str
     """Name of the device; identical to the identifier"""
-    status: Union[TransportDeviceStatus, str]
+    status: TransportDeviceStatus
     """Status of the device"""
-    type: Union[TransportDeviceType, str]
+    type: TransportDeviceType
     """Type of the transport device"""
     xcoordinate: int
     """X coordinate of the device on the zoom plan"""
@@ -70,9 +70,9 @@ class ZoomStation(BaseModel):
     """Name of the station"""
     transportDevices: List[TransportDevice]
     """All transport devices (escalators and elevators) in this station and their properties"""
-    aggregatedStatusROLLTREPPE: Union[TransportDeviceStatus, str]
+    aggregatedStatusROLLTREPPE: TransportDeviceStatus
     """Aggregated status of escalators: 'AUSSER_BETRIEB' as soon as one is not operational."""
-    aggregatedStatusFAHRSTUHL: Union[TransportDeviceStatus, str]
+    aggregatedStatusFAHRSTUHL: TransportDeviceStatus
     """Aggregated status of elevators: 'AUSSER_BETRIEB' as soon as one is not operational."""
 
     _validate_aggregatedStatusROLLTREPPE = field_validator('aggregatedStatusROLLTREPPE', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))

@@ -10,9 +10,12 @@ logger.setLevel(logging.DEBUG)
 def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False):
     """
     Factory function to create a validator for flexible enum handling.
-    With this validator and the property type Union[the_enum, str] it is possible to parse an API result to a
-    well-known enum instance, but not fail when a value is encountered that is not present in the enum.
-    In that case, the value is assigned as plain string to the property.
+    With this validator it is possible to simply declare an enum with the currently known values.
+    If there is a new value emitted by the API, this dynamically adds a value to the enum so that
+    pydantic parsing does not fail.
+    Even though this is somewhat hacky, it allows us to define the expected or common values in the
+    enum and present a variable of a common enum type, while simultaneously being robust against the
+    ignorance of additional value as well as MVG api changes (which definitely do happen).
     """
     def validate_single(v):
         if isinstance(v, enum_class):
@@ -21,9 +24,16 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
             try:
                 return enum_class(v)
             except ValueError:
-                logger.warning("Unknown %s value '%s'. Known values: %s. Using raw string.",
-                               enum_class.__name__, v, ",".join([e.value for e in enum_class]))
-                return v
+                logger.warning("Unknown %s value '%s'. Known values: %s. Adding dynamically.",
+                            enum_class.__name__, v, ",".join([e.value for e in enum_class]))
+                # Dynamically create a new member and add it to the enum
+                new_member = object.__new__(enum_class)
+                new_member._value_ = v  # pylint: disable=W0212
+                new_member._name_ = v  # pylint: disable=W0212
+                enum_class._value2member_map_[v] = new_member  # pylint: disable=W0212
+                enum_class._member_map_[v] = new_member  # pylint: disable=W0212
+                enum_class._member_names_.append(v)  # pylint: disable=W0212
+                return new_member
         return v
 
     def validator(v):

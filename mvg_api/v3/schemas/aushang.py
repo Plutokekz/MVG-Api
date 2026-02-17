@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Union
+from typing import List
 from pydantic import BaseModel, RootModel, field_validator
 
 from mvg_api.v3.schemas import create_flexible_enum_validator
@@ -30,7 +30,7 @@ class Aushang(BaseModel):
     """A single aushang pdf document like a map or timetable"""
     uri: str
     """The URI to the pdf document, typically hosted at mvg.de"""
-    scheduleKind: Union[AushangScheduleKind, str]
+    scheduleKind: AushangScheduleKind
     """Type of aushang; a transport type or aushang specific constants"""
     scheduleName: str
     """The line number in context with the transport type in the schedule kind"""

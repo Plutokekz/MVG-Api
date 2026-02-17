@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Union
+from typing import List
 from pydantic import BaseModel, field_validator
 
 from mvg_api.v3.schemas import create_flexible_enum_validator, OfferedTransportType, TariffZones
@@ -18,7 +18,7 @@ class Station(BaseModel):
     """The latitude of the location"""
     longitude: float
     """The longitude of the location"""
-    transportTypes: List[Union[OfferedTransportType, str]]
+    transportTypes: List[OfferedTransportType]
     """transport types servicing this location; only set on type STATION"""
     tariffZones: str
     """Tariff zones assigned to the station; either a single zone (e.g. 'm' or '2') or two neighboring zones (e.g. 'm|1' or '4|5'); only set on type STATION"""

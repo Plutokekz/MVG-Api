@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional
 from pydantic import BaseModel, RootModel, Field, field_validator
 
 from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, OfferedTransportType, TariffZones
@@ -29,11 +29,11 @@ class Station(BaseModel):
     """expected delay of the departure at this station in minutes"""
     arrivalDelayInMinutes: Optional[int] = None
     """expected delay of the arrival at this station in minutes"""
-    transportTypes: List[Union[OfferedTransportType, str]]
+    transportTypes: List[OfferedTransportType]
     """transport types servicing this station"""
     surroundingPlanLink: str
     """unknown: presumably obsolete since deprecation of surrounding plan link endpoint"""
-    occupancy: Union[Occupancy, str]
+    occupancy: Occupancy
     """expected occupancy of the used transport medium at this station"""
     hasZoomData: bool
     """whether there is zoom data available for this station"""
@@ -83,7 +83,7 @@ class Info(BaseModel):
     """
     message: str
     """The message text"""
-    type: Union[MessageType, str]
+    type: MessageType
     """Type of the message: only encountered 'INCIDENT'"""
     network: str
     """unknown: provider of the message, encountered 'ddb'"""
@@ -118,7 +118,7 @@ class Part(BaseModel):
     """Identification letter of the exit to exit the building from the previous part to start this part"""
     distance: float
     """Traveled distance of this part in meters (not linear distance)"""
-    occupancy: Union[Occupancy, str]
+    occupancy: Occupancy
     """Expected occupancy of the transport medium"""
     messages: List
     """unknown: empty; messages displayed at mvg.de are preloaded and then mapped to the line"""

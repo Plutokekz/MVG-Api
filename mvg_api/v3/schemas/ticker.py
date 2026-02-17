@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Optional
 import logging
 
 from pydantic import field_validator, BaseModel, RootModel
@@ -88,7 +88,7 @@ class Message(BaseModel):
     """A message about service disruptions, both planned disruptions and unplanned incidents."""
     id: str
     """A UUID, presumably to identify the message during its lifetime"""
-    type: Union[TickerMessageType, str]
+    type: TickerMessageType
     """Type of the message: DISRUPTION (unplanned or important) or PLANNED (planned)"""
     title: str
     """A short-ish title describing the message"""
@@ -98,13 +98,13 @@ class Message(BaseModel):
     """A (sometimes very) long description, formatted has html. It may contain links to pages with more information."""
     lines: List[Line]
     """Lines affected by the message"""
-    incidents: List[Union[IncidentType, str]]
+    incidents: List[IncidentType]
     """General incident types, presumably as wrapper for multiple lines of the same transport type"""
     links: List
     """unknown: empty"""
     downloadLinks: List[DownloadLink]
     """Links to e.g. maps describing changes in the line path"""
-    incidentDuration: List[Union[IncidentDurationItem, str]]
+    incidentDuration: List[IncidentDurationItem]
     """Durations where the described incident is in effect (e.g. multiple ranges of construction works)."""
     activeDuration: ActiveDuration
     """Duration during which the message should be displayed."""

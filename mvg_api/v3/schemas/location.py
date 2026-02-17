@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from pydantic import BaseModel, RootModel, field_validator
 
@@ -30,7 +30,7 @@ class Location(BaseModel):
     """Diva id of the station, typically station identifier of IFOPT id; only set on type STATION"""
     hasZoomData: Optional[bool] = None
     """whether there is zoom data available for this station"""
-    transportTypes: Optional[List[Union[OfferedTransportType, str]]] = None
+    transportTypes: Optional[List[OfferedTransportType]] = None
     """transport types servicing this location; only set on type STATION"""
     aliases: Optional[str] = None
     """unknown: empty; previously alternative names of the location, presumably to facilitate search optimization"""
@@ -47,6 +47,7 @@ class Location(BaseModel):
 
     _validate_transportTypes = field_validator('transportTypes', mode='before')(
         create_flexible_enum_validator(OfferedTransportType, is_list=True))
+    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(LocationType))
 
     def tariffZones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""

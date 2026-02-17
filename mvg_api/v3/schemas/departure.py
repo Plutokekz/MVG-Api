@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional
 from pydantic import field_validator, BaseModel, RootModel
 
 from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy
@@ -15,7 +15,7 @@ class Info(BaseModel):
     """
     message: str
     """The message text"""
-    type: Union[MessageType, str]
+    type: MessageType
     """Type of the message: only encountered 'INCIDENT'"""
     network: str
     """unknown: provider of the message"""
@@ -61,7 +61,7 @@ class Departure(BaseModel):
     """Information regarding this particular service"""
     bannerHash: str
     """unknown: empty"""
-    occupancy: Union[Occupancy, str]
+    occupancy: Occupancy
     """Expected occupancy of this service"""
     stationGlobalId: Optional[str] = None
     """IFOPT global id of the station"""
