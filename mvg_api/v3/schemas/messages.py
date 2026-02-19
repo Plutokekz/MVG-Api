@@ -5,6 +5,7 @@ from typing import List, Optional
 
 from pydantic import field_validator, BaseModel, Field, RootModel
 
+from mvg_api.v3.network import NetworkLine
 from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, StationTransportType
 
 
@@ -28,6 +29,10 @@ class Line(BaseModel):
     """unknown"""
     sev: bool
     """unknown"""
+
+    def to_network_line(self):
+        """Converts this line descriptor to the standardized network line"""
+        return NetworkLine.of_any(self)
 
 
 class PublicationDuration(BaseModel):

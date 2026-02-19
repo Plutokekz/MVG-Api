@@ -4,6 +4,7 @@ from enum import Enum
 from typing import List
 from pydantic import BaseModel, RootModel, field_validator
 
+from mvg_api.v3.network import NetworkLine
 from mvg_api.v3.schemas import create_flexible_enum_validator
 
 
@@ -39,6 +40,15 @@ class Aushang(BaseModel):
 
     # flexible validators such that pydantic does not fail if a value that is not in the enum is encountered
     _validate_scheduleKind = field_validator('scheduleKind', mode='before')(create_flexible_enum_validator(AushangScheduleKind))
+
+    def to_network_line(self):
+        """
+        Converts this line descriptor to the standardized network line.
+        :return: a network like or none if this aushang is a context map or a station overview map
+        """
+        if self.scheduleKind in [AushangScheduleKind.CONTEXT_MAP, AushangScheduleKind.STATION_OVERVIEW_MAP]:
+            return None
+        return NetworkLine.of_any(self)
 
 
 class Aushaenge(RootModel):

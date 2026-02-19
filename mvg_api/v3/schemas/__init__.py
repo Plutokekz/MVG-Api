@@ -25,7 +25,7 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
                 return enum_class(v)
             except ValueError:
                 logger.warning("Unknown %s value '%s'. Known values: %s. Adding dynamically.",
-                            enum_class.__name__, v, ",".join([e.value for e in enum_class]))
+                               enum_class.__name__, v, ",".join([e.value for e in enum_class]))
                 # Dynamically create a new member and add it to the enum
                 new_member = object.__new__(enum_class)
                 new_member._value_ = v  # pylint: disable=W0212
@@ -61,14 +61,14 @@ class Occupancy(str, Enum):
     HIGH = "HIGH"
 
 
-class OfferedTransportType(Enum):
+class StationTransportType(Enum):
     """
     Transport types offered at a station.
     This is a limited set of transport types compared to the transport types that can be found on a service line.
     """
+    UBAHN = "UBAHN"
     TRAM = "TRAM"
     BUS = "BUS"
-    UBAHN = "UBAHN"
     SBAHN = "SBAHN"
     BAHN = "BAHN"
     SCHIFF = "SCHIFF"

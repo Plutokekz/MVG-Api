@@ -6,6 +6,7 @@ import logging
 
 from pydantic import field_validator, BaseModel, RootModel
 
+from mvg_api.v3.network import NetworkLine
 from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, StationTransportType
 
 logger = logging.getLogger("mvg_api.v3.schemas.ticker")
@@ -38,6 +39,10 @@ class Line(BaseModel):
     """Stations of the line; presumably limiting to stations affected by this message"""
     direction: str
     """Direction of the line; encountered '1' and '2'; presumably mapped to GTFS H(infahrt) and R(ückfahrt)"""
+
+    def to_network_line(self):
+        """Converts this line descriptor to the standardized network line"""
+        return NetworkLine.of_any(self)
 
 
 class IncidentType(Enum):

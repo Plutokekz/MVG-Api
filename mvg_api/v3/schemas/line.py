@@ -4,6 +4,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, RootModel
 
+from mvg_api.v3.network import NetworkLine
+
 
 class Line(BaseModel):
     label: str
@@ -18,6 +20,10 @@ class Line(BaseModel):
     """unknown"""
     sev: bool
     """unknown"""
+
+    def to_network_line(self):
+        """Converts this line descriptor to the standardized network line"""
+        return NetworkLine.of_any(self)
 
 
 class Lines(RootModel):

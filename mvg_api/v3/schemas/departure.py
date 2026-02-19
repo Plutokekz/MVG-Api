@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import List, Optional
 from pydantic import field_validator, BaseModel, RootModel
 
+from mvg_api.v3.network import NetworkLine
 from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy
 
 
@@ -75,6 +76,10 @@ class Departure(BaseModel):
     """unknown: presumably identifying this particular service and line on a day (does not change over days)"""
 
     _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
+
+    def to_network_line(self):
+        """Converts this line descriptor to the standardized network line"""
+        return NetworkLine.of_any(self)
 
 
 class Departures(RootModel):
