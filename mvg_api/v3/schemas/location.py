@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, RootModel, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, OfferedTransportType, TariffZones
+from mvg_api.v3.schemas import create_flexible_enum_validator, StationTransportType, TariffZones
 
 
 class LocationType(str, Enum):
@@ -30,7 +30,7 @@ class Location(BaseModel):
     """Diva id of the station, typically station identifier of IFOPT id; only set on type STATION"""
     hasZoomData: Optional[bool] = None
     """whether there is zoom data available for this station"""
-    transportTypes: Optional[List[OfferedTransportType]] = None
+    transportTypes: Optional[List[StationTransportType]] = None
     """transport types servicing this location; only set on type STATION"""
     aliases: Optional[str] = None
     """unknown: empty; previously alternative names of the location, presumably to facilitate search optimization"""
@@ -46,7 +46,7 @@ class Location(BaseModel):
     """Type of the location"""
 
     _validate_transportTypes = field_validator('transportTypes', mode='before')(
-        create_flexible_enum_validator(OfferedTransportType, is_list=True))
+        create_flexible_enum_validator(StationTransportType, is_list=True))
     _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(LocationType))
 
     def tariffZones_common(self) -> TariffZones:

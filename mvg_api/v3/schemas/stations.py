@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 from pydantic import BaseModel, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, OfferedTransportType, TariffZones
+from mvg_api.v3.schemas import create_flexible_enum_validator, StationTransportType, TariffZones
 
 
 class Station(BaseModel):
@@ -18,7 +18,7 @@ class Station(BaseModel):
     """The latitude of the location"""
     longitude: float
     """The longitude of the location"""
-    transportTypes: List[OfferedTransportType]
+    transportTypes: List[StationTransportType]
     """transport types servicing this location; only set on type STATION"""
     tariffZones: str
     """Tariff zones assigned to the station; either a single zone (e.g. 'm' or '2') or two neighboring zones (e.g. 'm|1' or '4|5'); only set on type STATION"""
@@ -30,7 +30,7 @@ class Station(BaseModel):
     """Whether there is zoom data (escalator/elevator status) available for this station"""
 
     _validate_transportTypes = field_validator('transportTypes', mode='before')(
-        create_flexible_enum_validator(OfferedTransportType, is_list=True))
+        create_flexible_enum_validator(StationTransportType, is_list=True))
 
     def tariffZones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""

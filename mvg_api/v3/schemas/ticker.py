@@ -6,7 +6,7 @@ import logging
 
 from pydantic import field_validator, BaseModel, RootModel
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, OfferedTransportType
+from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, StationTransportType
 
 logger = logging.getLogger("mvg_api.v3.schemas.ticker")
 logger.setLevel(logging.DEBUG)
@@ -47,14 +47,14 @@ class IncidentType(Enum):
     MAIN_LINE = "MAIN_LINE"  # Stammstrecke
     UNKNOWN = "UNKNOWN"
 
-    def to_offered_transport_type(self) -> OfferedTransportType:
-        """Returns the offered transport type corresponding to the incidents type"""
+    def to_station_transport_type(self) -> StationTransportType:
+        """Returns the station transport type corresponding to the incidents type"""
         mapping = {
-            IncidentType.METRO: OfferedTransportType.UBAHN,
-            IncidentType.TRAM: OfferedTransportType.TRAM,
-            IncidentType.BUS: OfferedTransportType.BUS,
-            IncidentType.MAIN_LINE: OfferedTransportType.SBAHN,
-            IncidentType.UNKNOWN: OfferedTransportType.SBAHN,
+            IncidentType.METRO: StationTransportType.UBAHN,
+            IncidentType.TRAM: StationTransportType.TRAM,
+            IncidentType.BUS: StationTransportType.BUS,
+            IncidentType.MAIN_LINE: StationTransportType.SBAHN,
+            IncidentType.UNKNOWN: StationTransportType.SBAHN,
         }
         return mapping[self]
 
@@ -111,9 +111,9 @@ class Message(BaseModel):
     modificationDate: str
     """Modification date, presumably of the last edit, as datetime"""
 
-    def incidents_to_ott(self) -> List[OfferedTransportType]:
-        """Returns the incident types as list of offered transport types"""
-        return [i.to_offered_transport_type() for i in self.incidents if isinstance(i, IncidentType)]
+    def incidents_to_stt(self) -> List[StationTransportType]:
+        """Returns the incident types as list of station transport types"""
+        return [i.to_station_transport_type() for i in self.incidents if isinstance(i, IncidentType)]
 
     _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(TickerMessageType))
     _validate_incidents = field_validator('incidents', mode='before')(

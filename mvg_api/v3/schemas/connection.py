@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List, Optional
 from pydantic import BaseModel, RootModel, Field, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, OfferedTransportType, TariffZones
+from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, StationTransportType, TariffZones
 
 
 class Station(BaseModel):
@@ -29,7 +29,7 @@ class Station(BaseModel):
     """expected delay of the departure at this station in minutes"""
     arrivalDelayInMinutes: Optional[int] = None
     """expected delay of the arrival at this station in minutes"""
-    transportTypes: List[OfferedTransportType]
+    transportTypes: List[StationTransportType]
     """transport types servicing this station"""
     surroundingPlanLink: str
     """unknown: presumably obsolete since deprecation of surrounding plan link endpoint"""
@@ -43,7 +43,7 @@ class Station(BaseModel):
     """aggregated info whether there is at least one broken elevator at this station"""
 
     _validate_transportTypes = field_validator('transportTypes', mode='before')(
-        create_flexible_enum_validator(OfferedTransportType, is_list=True))
+        create_flexible_enum_validator(StationTransportType, is_list=True))
     _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
 
 
