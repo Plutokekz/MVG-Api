@@ -81,10 +81,12 @@ class PathDescriptionItem(BaseModel):
 
 class Info(BaseModel):
     """
-    Information regarding a service in the departure board
+    Information regarding a service in a connection.
+    Messages for MVG services or planned changes for MVV are retrieved from the messages endpoint and presumably cached on the client.
+    This endpoint only contains short-lived incidents about MVV services.
+    See also the Info class in departures.py
     Examples for encountered messages:
-    {'message': 'Verspätung aus vorheriger Fahrt', 'type': 'INCIDENT', 'network': 'ddb'}
-    {'message': 'Reparatur an einem Signal', 'type': 'INCIDENT', 'network': 'ddb'}
+    {'message': 'Vorübergehend verminderte Geschwindigkeit auf der Strecke', 'type': 'INCIDENT', 'network': 'ddb'}
     """
     message: str
     """The message text"""

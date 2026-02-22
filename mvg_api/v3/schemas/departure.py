@@ -10,6 +10,7 @@ from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occu
 class Info(BaseModel):
     """
     Information regarding a service in the departure board
+    See also the Info class in connections.py
     Examples for encountered messages:
     {'message': 'Verspätung aus vorheriger Fahrt', 'type': 'INCIDENT', 'network': 'ddb'}
     {'message': 'Reparatur an einem Signal', 'type': 'INCIDENT', 'network': 'ddb'}
