@@ -24,7 +24,7 @@ class NetworkTransportType(Enum):
     NACHT_BUS = "NACHT_BUS"
     SBAHN = "SBAHN"
     BAHN = "BAHN"
-    BAHN_ICE = "BAHN_ICE"
+    BAHN_FERN = "BAHN_FERN"
     SEV = "SEV"
     SCHIFF = "SCHIFF"
     PEDESTRIAN = "PEDESTRIAN"
@@ -133,7 +133,8 @@ class NetworkLine():
 
         if "sev" in self.details and self.details["sev"]:
             self.transport_type = NetworkTransportType.SEV
-            self.line_label = transport_type  # this is weird but it was rendered that way on mvg.de
+            if line_label == "":  # use line label if present, otherwise fall back to tt
+                self.line_label = transport_type
         elif line_label.startswith("N"):
             if int(line_label[1:]) < 40:
                 self.transport_type = NetworkTransportType.NACHT_TRAM
@@ -141,21 +142,26 @@ class NetworkLine():
                 self.transport_type = NetworkTransportType.NACHT_BUS
         elif transport_type in ["UBAHN", "SUBWAY", "METRO"]:
             self.transport_type = NetworkTransportType.UBAHN
-        elif train_type in ["ICE"]:
-            self.transport_type = NetworkTransportType.BAHN_ICE
+        elif train_type != "":  # ["ICE", "RJ"]
+            self.transport_type = NetworkTransportType.BAHN_FERN
+            self.line_label = f"{train_type} {line_label}"
         else:
             self.transport_type = NetworkTransportType(transport_type)
 
     def title_str(self) -> str:
+        """
+        :return: The details of this line html formatted multiline string.
+        """
         title = ""
         if self.details != {}:
             for k, v in self.details.items():
                 title += f"{k}: {v}&#010;"
         return title
 
-    def badge_bg(self, tramColors: bool = False) -> str:
+    def line_color(self, tram_colors: bool = False) -> str:
         """
-        :return: the background color of the line indicator for this network line.
+        :param tram_colors: true when individual tram line colors should be returned or false for the generic tram red.
+        :return: the color primarily associated with this network line.
         """
         if self.transport_type == NetworkTransportType.UBAHN:
             if self.line_label == "U1":
@@ -175,33 +181,31 @@ class NetworkLine():
             if self.line_label == "U8":
                 return "#c2243b"  # ec6725
         if self.transport_type == NetworkTransportType.TRAM:
-            if tramColors:
+            if tram_colors:
                 if self.line_label == "12":
-                    return "#96368b"
+                    return "#95348b"
+                if self.line_label == "14":
+                    return "#e5007c"
                 if self.line_label == "16":
-                    return "#0065ae"
+                    return "#0064ad"
                 if self.line_label == "17":
-                    return "#8b563e"
+                    return "#8a553e"
                 if self.line_label == "18":
-                    return "#13a538"
+                    return "#08a536"
                 if self.line_label == "19":
-                    return "#e30613"
+                    return "#e2000e"
                 if self.line_label == "20":
-                    return "#16bae7"
+                    return "#10bae6"
                 if self.line_label == "21":
-                    return "#bc7a00"
+                    return "#bb7900"
                 if self.line_label == "23":
-                    return "#bccf00"
+                    return "#bbce00"
                 if self.line_label == "25":
-                    return "#f1919c"
+                    return "#f1909cX"
                 if self.line_label == "27":
-                    return "#f7a600"
+                    return "#f7a500"
                 if self.line_label == "28":
-                    return "#f7a600"
-                if self.line_label == "29":
-                    return "#e30613"
-                if self.line_label == "37":
-                    return "#8b563e"
+                    return "#f7a500"
             return "#e30613"  # tram rot
         if self.transport_type == NetworkTransportType.NACHT_TRAM:
             return "#000000"
@@ -235,10 +239,10 @@ class NetworkLine():
             return "#008d4f"  # random sbahn lines like S999, S8/9, S6/8
         if self.transport_type == NetworkTransportType.BAHN:
             return "#000000"
-        if self.transport_type == NetworkTransportType.BAHN_ICE:
-            return "#ffffff"
+        if self.transport_type == NetworkTransportType.BAHN_FERN:
+            return "#000000"
         if self.transport_type == NetworkTransportType.SEV:
-            return "#ffffff"
+            return "#97378c"
         if self.transport_type == NetworkTransportType.PEDESTRIAN:
             return "#4471b5"
         if self.transport_type == NetworkTransportType.RUFTAXI:
@@ -248,9 +252,9 @@ class NetworkLine():
         logger.warning("Unknown transport type '%s' and line '%s' encountered", self.transport_type, self.line_label)
         return "#fd0097"
 
-    def badge_bg_split(self) -> str:
+    def line_color_split(self) -> str:
         """
-        :return: the secondary background color of the line indicator for this network line.
+        :return: the secondary fill color of the line indicator for this network line.
         Encountered on U7 and U8 because there is a split between e.g. U1 and U2 that makes up U7.
         """
         if self.transport_type == NetworkTransportType.UBAHN:
@@ -260,16 +264,16 @@ class NetworkLine():
                 return "#f1743c"
         return ""
 
-    def badge_fg(self) -> str:
+    def text_color(self) -> str:
         """
-        :return: the foreground color of the line indicator for this network line.
+        :return: the text color of the line badge for this network line.
         """
         if self.transport_type == NetworkTransportType.NACHT_TRAM:
             return "#ffb638"
         if self.transport_type == NetworkTransportType.SBAHN:
             if self.line_label == "S8":
                 return "#fdce32"
-        if self.transport_type == NetworkTransportType.BAHN_ICE:
+        if self.transport_type == NetworkTransportType.BAHN_FERN:
             return "#ec0016"
         if self.transport_type == NetworkTransportType.SEV:
             return "#97378c"
@@ -277,27 +281,26 @@ class NetworkLine():
             return "#000000"
         return "#ffffff"
 
-    def badge_inverted(self, tramColors: bool = False) -> bool:
+    def color_inverted(self, tram_colors: bool = False) -> bool:
         """
         :return: True if foreground and background are inverted except for a border around the background in the background color.
         """
         if self.transport_type == NetworkTransportType.TRAM:
-            if tramColors:  # do not invert tram if no tramColors specified
+            if tram_colors:  # do not invert tram if no tram_colors specified
                 if self.line_label == "28":
                     return True
                 if self.line_label == "29":
                     return True
         return False
 
-    def badge_type(self) -> str:
-        if self.transport_type == NetworkTransportType.SBAHN:
-            return "pill"
-        return "rounded"
-
 
 def line_color(any_line_descriptor):
+    """
+    :param any_line_descriptor: a line descriptor of e.g. a connection or a network line
+    :return: the fill color of a network line
+    """
     nl = NetworkLine.of_any(any_line_descriptor)
-    return nl.badge_bg()
+    return nl.line_color()
 
 
 def zone_color(zone: str) -> str:

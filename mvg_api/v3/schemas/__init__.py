@@ -93,7 +93,6 @@ class TariffZones:
             if z not in range(0, 13):
                 logger.warning("Encountered unknown tariff zone %s", z)
         self._zones = ["M" if z == 0 else str(z) for z in self._zones]
-        logger.debug("Zones [%s]", ",".join(self._zones))
 
     def __iter__(self):
         return iter(self._zones)

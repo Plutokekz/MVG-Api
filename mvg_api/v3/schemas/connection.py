@@ -18,7 +18,7 @@ class Station(BaseModel):
     """Diva id of the station, typically station identifier of IFOPT id"""
     platform: Optional[int] = None
     """Platform number, typically only with train, sbahn and ubahn services"""
-    platformChanged: Optional[bool] = None
+    platformChanged: Optional[bool] = False
     """Whether the platform has changed"""
     place: str
     """Nicetext name of the general place of the station"""
@@ -26,9 +26,9 @@ class Station(BaseModel):
     """Nicetext name of the station"""
     plannedDeparture: str
     """Planned departure at the station, zoned date time"""
-    departureDelayInMinutes: Optional[int] = None
+    departureDelayInMinutes: Optional[int] = 0
     """expected delay of the departure at this station in minutes"""
-    arrivalDelayInMinutes: Optional[int] = None
+    arrivalDelayInMinutes: Optional[int] = 0
     """expected delay of the arrival at this station in minutes"""
     transportTypes: List[StationTransportType]
     """transport types servicing this station"""
@@ -150,6 +150,14 @@ class TicketingInformation(BaseModel):
     def alternativeZones_common(self) -> TariffZones:
         """Obtain common representation of alternativeZones."""
         return TariffZones(self.alternativeZones)
+
+    def is_dticket_valid(self) -> bool:
+        """
+        Returns the dticket status of this connection.
+        This is presumably based on the unifiedTicketIds properties.
+        When comparing with mvg.de, the No-DTicket indicator is visible when this list are empty.
+        """
+        return len(self.unifiedTicketIds) > 0
 
 
 class Connection(BaseModel):
