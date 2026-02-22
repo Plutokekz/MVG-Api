@@ -30,7 +30,7 @@ class Departure(BaseModel):
     """The planned departure time as millisecond timestamp (minute precision)"""
     realtime: bool
     """Whether there is real time information about the departure time"""
-    delayInMinutes: Optional[int] = None
+    delayInMinutes: Optional[int] = 0
     """Expected delay of the departure in minutes"""
     realtimeDepartureTime: int
     """Real time departure as millisecond timestamp (second precision)"""
