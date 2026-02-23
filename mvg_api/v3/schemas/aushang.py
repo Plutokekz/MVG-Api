@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 from enum import Enum
 from typing import List
 from pydantic import BaseModel, RootModel, field_validator
@@ -63,3 +64,21 @@ class Aushaenge(RootModel):
 
     def __len__(self):
         return len(self.root)
+
+    def sorted(self, *, key=None, reverse: bool = False) -> Aushaenge:
+        """
+        Sorts the aushang.
+        :param key: key to sort with, default to sorting by aushang type (maps first) then line.
+        """
+        if key is None:
+            key = Aushaenge._default_sort_key
+        return Aushaenge(builtins.sorted(self.root, key=key, reverse=reverse))
+
+    @staticmethod
+    def _default_sort_key(a: Aushang):
+        type_order = {
+            AushangScheduleKind.STATION_OVERVIEW_MAP: 0,
+            AushangScheduleKind.CONTEXT_MAP:          1,
+        }
+        type_rank = type_order.get(a.scheduleKind, 2)
+        return (type_rank, a.to_network_line())
