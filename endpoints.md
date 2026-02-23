@@ -9,6 +9,7 @@
 | All MVV lines                                   | [`get_lines`](#method-get_lines)             | `api/bgw-pt/v3/lines`                          | [lines.py](mvg_api/v2/schemas/lines.py)             |
 | Location search (stations, POIs, streets)       | [`get_location`](#method-get_location)       | `api/bgw-pt/v3/locations?query=$query`         | [locations.py](mvg_api/v2/schemas/locations.py)     |
 | Service Disruptions (stations and publish date) | [`get_messages`](#method-get_messages)       | `api/bgw-pt/v3/messages`                       | [messages.py](mvg_api/v2/schemas/messages.py)       |
+| Service Disruptions (stations and publish date) | [`get_messages`](#method-get_messages)     sdf  | `api/bgw-pt/v3/stations/nearby`                | [stations.py](mvg_api/v2/schemas/messages.py)       |
 | List of all station IDs                         | [`get_station_ids`](#method-get_station_ids) | `.rest/zdm/mvgStationGlobalIds`                | list[str]                                           |
 | Station details                                 | [`get_station`](#method-get_station)         | `.rest/zdm/stations/$stationId`                | [station.py](mvg_api/v2/schemas/station.py)         |
 | All MVV+neighboring stations with details       | [`get_stations`](#method-get_stations)       | `api/bgw-pt/v3/station`                        | [stations.py](mvg_api/v2/schemas/stations.py)       |

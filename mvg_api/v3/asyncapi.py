@@ -18,6 +18,7 @@ from mvg_api.v3.schemas import (
     line,
     location,
     messages,
+    nearby,
     station,
     stations,
     ticker,
@@ -199,6 +200,16 @@ class AsyncApi:
         """
         response = await self._send_request(MVGRequests.messages(self.headers, message_type))
         return messages.Messages(response)
+
+    async def get_nearby(self, latitude: float, longitude: float) -> nearby.Stations:
+        """
+        Get a list of nearby stations with the respective linear distance.
+        :return: a list of stations
+        """
+        if latitude == "" or longitude == "":  # 400 Bad Request - lat/lon must not be empty
+            return nearby.Stations([])
+        response = await self._send_request(MVGRequests.nearby(self.headers, latitude, longitude))
+        return nearby.Stations(response)
 
     async def get_station_ids(self) -> List[str]:
         """

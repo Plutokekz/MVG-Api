@@ -132,6 +132,16 @@ class MVGRequests:
         )
 
     @staticmethod
+    def nearby(headers: Dict[str, str], latitude: float, longitude: float) -> httpx.Request:
+        param = httpx.QueryParams({"latitude": latitude, "longitude": longitude})
+        return httpx.Request(
+            "GET",
+            f"{MVGRequests.url}api/bgw-pt/v3/stations/nearby",
+            params=param,
+            headers=headers,
+        )
+
+    @staticmethod
     def station_ids(headers: Dict[str, str]) -> httpx.Request:
         return httpx.Request(
             "GET", f"{MVGRequests.url}.rest/zdm/mvgStationGlobalIds", headers=headers
