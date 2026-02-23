@@ -165,3 +165,11 @@ class MVGRequests:
             f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}",
             headers=headers,
         )
+
+    @staticmethod
+    def zoom_overview(headers: Dict[str, str]) -> httpx.Request:
+        return httpx.Request(
+            "GET",
+            f"{MVGRequests.url}.rest/mvgZoom/api/stations",
+            headers=headers,
+        )

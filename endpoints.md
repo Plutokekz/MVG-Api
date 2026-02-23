@@ -41,6 +41,7 @@ The following endpoints exist and can be found when browsing mvg.de but are not 
 * ZoomOverviewInteractive: Zoom overview of whole ubahn network
   * Endpoint `https://www.mvg.de/.rest/mvgInteractiveImageMap/api/v1/featureCollections/a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58`
   * UUID appears to be constant
+  * Encodes position information of stations on a map
   * Loaded from the general MVG accessibility information site https://www.mvg.de/ueber-die-mvg/unser-engagement/barrierefreiheit/zoom.html
   * Loaded alongside `.rest/mvgZoom/api/stations`, therefore presumably obsolete
 * ZDMLines

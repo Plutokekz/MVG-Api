@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, RootModel, field_validator
 
 from mvg_api.v3.schemas import create_flexible_enum_validator
 
@@ -77,3 +77,17 @@ class ZoomStation(BaseModel):
 
     _validate_aggregatedStatusROLLTREPPE = field_validator('aggregatedStatusROLLTREPPE', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
     _validate_aggregatedStatusFAHRSTUHL = field_validator('aggregatedStatusFAHRSTUHL', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
+
+
+class ZoomStations(RootModel):
+    """A list of zoom station information for all stations"""
+    root: List[ZoomStation]
+
+    def __iter__(self):
+        return iter(self.root)
+
+    def __getitem__(self, item):
+        return self.root[item]
+
+    def __len__(self):
+        return len(self.root)

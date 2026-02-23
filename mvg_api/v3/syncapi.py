@@ -249,10 +249,16 @@ class SyncApi:
         :param efa_id: divaId/efaId of the station.
         :return: a ZoomStation object
         """
-        response = self._send_request(
-            MVGRequests.zoom(self.headers, efa_id)
-        )
+        response = self._send_request(MVGRequests.zoom(self.headers, efa_id))
         return zoom.ZoomStation(**response)
+
+    def get_zoom_overview(self) -> zoom.ZoomStations:
+        """
+        Get zoom information of all ubahn stations.
+        :return: a ZoomStations object
+        """
+        response = self._send_request(MVGRequests.zoom_overview(self.headers))
+        return zoom.ZoomStations(response)
 
     def find_location(self, query: str) -> location.Location:
         """

@@ -248,10 +248,16 @@ class AsyncApi:
         :param efa_id: divaId/efaId of the station.
         :return: a ZoomStation object
         """
-        response = await self._send_request(
-            MVGRequests.zoom(self.headers, efa_id)
-        )
+        response = await self._send_request(MVGRequests.zoom(self.headers, efa_id))
         return zoom.ZoomStation(**response)
+
+    async def get_zoom_overview(self) -> zoom.ZoomStations:
+        """
+        Get zoom information of all ubahn stations.
+        :return: a ZoomStations object
+        """
+        response = await self._send_request(MVGRequests.zoom_overview(self.headers))
+        return zoom.ZoomStations(response)
 
     async def find_location(self, query: str) -> location.Location:
         """
