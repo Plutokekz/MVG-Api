@@ -39,9 +39,9 @@ class Lines(RootModel):
     def __len__(self):
         return len(self.root)
 
-    def sorted(self, *, key=lambda l: l.label.rjust(5, "0"), reverse: bool = False) -> Lines:
+    def sorted(self, *, key=lambda l: l.to_network_line(), reverse: bool = False) -> Lines:
         """
-        Sorts the lines to present them in a more sensible ordering.
-        :param key: key to sort with, default to sorting by label.
+        Sorts the messages to present them in a more sensible ordering by transport type and linenumber.
+        :param key: key to sort with, default to sorting by type and then network line.
         """
         return Lines(sorted(self.root, key=key, reverse=reverse))

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 from enum import Enum
 from typing import List, Optional
 import logging
@@ -147,9 +148,22 @@ class Messages(RootModel):
     def __len__(self):
         return len(self.root)
 
-    def sorted(self, *, key=lambda v: "" if not v.lines else v.lines[0].label.rjust(5, "0"), reverse: bool = False) -> Messages:
+    def sorted(self, *, key=None, reverse: bool = False) -> Messages:
         """
-        Sorts the messages to present them in a more sensible ordering.
-        :param key: key to sort with, default to sorting by label.
+        Sorts the messages to present them in a more sensible ordering by transport type and linenumber.
+        :param key: key to sort with, default to sorting by type and then network line.
         """
-        return Messages(sorted(self.root, key=key, reverse=reverse))
+        if key is None:
+            key = Messages._default_sort_key
+        return Messages(builtins.sorted(self.root, key=key, reverse=reverse))
+
+    @staticmethod
+    def _default_sort_key(m: Message):
+        type_order = {
+            MessageType.INCIDENT:        0,
+            MessageType.SCHEDULE_CHANGE: 1,
+        }
+        type_rank = type_order.get(m.type, 5)
+        lines = builtins.sorted([l.to_network_line() for l in m.lines])
+
+        return (type_rank, lines[0])

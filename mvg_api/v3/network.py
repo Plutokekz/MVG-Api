@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from functools import total_ordering
+import re
 from enum import Enum
 import logging
 
@@ -33,6 +35,7 @@ class NetworkTransportType(Enum):
     UNKNOWN = "UNKNOWN"
 
 
+@total_ordering
 class NetworkLine():
     """
     Uniform description of a specific line with transport type.
@@ -109,6 +112,11 @@ class NetworkLine():
             logger.error("Unknown line descriptor type %s with data %s",
                          f"{type(any_line_descriptor).__module__}.{type(any_line_descriptor).__name__}", any_line_descriptor)
 
+        shared_details = {
+            "transport_type": transport_type,
+            "line_label": line_label,
+        }
+        details = shared_details | details
         return NetworkLine(transport_type, line_label, train_type, details)
 
     def __init__(self, transport_type, line_label, train_type="", details=None):
@@ -147,6 +155,49 @@ class NetworkLine():
             self.line_label = f"{train_type} {line_label}"
         else:
             self.transport_type = NetworkTransportType(transport_type)
+
+    def _sort_key(self):
+        """
+        :return: a sort key for this network line such that messages and similar can be sorted like it is done on mvg.de
+        """
+        tt = self.transport_type
+        label = self.line_label
+
+        type_order = {
+            NetworkTransportType.UBAHN:        0,
+            NetworkTransportType.TRAM:         1,
+            NetworkTransportType.NACHT_TRAM:   2,
+            NetworkTransportType.BUS:          3,
+            NetworkTransportType.EXPRESS_BUS:  3,
+            NetworkTransportType.REGIONAL_BUS: 3,
+            NetworkTransportType.NACHT_BUS:    4,
+            NetworkTransportType.SBAHN:        5,
+            NetworkTransportType.BAHN:         6,
+            NetworkTransportType.BAHN_FERN:    6,
+        }
+        type_rank = type_order.get(tt, 10)
+
+        if type_rank == type_order[NetworkTransportType.BUS]:  # any bus
+            # Numbers-first: "50" < "500" < "500X" < "9000" < "X234"
+            m = re.match(r'^(\d+)(.*)', label)
+            if m:
+                label_key = (0, int(m.group(1)), m.group(2))
+            else:
+                label_key = (1, 0, label)
+        else:
+            label_key = (0, 0, label)
+
+        return (type_rank, *label_key)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, NetworkLine):
+            return NotImplemented
+        return self._sort_key() == other._sort_key()
+
+    def __lt__(self, other: "NetworkLine") -> bool:
+        if not isinstance(other, NetworkLine):
+            return NotImplemented
+        return self._sort_key() < other._sort_key()
 
     def title_str(self) -> str:
         """
@@ -201,7 +252,7 @@ class NetworkLine():
                 if self.line_label == "23":
                     return "#bbce00"
                 if self.line_label == "25":
-                    return "#f1909cX"
+                    return "#f1909c"
                 if self.line_label == "27":
                     return "#f7a500"
                 if self.line_label == "28":
@@ -249,7 +300,9 @@ class NetworkLine():
             return "#4682b4"
         if self.transport_type == NetworkTransportType.TAXI:
             return "#fff104"
-        logger.warning("Unknown transport type '%s' and line '%s' encountered", self.transport_type, self.line_label)
+        if self.transport_type == NetworkTransportType.UNKNOWN:
+            return "#fd0097"
+        logger.warning("No-yet-known transport type '%s' and line '%s' encountered", self.transport_type, self.line_label)
         return "#fd0097"
 
     def line_color_split(self) -> str:
