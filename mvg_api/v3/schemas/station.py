@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, field_validator
 
 from mvg_api.v3.schemas import create_flexible_enum_validator, StationTransportType, TariffZones
@@ -16,7 +16,7 @@ class Station(BaseModel):
     """IFOPT global id of the station"""
     divaId: int
     """Diva id of the station, typically station identifier of IFOPT id"""
-    abbreviation: str
+    abbreviation: Optional[str] = None
     """MVG id of the station"""
     tariffZones: str
     """Tariff zones assigned to the station"""
