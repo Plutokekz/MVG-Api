@@ -228,9 +228,9 @@ class NetworkLine():
             if self.line_label == "U6":
                 return "#0065ad"
             if self.line_label == "U7":
-                return "#52822f"  # c2243b
+                return "#52822f"  # split with U2 #c2243b
             if self.line_label == "U8":
-                return "#c2243b"  # ec6725
+                return "#c2243b"  # split with U3 #ec6725
         if self.transport_type == NetworkTransportType.TRAM:
             if tram_colors:
                 if self.line_label == "12":

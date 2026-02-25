@@ -105,11 +105,11 @@ Get all the station ids
 
 There are multiple different identifiers used for station in the MVV and MVG areas
 
-| ID          | Description                                                                       | Code               | Karlsplatz | Sendlinger Tor |
-| ----------- | --------------------------------------------------------------------------------- | ------------------ | ---------- | -------------- |
-| MVG id      | 2-3 capital letters, identifying stations of MVG (typically ubahn, tram and bus)  | `mvg_id`           | KA         | SE (and SU)    |
-| Global id   | IFOPT stop id [^1] in a format like country:region:station; global identification | `global_id`        | de:09162:1 | de:09162:50    |
-| Diva/Efa id | Station part of the IFOPT id                                                      | `diva_id`/`efa_id` | 1          | 50             |
+| ID                | Description                                                                       | Code               | Karlsplatz | Sendlinger Tor |
+| ----------------- | --------------------------------------------------------------------------------- | ------------------ | ---------- | -------------- |
+| MVG id            | 2-3 capital letters, identifying stations of MVG (typically ubahn, tram and bus)  | `mvg_id`           | KA         | SE (and SU)    |
+| Global/Station id | IFOPT stop id [^1] in a format like country:region:station; global identification | `global_id`        | de:09162:1 | de:09162:50    |
+| Diva/Efa id       | Station part of the IFOPT id                                                      | `diva_id`/`efa_id` | 1          | 50             |
 
 Stop points of a station have a more detailed IFOPT id with the suffix :stopgroup:stoppoint.
 For ubahn services, the suffix is :stopgroup:track, where the stopgroup identifies the Bahnsteig (e.g. only one at Universität, but two at Innsbrucker Ring) and the track is typically offset by 50 (e.g. track 1 is :51).
