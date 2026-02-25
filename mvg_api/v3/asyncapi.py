@@ -8,8 +8,10 @@
 import json
 from typing import Dict, Any, Optional, List
 from pathlib import Path
-import httpx
 import datetime
+import logging
+
+import httpx
 
 from mvg_api.v3.schemas import (
     aushang,
@@ -25,6 +27,10 @@ from mvg_api.v3.schemas import (
     zoom,
 )
 from mvg_api.v3.requests import MVGRequests, RequestFailed
+
+
+logger = logging.getLogger("mvg-api")
+logger.setLevel(logging.DEBUG)
 
 
 class AsyncApi:
@@ -86,6 +92,8 @@ class AsyncApi:
         :param mvg_id: the MVG id of the station.
         :return: a list of aushaenge
         """
+        if mvg_id == "":  # 400 Bad Request - mvg_id must not be empty
+            return aushang.Aushaenge([])
         response = await self._send_request(MVGRequests.aushang(self.headers, mvg_id))
         return aushang.Aushaenge(response)
 
@@ -95,8 +103,13 @@ class AsyncApi:
         destination_station_id: str,
         routing_date_time: str,
         *,
-        routing_date_time_is_arrival: bool,
-        transport_types: Optional[str] = None,
+        routing_date_time_is_arrival: bool = False,
+        transport_types: Optional[str] = "SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN",
+        route_type: Optional[str] = "LEAST_TIME",
+        change_speed: Optional[str] = "NORMAL",
+        accessibility_options: Optional[str] = None,
+        via_station_id: Optional[str] = None,
+        via_dwell_time_minutes: Optional[int] = None,
         origin_latitude: Optional[float] = None,
         origin_longitude: Optional[float] = None,
         destination_latitude: Optional[float] = None,
@@ -109,13 +122,20 @@ class AsyncApi:
         :param destination_station_id: the station id of the destination station
         :param routing_date_time: the date and time of the departure or arrival for example 2023-06-25T20:04:47.552Z
         :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
-        :param transport_types: limit departures to specific transport types
+        :param transport_types: limit to specific transport types; possible are: SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN,RUFTAXI
+        :param route_type: LEAST_TIME (Schnelle Route), LEAST_INTERCHANGES (Wenige Umstiege), LEAST_WALKING (Wenig Fußweg)
+        :param change_speed: SLOW (Schnell), NORMAL (Normal), FAST (Langsam)
+        :param accessibility_options: NO_SOLID_STAIRS (keine Treppen), NO_ESCALATORS (keine Rolltreppen), NO_ELEVATORS (keine Aufzüge)
+        :param via_station_id: global id of a via station that should be part of the route
+        :param via_dwell_time_minutes: time at the via station between arrival and departure. Omission or value 0 will cause the via station to be ignored.
         :param origin_latitude: the latitude of the origin station
         :param origin_longitude: the longitude of the origin station
         :param destination_latitude: the latitude of the destination station
         :param destination_longitude: the longitude of the destination station
         :return: a list of connections
         """
+        if via_station_id and (not via_dwell_time_minutes or int(via_dwell_time_minutes) <= 0):
+            logger.warning("Via dwelltime must be > 0 when via station is specified")
         response = await self._send_request(
             MVGRequests.connections(
                 self.headers,
@@ -124,6 +144,11 @@ class AsyncApi:
                 routing_date_time,
                 routing_date_time_is_arrival=routing_date_time_is_arrival,
                 transport_types=transport_types,
+                route_type=route_type,
+                change_speed=change_speed,
+                accessibility_options=accessibility_options,
+                via_station_id=via_station_id,
+                via_dwell_time_minutes=via_dwell_time_minutes,
                 origin_latitude=origin_latitude,
                 origin_longitude=origin_longitude,
                 destination_latitude=destination_latitude,
@@ -226,6 +251,8 @@ class AsyncApi:
         :param station_id: IFOPT global id of a station
         :return: a single station or None
         """
+        if station_id == "":  # identical to get_stations endpoint if empty
+            return station.Station([])
         response = await self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
 

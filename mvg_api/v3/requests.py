@@ -30,13 +30,17 @@ class MVGRequests:
         destination_station_id: str,
         routing_date_time: str,
         *,
-        routing_date_time_is_arrival: bool,
+        routing_date_time_is_arrival: bool = None,
         transport_types: Optional[str] = None,
+        route_type: Optional[str] = None,
+        change_speed: Optional[str] = None,
         accessibility_options: Optional[str] = None,
+        via_station_id: Optional[str] = None,
+        via_dwell_time_minutes: Optional[int] = None,
         origin_latitude: Optional[float] = None,
         origin_longitude: Optional[float] = None,
         destination_latitude: Optional[float] = None,
-        destination_longitude: Optional[float] = None,
+        destination_longitude: Optional[float] = None
     ) -> httpx.Request:
         param = httpx.QueryParams(
             {
@@ -45,7 +49,11 @@ class MVGRequests:
                 "routingDateTime": routing_date_time,
                 "routingDateTimeIsArrival": routing_date_time_is_arrival,
                 "transportTypes": transport_types,
+                "routeType": route_type,
+                "changeSpeed": change_speed,
                 "accessibilityOptions": accessibility_options,
+                "viaStationGlobalId": via_station_id,
+                "viaDwellTimeInMinutes": via_dwell_time_minutes,
                 "originLatitude": origin_latitude,
                 "originLongitude": origin_longitude,
                 "destinationLatitude": destination_latitude,

@@ -32,6 +32,8 @@ class Station(BaseModel):
     """expected delay of the arrival at this station in minutes"""
     transportTypes: List[StationTransportType]
     """transport types servicing this station"""
+    isViaStop: bool
+    """whether this part is more-or-less a station that was specified as via stop"""
     surroundingPlanLink: str
     """unknown: presumably obsolete since deprecation of surrounding plan link endpoint"""
     occupancy: Occupancy
@@ -152,14 +154,6 @@ class TicketingInformation(BaseModel):
     def alternativeZones_common(self) -> TariffZones:
         """Obtain common representation of alternativeZones."""
         return TariffZones(self.alternativeZones)
-
-    def is_dticket_valid(self) -> bool:
-        """
-        Returns the dticket status of this connection.
-        This is presumably based on the unifiedTicketIds properties.
-        When comparing with mvg.de, the No-DTicket indicator is visible when this list are empty.
-        """
-        return len(self.unifiedTicketIds) > 0
 
 
 class Connection(BaseModel):
