@@ -12,8 +12,11 @@ class Info(BaseModel):
     Information regarding a service in the departure board
     See also the Info class in connections.py
     Examples for encountered messages:
-    {'message': 'Verspätung aus vorheriger Fahrt', 'type': 'INCIDENT', 'network': 'ddb'}
-    {'message': 'Reparatur an einem Signal', 'type': 'INCIDENT', 'network': 'ddb'}
+    {'message': 'Verspätung aus vorheriger Fahrt', 'type': 'INCIDENT', 'network': 'ddb'},
+    {'message': 'Reparatur an einem Signal', 'type': 'INCIDENT', 'network': 'ddb'},
+    {'message': 'Technische St\u00f6rung am Zug', 'type': 'INCIDENT', 'network': 'ddb'},
+    {'message': 'F\u00e4hrt nur bis Ismaning', 'type': 'EARLY_TERMINATION', 'network': 'unknown'},
+    {'message': 'Linie HEX: Sonderlinie, kein MVV- Tarif', 'type': 'INFO', 'network': 'mvv'}
     """
     message: str
     """The message text"""

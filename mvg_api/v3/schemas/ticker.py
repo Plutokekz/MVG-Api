@@ -165,5 +165,6 @@ class Messages(RootModel):
         }
         type_rank = type_order.get(m.type, 5)
         lines = builtins.sorted([l.to_network_line() for l in m.lines])
-
-        return (type_rank, lines[0])
+        if len(lines) > 0 and lines[0]:
+            return (type_rank, lines[0])
+        return (type_rank,)

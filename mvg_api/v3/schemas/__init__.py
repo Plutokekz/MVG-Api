@@ -51,6 +51,8 @@ class MessageType(Enum):
     """Type of information on a connection or a general message or a ticker message."""
     INCIDENT = "INCIDENT"
     SCHEDULE_CHANGE = "SCHEDULE_CHANGE"
+    EARLY_TERMINATION = "EARLY_TERMINATION"
+    INFO = "INFO"
 
 
 class Occupancy(str, Enum):
