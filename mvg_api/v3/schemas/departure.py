@@ -61,7 +61,7 @@ class Departure(BaseModel):
     stopPositionNumber: Optional[int] = None
     """Stop (Haltestelle) position, typically only with tram and bus services"""
     messages: List
-    """unknown: empty"""
+    """string content of SOME infos, perhaps only MVG services, like 'Fährt nur bis Kieferngarten'; presumably obsolete because of infos"""
     infos: List[Info]
     """Information regarding this particular service"""
     bannerHash: str

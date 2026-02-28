@@ -177,17 +177,16 @@ class MVGRequests:
         )
 
     @staticmethod
-    def zoom(headers: Dict[str, str], efa_id: int) -> httpx.Request:
+    def ubahn_map(headers: Dict[str, str], uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> httpx.Request:
         return httpx.Request(
             "GET",
-            f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}",
+            f"{MVGRequests.url}.rest/mvgInteractiveImageMap/api/v1/featureCollections/{uuid}",
             headers=headers,
         )
 
     @staticmethod
-    def zoom_overview(headers: Dict[str, str]) -> httpx.Request:
-        return httpx.Request(
-            "GET",
-            f"{MVGRequests.url}.rest/mvgZoom/api/stations",
-            headers=headers,
-        )
+    def zoom(headers: Dict[str, str], efa_id: Optional[int] = None) -> httpx.Request:
+        url = f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}"
+        if efa_id is None:
+            url = f"{MVGRequests.url}.rest/mvgZoom/api/stations"
+        return httpx.Request("GET", url, headers=headers,)

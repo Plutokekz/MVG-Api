@@ -25,6 +25,7 @@ from mvg_api.v3.schemas import (
     station,
     stations,
     ticker,
+    ubahn_map,
     zoom,
 )
 from mvg_api.v3.requests import MVGRequests, RequestFailed
@@ -253,7 +254,7 @@ class SyncApi:
         :return: a single station or None
         """
         if station_id == "":  # identical to get_stations endpoint if empty
-            return None
+            return station.Station([])
         response = self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
 
@@ -281,22 +282,27 @@ class SyncApi:
         response = self._send_request(MVGRequests.ticker(self.headers))
         return ticker.Messages(response)
 
-    def get_zoom(self, efa_id: int) -> zoom.ZoomStation:
+    def get_ubahn_map(self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> zoom.ZoomStations:
         """
-        Get zoom information of a station that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
-        :param efa_id: divaId/efaId of the station.
-        :return: a ZoomStation object
+        Get pixel coordinate information about all ubahn stations to display on the network map.
+        Practical use in conjunction with get_zoom for all stations
+        :param uuid: permanent value in the path of the request url; usage unknown; might change.
+        :return: an UbahnMap object
+        """
+        response = self._send_request(MVGRequests.ubahn_map(self.headers, uuid))
+        return ubahn_map.UbahnMap(ubahn_map.simplify_api_response(response))
+
+    def get_zoom(self, efa_id: Optional[str] = None) -> zoom.ZoomStation:
+        """
+        Get zoom information that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
+        If no efa id is specified, the status of all stations is returned.
+        :param efa_id: divaId/efaId of the station or none.
+        :return: a ZoomStation object if an efa id is given or a ZoomStations object if data of all stations is requested.
         """
         response = self._send_request(MVGRequests.zoom(self.headers, efa_id))
+        if efa_id is None or len(efa_id) == 0:
+            return zoom.ZoomStations(response)
         return zoom.ZoomStation(**response)
-
-    def get_zoom_overview(self) -> zoom.ZoomStations:
-        """
-        Get zoom information of all ubahn stations.
-        :return: a ZoomStations object
-        """
-        response = self._send_request(MVGRequests.zoom_overview(self.headers))
-        return zoom.ZoomStations(response)
 
     def find_location(self, query: str) -> location.Location:
         """
