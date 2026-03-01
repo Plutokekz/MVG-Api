@@ -6,7 +6,7 @@
 
 
 import json
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 from pathlib import Path
 import datetime
 import logging
@@ -125,7 +125,7 @@ class AsyncApi:
         :param routing_date_time_is_arrival: if the routing_date_time is the arrival time or the departure time
         :param transport_types: limit to specific transport types; possible are: SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN,RUFTAXI
         :param route_type: LEAST_TIME (Schnelle Route), LEAST_INTERCHANGES (Wenige Umstiege), LEAST_WALKING (Wenig Fußweg)
-        :param change_speed: SLOW (Schnell), NORMAL (Normal), FAST (Langsam)
+        :param change_speed: SLOW (Langsam), NORMAL (Normal), FAST (Schnell)
         :param accessibility_options: NO_SOLID_STAIRS (keine Treppen), NO_ESCALATORS (keine Rolltreppen), NO_ELEVATORS (keine Aufzüge)
         :param via_station_id: global id of a via station that should be part of the route
         :param via_dwell_time_minutes: time at the via station between arrival and departure. Omission or value 0 will cause the via station to be ignored.
@@ -246,14 +246,14 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.station_ids(self.headers))
         return list(response)
 
-    async def get_station(self, station_id: str) -> station.Station:
+    async def get_station(self, station_id: str) -> Optional[station.Station]:
         """
         Get details about a station by its IFOPT global id.
         :param station_id: IFOPT global id of a station
         :return: a single station or None
         """
         if station_id == "":  # identical to get_stations endpoint if empty
-            return station.Station([])
+            return None
         response = await self._send_request(MVGRequests.station(self.headers, station_id))
         return station.Station(**response)
 
@@ -291,7 +291,7 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.ubahn_map(self.headers, uuid))
         return ubahn_map.UbahnMap(ubahn_map.simplify_api_response(response))
 
-    def get_zoom(self, efa_id: Optional[str] = None) -> zoom.ZoomStation:
+    def get_zoom(self, efa_id: Optional[str] = None) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
         """
         Get zoom information that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
         If no efa id is specified, the status of all stations is returned.

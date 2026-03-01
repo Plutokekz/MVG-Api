@@ -130,7 +130,7 @@ class MVGRequests:
         )
 
     @staticmethod
-    def messages(headers: Dict[str, str], message_type=Optional[str]) -> httpx.Request:
+    def messages(headers: Dict[str, str], message_type: Optional[str] = None) -> httpx.Request:
         param = httpx.QueryParams({"messageType": message_type})
         return httpx.Request(
             "GET",
@@ -185,7 +185,7 @@ class MVGRequests:
         )
 
     @staticmethod
-    def zoom(headers: Dict[str, str], efa_id: Optional[int] = None) -> httpx.Request:
+    def zoom(headers: Dict[str, str], efa_id: Optional[str] = None) -> httpx.Request:
         url = f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}"
         if efa_id is None:
             url = f"{MVGRequests.url}.rest/mvgZoom/api/stations"

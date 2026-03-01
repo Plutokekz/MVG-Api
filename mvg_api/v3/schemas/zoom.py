@@ -8,23 +8,23 @@ from pydantic import BaseModel, RootModel, field_validator
 from mvg_api.v3.schemas import create_flexible_enum_validator
 
 
-class PlannedMaintenance(BaseModel):
-    status: TransportDeviceStatus
-    """unkown: only encountered 'AUSSER_BETRIEB'"""
-    since: int
-    """Begin of the maintenance window as millisecond timestamp"""
-    until: int
-    """End of the maintenance window as millisecond timestamp"""
-    description: str
-    """Nicetext reason of the maintenance (e.g. Baustelle, Erneuerung)"""
-
-
 class TransportDeviceStatus(Enum):
     """Status of the device. Note that planned is not a status, but may be derived from the planned information."""
     IN_BETRIEB = "IN_BETRIEB"
     WARTUNG = "WARTUNG"
     AUSSER_BETRIEB = "AUSSER_BETRIEB"
     UNBEKANNT = "UNBEKANNT"
+
+
+class PlannedMaintenance(BaseModel):
+    status: TransportDeviceStatus
+    """unknown: only encountered 'AUSSER_BETRIEB'"""
+    since: int
+    """Begin of the maintenance window as millisecond timestamp"""
+    until: int
+    """End of the maintenance window as millisecond timestamp"""
+    description: str
+    """Nicetext reason of the maintenance (e.g. Baustelle, Erneuerung)"""
 
 
 class TransportDeviceType(Enum):

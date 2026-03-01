@@ -163,7 +163,7 @@ class Messages(RootModel):
             MessageType.INCIDENT:        0,
             MessageType.SCHEDULE_CHANGE: 1,
         }
-        type_rank = type_order.get(m.type, 5)
+        type_rank = type_order.get(m.type_common(), 5)
         lines = builtins.sorted([l.to_network_line() for l in m.lines])
         if len(lines) > 0 and lines[0]:
             return (type_rank, lines[0])
