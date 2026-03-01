@@ -282,7 +282,7 @@ class SyncApi:
         response = self._send_request(MVGRequests.ticker(self.headers))
         return ticker.Messages(response)
 
-    def get_ubahn_map(self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> zoom.ZoomStations:
+    def get_ubahn_map(self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> ubahn_map.UbahnMap:
         """
         Get pixel coordinate information about all ubahn stations to display on the network map.
         Practical use in conjunction with get_zoom for all stations
@@ -300,7 +300,7 @@ class SyncApi:
         :return: a ZoomStation object if an efa id is given or a ZoomStations object if data of all stations is requested.
         """
         response = self._send_request(MVGRequests.zoom(self.headers, efa_id))
-        if efa_id is None or len(efa_id) == 0:
+        if isinstance(response, List):
             return zoom.ZoomStations(response)
         return zoom.ZoomStation(**response)
 
