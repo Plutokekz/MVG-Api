@@ -261,10 +261,44 @@ class NetworkLine():
         if self.transport_type == NetworkTransportType.NACHT_TRAM:
             return "#000000"
         if self.transport_type == NetworkTransportType.BUS:
+            if self.line_label == "X80":
+                return "#1a6eb2"
+            if self.line_label == "X30":
+                return "#718873"
             return "#00586a"
         if self.transport_type == NetworkTransportType.EXPRESS_BUS:
             return "#4e7e6c"
         if self.transport_type == NetworkTransportType.REGIONAL_BUS:
+            if self.line_label == "X200":
+                return "#cd8236"
+            if self.line_label == "X201":
+                return "#009658"
+            if self.line_label == "X202":
+                return "#c4047b"
+            if self.line_label == "X203":
+                return "#0094ce"
+            if self.line_label == "X204":
+                return "#a47dae"
+            if self.line_label == "X205":
+                return "#00776f"
+            if self.line_label == "X206":
+                return "#007c73"
+            if self.line_label == "X208":
+                return "#75ae58"
+            if self.line_label == "X320":
+                return "#3b9c3a"
+            if self.line_label == "X660":
+                return "#db6d3a"
+            if self.line_label == "X730":
+                return "#489d2e"
+            if self.line_label == "X731":
+                return "#b60065"
+            if self.line_label == "X732":
+                return "#0071aa"
+            if self.line_label == "X733":
+                return "#beb000"
+            if self.line_label == "X910":
+                return "#ac8055"
             return "#00586a"  # was #003255 some time ago
         if self.transport_type == NetworkTransportType.NACHT_BUS:
             return "#000000"
