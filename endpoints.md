@@ -53,6 +53,8 @@ The following endpoints exist and can be found when browsing mvg.de but are not 
 
 # Usage of endpoints on mvg.de
 
+> Useful to see what parameters mvg.de uses when accessing the endpoints or to search for new endpoints.
+
 * **Aushang**: _Information about a station_ &rarr; _Infos_ &rarr; _Fahrpläne_ or _Haltestellen- und Umgebungspläne_
 * **Connections**: Directly on the homepage mvg.de
 * **Departures**: Directly on the homepage mvg.de
