@@ -6,7 +6,7 @@ authors = [
     {name = "Lukas Mahr", email = "lukas@yousuckatprogramming.de"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 dependencies = [
     "dill>=0.4.0",
     "httpx>=0.28.1",
