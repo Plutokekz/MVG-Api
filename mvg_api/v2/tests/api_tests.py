@@ -14,7 +14,7 @@ def test_get_station():
     api = SyncApi()
     result = api.get_station("de:09162:6")
     assert result.id == "de:09162:6"
-    assert result.name == "Hauptbahnhof Bahnhofsplatz"
+    assert result.name == "Hauptbahnhof (U, Tram)"
 
 
 def test_get_escalators_and_elevators():
@@ -47,7 +47,7 @@ def test_get_station_async():
     api = AsyncApi()
     result = asyncio.run(api.get_station("de:09162:6"))
     assert result.id == "de:09162:6"
-    assert result.name == "Hauptbahnhof Bahnhofsplatz"
+    assert result.name == "Hauptbahnhof (U, Tram)"
 
 
 def test_get_escalators_and_elevators_async():
