@@ -75,8 +75,10 @@ class ZoomStation(BaseModel):
     aggregatedStatusFAHRSTUHL: TransportDeviceStatus
     """Aggregated status of elevators: 'AUSSER_BETRIEB' as soon as one is not operational."""
 
-    _validate_aggregatedStatusROLLTREPPE = field_validator('aggregatedStatusROLLTREPPE', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
-    _validate_aggregatedStatusFAHRSTUHL = field_validator('aggregatedStatusFAHRSTUHL', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
+    _validate_aggregatedStatusROLLTREPPE = field_validator('aggregatedStatusROLLTREPPE', mode='before')(
+        create_flexible_enum_validator(TransportDeviceStatus))
+    _validate_aggregatedStatusFAHRSTUHL = field_validator('aggregatedStatusFAHRSTUHL', mode='before')(
+        create_flexible_enum_validator(TransportDeviceStatus))
 
 
 class ZoomStations(RootModel):

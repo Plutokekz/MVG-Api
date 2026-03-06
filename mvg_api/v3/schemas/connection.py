@@ -151,7 +151,7 @@ class TicketingInformation(BaseModel):
         """Obtain common representation of zones."""
         return TariffZones(self.zones)
 
-    def alternativeZones_common(self) -> TariffZones:
+    def alternative_zones_common(self) -> TariffZones:
         """Obtain common representation of alternativeZones."""
         return TariffZones(self.alternativeZones)
 

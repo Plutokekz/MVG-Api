@@ -30,6 +30,6 @@ class Station(BaseModel):
     _validate_products = field_validator('products', mode='before')(
         create_flexible_enum_validator(StationTransportType, is_list=True))
 
-    def tariffZones_common(self) -> TariffZones:
+    def tariff_zones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""
         return TariffZones(self.tariffZones)

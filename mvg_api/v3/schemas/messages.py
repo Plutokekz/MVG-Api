@@ -75,7 +75,8 @@ class Message(BaseModel):
     """
     A message about service disruptions, both planned disruptions and unplanned incidents.
     These are the messages shown on mvg.de for all lines.
-    The website and presumably also the app cache these messages to display them in the departures or connections views on the respective service lines.
+    The website and presumably also the app cache these messages to display them in the
+    departures or connections views on the respective service lines.
     """
     title: str
     """A short-ish title describing the message"""
@@ -108,7 +109,7 @@ class Message(BaseModel):
     _validate_transportTypes = field_validator('eventTypes', mode='before')(
         create_flexible_enum_validator(EventType, is_list=True))
 
-    def eventTypes_to_stt(self) -> List[StationTransportType]:
+    def event_types_to_stt(self) -> List[StationTransportType]:
         """Returns the messages event types as station transport types"""
         return [et.to_station_transport_type() for et in self.eventTypes]
 

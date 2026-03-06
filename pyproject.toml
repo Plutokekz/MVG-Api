@@ -168,7 +168,7 @@ class-const-naming-style = "UPPER_CASE"
 # Regular expression matching correct class constant names. Overrides class-
 # const-naming-style. If left empty, class constant names will be checked with
 # the set naming style.
-class-const-rgx = "^[a-z]*$|^[A-Z]*$"
+class-const-rgx = "^[A-Z][A-Z0-9_]*$"
 
 # Naming style matching correct class names.
 class-naming-style = "PascalCase"

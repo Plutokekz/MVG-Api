@@ -3,7 +3,9 @@
 # To reduce manual editing the both apis, only edit the async variant.
 # Then use the following command to quickly generate the sync variant from the async variant.
 #
-# [ -f asyncapi.py ] && echo "# DO NOT EDIT - DERIVED FROM asyncapi.py" > syncapi.py && sed -e 's/def/def/g' -e 's/=/=/g' -e 's/SyncApi/SyncApi/g' -e 's/Client/Client/g' asyncapi.py >> syncapi.py
+# [ -f asyncapi.py ] && echo "# DO NOT EDIT - DERIVED FROM asyncapi.py" > syncapi.py \
+#   && sed -e 's/def/def/g' -e 's/=/=/g' -e 's/SyncApi/SyncApi/g' \
+#          -e 's/Client/Client/g' asyncapi.py >> syncapi.py
 
 
 import json
@@ -99,7 +101,7 @@ class SyncApi:
         response = self._send_request(MVGRequests.aushang(self.headers, mvg_id))
         return aushang.Aushaenge(response)
 
-    def get_connections(
+    def get_connections(  # pylint: disable=too-many-arguments
         self,
         origin_station_id: str,
         destination_station_id: str,
@@ -129,7 +131,8 @@ class SyncApi:
         :param change_speed: SLOW (Langsam), NORMAL (Normal), FAST (Schnell)
         :param accessibility_options: NO_SOLID_STAIRS (keine Treppen), NO_ESCALATORS (keine Rolltreppen), NO_ELEVATORS (keine Aufzüge)
         :param via_station_id: global id of a via station that should be part of the route
-        :param via_dwell_time_minutes: time at the via station between arrival and departure. Omission or value 0 will cause the via station to be ignored.
+        :param via_dwell_time_minutes: time at the via station between arrival and departure.
+            Omission or value 0 will cause the via station to be ignored.
         :param origin_latitude: the latitude of the origin station
         :param origin_longitude: the longitude of the origin station
         :param destination_latitude: the latitude of the destination station
@@ -265,7 +268,10 @@ class SyncApi:
         Get all stations in the MVV. This is more extensive than get_station_ids.
         This is a huge result of ~13MiB with a total of 44130 stations (as of 2026-02-15).
 
-        :param hash_: A hash, presumably identifying whether there was a change in the station data between two requests, such that no new data has to be sent. When the hash, obtained from the result of a previous request is submitted, the result is empty (perhaps except if there is new data).
+        :param hash_: A hash, presumably identifying whether there was a change in the station
+            data between two requests, such that no new data has to be sent. When the hash,
+            obtained from the result of a previous request is submitted, the result is empty
+            (perhaps except if there is new data).
         :param world: unknown, does not change the result, except for a different hash.
         :return: a list of MVV stations.
         """
@@ -276,7 +282,8 @@ class SyncApi:
 
     def get_ticker(self) -> ticker.Messages:
         """
-        Get ticker messages. This is somewhat identical to the result of get_messages but is apparently limited to services of MVG only (i.e. UBAHN, TRAM, BUS <200)
+        Get ticker messages. This is somewhat identical to the result of get_messages but is
+        apparently limited to services of MVG only (i.e. UBAHN, TRAM, BUS <200)
         :return: a list of messages
         """
         response = self._send_request(MVGRequests.ticker(self.headers))

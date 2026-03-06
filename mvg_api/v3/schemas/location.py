@@ -35,7 +35,8 @@ class Location(BaseModel):
     aliases: Optional[str] = None
     """unknown: empty; previously alternative names of the location, presumably to facilitate search optimization"""
     tariffZones: Optional[str] = None
-    """Tariff zones assigned to the station; either a single zone (e.g. 'm' or '2') or two neighboring zones (e.g. 'm|1' or '4|5'); only set on type STATION"""
+    """Tariff zones assigned to the station; either a single zone (e.g. 'm' or '2') or
+    two neighboring zones (e.g. 'm|1' or '4|5'); only set on type STATION"""
     postCode: Optional[str] = None
     """Post code of the location; only set on type ADDRESS"""
     street: Optional[str] = None
@@ -49,7 +50,7 @@ class Location(BaseModel):
         create_flexible_enum_validator(StationTransportType, is_list=True))
     _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(LocationType))
 
-    def tariffZones_common(self) -> TariffZones:
+    def tariff_zones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""
         return TariffZones(self.tariffZones)
 

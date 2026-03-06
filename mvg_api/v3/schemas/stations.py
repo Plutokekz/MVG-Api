@@ -21,7 +21,8 @@ class Station(BaseModel):
     transportTypes: List[StationTransportType]
     """transport types servicing this location; only set on type STATION"""
     tariffZones: str
-    """Tariff zones assigned to the station; either a single zone (e.g. 'm' or '2') or two neighboring zones (e.g. 'm|1' or '4|5'); only set on type STATION"""
+    """Tariff zones assigned to the station; either a single zone (e.g. 'm' or '2') or
+    two neighboring zones (e.g. 'm|1' or '4|5'); only set on type STATION"""
     aliases: str
     """alternative names of the station, presumably to facilitate search optimization"""
     divaId: int
@@ -32,7 +33,7 @@ class Station(BaseModel):
     _validate_transportTypes = field_validator('transportTypes', mode='before')(
         create_flexible_enum_validator(StationTransportType, is_list=True))
 
-    def tariffZones_common(self) -> TariffZones:
+    def tariff_zones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""
         return TariffZones(self.tariffZones)
 

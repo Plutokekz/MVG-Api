@@ -67,7 +67,8 @@ class IncidentType(Enum):
 
 class DownloadLink(BaseModel):
     id: str
-    """A uuid with some suffix, presumably to internally identify the resource. Access the resource under https://www.mvg.de/api/ems/tickers/file/$id"""
+    """A uuid with some suffix, presumably to internally identify the resource.
+    Access the resource under https://www.mvg.de/api/ems/tickers/file/$id"""
     name: str
     """Name of the link to display"""
     mimeType: str
@@ -99,7 +100,8 @@ class Message(BaseModel):
     title: str
     """A short-ish title describing the message"""
     text: str
-    """A (sometimes very) long description, formatted has html (even though there is also htmlText). It may contain links to pages with more information."""
+    """A (sometimes very) long description, formatted has html (even though there is also
+    htmlText). It may contain links to pages with more information."""
     htmlText: str
     """A (sometimes very) long description, formatted has html. It may contain links to pages with more information."""
     lines: List[Line]

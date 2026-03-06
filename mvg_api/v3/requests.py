@@ -24,7 +24,7 @@ class MVGRequests:
         )
 
     @staticmethod
-    def connections(
+    def connections(  # pylint: disable=too-many-arguments
         headers: Dict[str, str],
         origin_station_id: str,
         destination_station_id: str,

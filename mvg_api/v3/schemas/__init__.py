@@ -41,8 +41,7 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
             if not isinstance(v, list):
                 raise ValueError(f"Expected list, got {type(v)}")
             return [validate_single(item) for item in v]
-        else:
-            return validate_single(v)
+        return validate_single(v)
 
     return validator
 
@@ -81,11 +80,11 @@ class TariffZones:
 
     def __init__(self, zones: Union[str, List[int]]):
         """Converts tariff zone given as string or list of integers to a common representation"""
-        if zones == None or zones == "":
+        if zones in (None, ""):
             self._zones = []
-        elif type(zones) == str:
+        elif isinstance(zones, str):
             self._zones = [int(z) for z in zones.replace("m", "0").replace("M", "0").split('|')]
-        elif type(zones) == list and all([type(z) == int for z in zones]):
+        elif isinstance(zones, list) and all(isinstance(z, int) for z in zones):
             self._zones = zones
         else:
             self._zones = []

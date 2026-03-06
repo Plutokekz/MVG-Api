@@ -45,9 +45,12 @@ class NetworkLine():
     @classmethod
     def of_any(cls, any_line_descriptor) -> NetworkLine:
         """
-        Extract transport type and line label from any line descriptor of the mvg api (e.g. MessageLine, TickerLine, etc), as they use different keys to name the corresponding variable, and returns a unified network line.
+        Extract transport type and line label from any line descriptor of the mvg api
+        (e.g. MessageLine, TickerLine, etc), as they use different keys to name the
+        corresponding variable, and returns a unified network line.
         """
         # import here to prevent circular imports
+        # pylint: disable=import-outside-toplevel
         from mvg_api.v3.schemas.aushang import Aushang
         from mvg_api.v3.schemas.connection import Line as ConnectionLine
         from mvg_api.v3.schemas.departure import Departure
@@ -209,7 +212,7 @@ class NetworkLine():
                 title += f"{k}: {v}&#010;"
         return title
 
-    def line_color(self, tram_colors: bool = False) -> str:
+    def line_color(self, tram_colors: bool = False) -> str:  # pylint: disable=too-many-return-statements,too-many-branches,too-many-statements
         """
         :param tram_colors: true when individual tram line colors should be returned or false for the generic tram red.
         :return: the color primarily associated with this network line.
@@ -390,7 +393,7 @@ def line_color(any_line_descriptor):
     return nl.line_color()
 
 
-def zone_color(zone: str) -> str:
+def zone_color(zone: str) -> str:  # pylint: disable=too-many-return-statements
     """
     Returns the color of a network zone.
     Input is accepted as int, sting and upper/lowercase (m only).
