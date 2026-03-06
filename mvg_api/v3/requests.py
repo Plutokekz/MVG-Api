@@ -106,9 +106,9 @@ class MVGRequests:
     def locations(
         headers: Dict[str, str],
         query: str,
-        limit_address_poi: int,
-        limit_stations: int,
-        location_types: List[LocationType],
+        limit_address_poi: Optional[int],
+        limit_stations: Optional[int],
+        location_types: Optional[List[LocationType]],
     ) -> httpx.Request:
         param = httpx.QueryParams(
             {

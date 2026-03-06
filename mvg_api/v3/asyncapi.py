@@ -1,10 +1,6 @@
 # Please note: the sync and async api variants are identical except for async/await keywords.
 # To reduce manual editing the both apis, only edit the async variant.
-# Then use the following command to quickly generate the sync variant from the async variant.
-#
-# [ -f asyncapi.py ] && echo "# DO NOT EDIT - DERIVED FROM asyncapi.py" > syncapi.py \
-#   && sed -e 's/async def/def/g' -e 's/= await/=/g' -e 's/AsyncApi/SyncApi/g' \
-#          -e 's/AsyncClient/Client/g' asyncapi.py >> syncapi.py
+# Then run scripts/generate_syncapi.sh to regenerate the sync variant.
 
 
 import json
@@ -43,7 +39,7 @@ class AsyncApi:
     do_log_responses: bool
     headers: Dict[str, str]
 
-    def __init__(self, client: httpx.Client = None, do_log_responses: bool = False):
+    def __init__(self, client: Optional[httpx.AsyncClient] = None, do_log_responses: bool = False):
         """
         Creates a new API instance to send requests the MVG backend.
         This instance can be used to send multiple requests, thereby reusing the http client.
@@ -72,7 +68,10 @@ class AsyncApi:
         output += url + ".json"
 
         with open(output, "w", encoding="utf-8") as f:
-            json.dump(response.json(), f, indent=2)
+            try:
+                json.dump(response.json(), f, indent=2)
+            except (json.JSONDecodeError, ValueError):
+                f.write(response.text)
 
     async def _send_request(self, request: httpx.Request) -> Any:
         response = await self.client.send(request)
@@ -139,7 +138,9 @@ class AsyncApi:
         :return: a list of connections
         """
         if via_station_id and (not via_dwell_time_minutes or int(via_dwell_time_minutes) <= 0):
-            logger.warning("Via dwelltime must be > 0 when via station is specified")
+            logger.warning("Via dwelltime must be > 0 when via station is specified; ignoring via station.")
+            via_station_id = None
+            via_dwell_time_minutes = None
         response = await self._send_request(
             MVGRequests.connections(
                 self.headers,
@@ -204,7 +205,7 @@ class AsyncApi:
         query: str,
         limit_address_poi: Optional[int] = None,
         limit_stations: Optional[int] = None,
-        location_types: Optional[List[str]] = None,
+        location_types: Optional[List[location.LocationType]] = None,
     ) -> location.Locations:
         """
         Get all locations for a text query
@@ -230,12 +231,12 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.messages(self.headers, message_type))
         return messages.Messages(response)
 
-    async def get_nearby(self, latitude: float, longitude: float) -> nearby.Stations:
+    async def get_nearby(self, latitude: Optional[float], longitude: Optional[float]) -> nearby.Stations:
         """
         Get a list of nearby stations with the respective linear distance.
         :return: a list of stations
         """
-        if latitude == "" or longitude == "":  # 400 Bad Request - lat/lon must not be empty
+        if latitude is None or longitude is None:  # 400 Bad Request - lat/lon must not be empty
             return nearby.Stations([])
         response = await self._send_request(MVGRequests.nearby(self.headers, latitude, longitude))
         return nearby.Stations(response)
@@ -298,19 +299,19 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.ubahn_map(self.headers, uuid))
         return ubahn_map.UbahnMap(ubahn_map.simplify_api_response(response))
 
-    def get_zoom(self, efa_id: Optional[str] = None) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
+    async def get_zoom(self, efa_id: Optional[str] = None) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
         """
         Get zoom information that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
         If no efa id is specified, the status of all stations is returned.
         :param efa_id: divaId/efaId of the station or none.
         :return: a ZoomStation object if an efa id is given or a ZoomStations object if data of all stations is requested.
         """
-        response = self._send_request(MVGRequests.zoom(self.headers, efa_id))
-        if isinstance(response, List):
+        response = await self._send_request(MVGRequests.zoom(self.headers, efa_id))
+        if isinstance(response, list):
             return zoom.ZoomStations(response)
         return zoom.ZoomStation(**response)
 
-    async def find_location(self, query: str) -> location.Location:
+    async def find_location(self, query: str) -> Optional[location.Location]:
         """
         Search a location.
         Selects the first matching one from the list of locations returned by get_locations.
@@ -324,7 +325,7 @@ class AsyncApi:
             return matching_locations[0]
         return None
 
-    async def find_location_station(self, query: str) -> location.Location:
+    async def find_location_station(self, query: str) -> Optional[location.Location]:
         """
         Search a location of type station.
         Selects the first matching one from the list of locations returned by get_locations.

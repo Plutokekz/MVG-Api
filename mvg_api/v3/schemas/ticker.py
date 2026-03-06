@@ -127,7 +127,7 @@ class Message(BaseModel):
     _validate_incidents = field_validator('incidents', mode='before')(
         create_flexible_enum_validator(IncidentType, is_list=True))
 
-    def type_common(self) -> MessageType:
+    def type_common(self) -> Optional[MessageType]:
         """Obtain common representation of a message type."""
         if self.type == TickerMessageType.DISRUPTION:
             return MessageType.INCIDENT

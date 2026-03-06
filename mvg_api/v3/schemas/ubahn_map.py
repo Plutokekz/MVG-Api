@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 import logging
 
 from pydantic import BaseModel, RootModel
@@ -46,7 +46,7 @@ class UbahnMap(RootModel):
         return len(self.root)
 
 
-def simplify_api_response(raw_response) -> Dict[str, Dict]:
+def simplify_api_response(raw_response) -> List[Dict[str, Any]]:
     """
     Simplifies the rather messy API response to a much flatter json/dict structure such that it can directly be parsed to pydantic objects.
     API response:

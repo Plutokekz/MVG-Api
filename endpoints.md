@@ -4,17 +4,17 @@
 | Description                                  | Function          | API Url                                                        | File                                                |
 | -------------------------------------------- | ----------------- | -------------------------------------------------------------- | --------------------------------------------------- |
 | PDFs of station plans, maps and timetables   | `get_aushang`     | `.rest/aushang/aushang?id=$mvgId`                              | [aushang.py](mvg_api/v3/schemas/aushang.py)         |
-| Connections                                  | `get_connections` | `api/bgw-pt/v3/routes?$params`                                 | [connections.py](mvg_api/v3/schemas/connections.py) |
-| Station departures                           | `get_departures`  | `api/bgw-pt/v3/departures?globalId=$stationId`                 | [departures.py](mvg_api/v3/schemas/departures.py)   |
-| All MVV lines                                | `get_lines`       | `api/bgw-pt/v3/lines`                                          | [lines.py](mvg_api/v3/schemas/lines.py)             |
-| Location search (stations, POIs, streets)    | `get_location`    | `api/bgw-pt/v3/locations?query=$query`                         | [locations.py](mvg_api/v3/schemas/locations.py)     |
+| Connections                                  | `get_connections` | `api/bgw-pt/v3/routes?$params`                                 | [connection.py](mvg_api/v3/schemas/connection.py)   |
+| Station departures                           | `get_departures`  | `api/bgw-pt/v3/departures?globalId=$stationId`                 | [departure.py](mvg_api/v3/schemas/departure.py)     |
+| All MVV lines                                | `get_lines`       | `api/bgw-pt/v3/lines`                                          | [line.py](mvg_api/v3/schemas/line.py)               |
+| Location search (stations, POIs, streets)    | `get_locations`   | `api/bgw-pt/v3/locations?query=$query`                         | [location.py](mvg_api/v3/schemas/location.py)       |
 | Service Disruptions                          | `get_messages`    | `api/bgw-pt/v3/messages`                                       | [messages.py](mvg_api/v3/schemas/messages.py)       |
-| Service Disruptions                          | `get_nearby`      | `api/bgw-pt/v3/stations/nearby`                                | [nearby.py](mvg_api/v3/schemas/nearby.py)           |
+| Nearby stations                              | `get_nearby`      | `api/bgw-pt/v3/stations/nearby`                                | [nearby.py](mvg_api/v3/schemas/nearby.py)           |
 | List of all station IDs                      | `get_station_ids` | `.rest/zdm/mvgStationGlobalIds`                                | list[str]                                           |
 | Station details                              | `get_station`     | `.rest/zdm/stations/$stationId`                                | [station.py](mvg_api/v3/schemas/station.py)         |
-| All MVV+neighboring stations with details    | `get_stations`    | `api/bgw-pt/v3/station`                                        | [stations.py](mvg_api/v3/schemas/stations.py)       |
+| All MVV+neighboring stations with details    | `get_stations`    | `api/bgw-pt/v3/stations`                                       | [stations.py](mvg_api/v3/schemas/stations.py)       |
 | Service disruptions                          | `get_ticker`      | `api/ems/tickers`                                              | [ticker.py](mvg_api/v3/schemas/ticker.py)           |
-| Map data to position markers (e.g. zoom)     | `get_ubahnmap`    | `.rest/mvgInteractiveImageMap/api/v1/featureCollections/$uuid` | [ubahnmap.py](mvg_api/v3/schemas/ubahnmap.py)       |
+| Map data to position markers (e.g. zoom)     | `get_ubahn_map`   | `.rest/mvgInteractiveImageMap/api/v1/featureCollections/$uuid` | [ubahn_map.py](mvg_api/v3/schemas/ubahn_map.py)     |
 | Station zoom info: escalator/elevator status | `get_zoom`        | `.rest/mvgZoom/api/stations/$divaId`                           | [zoom.py](mvg_api/v3/schemas/zoom.py)               |
 
 

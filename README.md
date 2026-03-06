@@ -81,14 +81,14 @@ All functions and schemas are documented.
 | Connections                                  | `get_connections` |
 | Station departures                           | `get_departures`  |
 | All MVV lines                                | `get_lines`       |
-| Location search (stations, POIs, streets)    | `get_location`    |
+| Location search (stations, POIs, streets)    | `get_locations`   |
 | Service Disruptions                          | `get_messages`    |
 | Nearby stations                              | `get_nearby`      |
 | List of all station IDs                      | `get_station_ids` |
 | Station details                              | `get_station`     |
 | All MVV+neighboring stations with details    | `get_stations`    |
 | Service disruptions                          | `get_ticker`      |
-| Map data to position markers (e.g. zoom)     | `get_ubahnmap`    |
+| Map data to position markers (e.g. zoom)     | `get_ubahn_map`   |
 | Station zoom info: escalator/elevator status | `get_zoom`        |
 
 

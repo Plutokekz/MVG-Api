@@ -85,14 +85,6 @@ def test_get_station():
     assert result.name == "Sendlinger Tor"
 
 
-def test_get_stations():
-    pass
-    # skip beca<use endpoint loads quite a lot of data
-    # api = SyncApi()
-    # result = api.get_stations()
-    # assert isinstance(result, stations.Stations)
-    # assert len(result) > 0
-
 
 def test_get_ticker():
     api = SyncApi()
@@ -110,7 +102,7 @@ def test_get_ubahn_map():
 
 def test_get_zoom_single():
     api = SyncApi()
-    result = api.get_zoom(50)
+    result = api.get_zoom("50")
     assert isinstance(result, zoom.ZoomStation)
     assert result.efaId == 50
     assert result.name == "Sendlinger Tor"
