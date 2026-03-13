@@ -1,6 +1,6 @@
 [project]
 name = "async_mvg_api"
-version = "0.3.0"
+version = "0.3.1"
 description = ""
 authors = [
     {name = "Lukas Mahr", email = "lukas@yousuckatprogramming.de"}
