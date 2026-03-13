@@ -8,12 +8,12 @@ authors = [
 readme = "README.md"
 requires-python = "==3.13.*"
 dependencies = [
-    "dill>=0.4.0",
+    "dill>=0.4.1",
     "httpx>=0.28.1",
-    "levenshtein>=0.27.1",
-    "pydantic>=2.11.4",
-    "setuptools>=78.1.0",
-    "wheel>=0.45.1",
+    "levenshtein>=0.27.3",
+    "pydantic>=2.12.5",
+    "setuptools>=82.0.1",
+    "wheel>=0.46.3",
 ]
 
 [project.urls]
@@ -25,10 +25,9 @@ include = ["mvg_api*"]
 
 [dependency-groups]
 dev = [
-    "black>=25.1.0",
-    "pylint>=3.3.7",
-    "pytest>=8.3.5",
-    "vulture>=2.14",
+    "black>=26.3.1",
+    "pylint>=4.0.5",
+    "pytest>=9.0.2",
 ]
 
 [build-system]
