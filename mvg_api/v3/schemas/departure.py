@@ -18,6 +18,7 @@ class Info(BaseModel):
     {'message': 'F\u00e4hrt nur bis Ismaning', 'type': 'EARLY_TERMINATION', 'network': 'unknown'},
     {'message': 'Linie HEX: Sonderlinie, kein MVV- Tarif', 'type': 'INFO', 'network': 'mvv'}
     """
+
     message: str
     """The message text"""
     type: MessageType
@@ -25,11 +26,14 @@ class Info(BaseModel):
     network: str
     """unknown: provider of the message"""
 
-    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(MessageType))
+    _validate_type = field_validator("type", mode="before")(
+        create_flexible_enum_validator(MessageType)
+    )
 
 
 class Departure(BaseModel):
     """A departure of a planned service at a station"""
+
     plannedDepartureTime: int
     """The planned departure time as millisecond timestamp (minute precision)"""
     realtime: bool
@@ -79,7 +83,9 @@ class Departure(BaseModel):
     tripCode: Optional[int] = None
     """unknown: presumably identifying this particular service and line on a day (does not change over days)"""
 
-    _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
+    _validate_occupancy = field_validator("occupancy", mode="before")(
+        create_flexible_enum_validator(Occupancy)
+    )
 
     def to_network_line(self):
         """Converts this line descriptor to the standardized network line"""
@@ -88,6 +94,7 @@ class Departure(BaseModel):
 
 class Departures(RootModel):
     """A list of departures of a station as returned by the API."""
+
     root: List[Departure]
 
     def __iter__(self):

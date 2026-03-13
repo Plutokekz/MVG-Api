@@ -30,6 +30,7 @@ class AushangScheduleKind(Enum):
 
 class Aushang(BaseModel):
     """A single aushang pdf document like a map or timetable"""
+
     uri: str
     """The URI to the pdf document, typically hosted at mvg.de"""
     scheduleKind: AushangScheduleKind
@@ -40,20 +41,26 @@ class Aushang(BaseModel):
     """Nicetext description of the aushang; might include validity information for timetables during e.g. construction work"""
 
     # flexible validators such that pydantic does not fail if a value that is not in the enum is encountered
-    _validate_scheduleKind = field_validator('scheduleKind', mode='before')(create_flexible_enum_validator(AushangScheduleKind))
+    _validate_scheduleKind = field_validator("scheduleKind", mode="before")(
+        create_flexible_enum_validator(AushangScheduleKind)
+    )
 
     def to_network_line(self):
         """
         Converts this line descriptor to the standardized network line.
         :return: a network like or none if this aushang is a context map or a station overview map
         """
-        if self.scheduleKind in [AushangScheduleKind.CONTEXT_MAP, AushangScheduleKind.STATION_OVERVIEW_MAP]:
+        if self.scheduleKind in [
+            AushangScheduleKind.CONTEXT_MAP,
+            AushangScheduleKind.STATION_OVERVIEW_MAP,
+        ]:
             return None
         return NetworkLine.of_any(self)
 
 
 class Aushaenge(RootModel):
     """A list of aushaenge as returned by the API"""
+
     root: List[Aushang]
 
     def __iter__(self):
@@ -78,7 +85,7 @@ class Aushaenge(RootModel):
     def _default_sort_key(a: Aushang):
         type_order = {
             AushangScheduleKind.STATION_OVERVIEW_MAP: 0,
-            AushangScheduleKind.CONTEXT_MAP:          1,
+            AushangScheduleKind.CONTEXT_MAP: 1,
         }
         type_rank = type_order.get(a.scheduleKind, 2)
         return (type_rank, a.to_network_line())

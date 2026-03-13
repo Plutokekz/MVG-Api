@@ -29,7 +29,8 @@ def test_get_connections_stationids():
     result = api.get_connections(
         "de:09162:50",
         "de:09162:40",
-        routing_date_time=datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.") + "000Z"
+        routing_date_time=datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.")
+        + "000Z",
     )
     assert isinstance(result, connection.Connections)
     assert len(result) > 0
@@ -85,7 +86,6 @@ def test_get_station():
     assert result.name == "Sendlinger Tor"
 
 
-
 def test_get_ticker():
     api = SyncApi()
     result = api.get_ticker()
@@ -120,6 +120,7 @@ def test_find_location():
     result = api.find_location("Sendlinger Tor")
     assert isinstance(result, location.Location)
     assert result.name == "Sendlinger Tor"
+
 
 def test_find_location_station():
     # difficult to test station only type

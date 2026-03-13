@@ -5,7 +5,11 @@ from typing import List, Optional
 
 from pydantic import BaseModel, RootModel, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, StationTransportType, TariffZones
+from mvg_api.v3.schemas import (
+    create_flexible_enum_validator,
+    StationTransportType,
+    TariffZones,
+)
 
 
 class LocationType(str, Enum):
@@ -16,6 +20,7 @@ class LocationType(str, Enum):
 
 class Location(BaseModel):
     """A location representing a station, address or poi"""
+
     latitude: float
     """The latitude of the location"""
     longitude: float
@@ -46,9 +51,12 @@ class Location(BaseModel):
     type: LocationType
     """Type of the location"""
 
-    _validate_transportTypes = field_validator('transportTypes', mode='before')(
-        create_flexible_enum_validator(StationTransportType, is_list=True))
-    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(LocationType))
+    _validate_transportTypes = field_validator("transportTypes", mode="before")(
+        create_flexible_enum_validator(StationTransportType, is_list=True)
+    )
+    _validate_type = field_validator("type", mode="before")(
+        create_flexible_enum_validator(LocationType)
+    )
 
     def tariff_zones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""
@@ -57,6 +65,7 @@ class Location(BaseModel):
 
 class Locations(RootModel):
     """A list of locations as returned by the API."""
+
     root: List[Location]
 
     def __iter__(self):

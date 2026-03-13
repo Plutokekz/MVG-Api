@@ -5,13 +5,13 @@ import logging
 
 from pydantic import BaseModel, RootModel
 
-
 logger = logging.getLogger("apivis")
 logger.setLevel(logging.DEBUG)
 
 
 class UbahnMapStation(BaseModel):
     """Contains position details of a station to display a network map"""
+
     name: str
     """Name of the station"""
     id: str
@@ -34,6 +34,7 @@ class UbahnMapStation(BaseModel):
 
 class UbahnMap(RootModel):
     """A list of ubahn stations with pixel coordinates"""
+
     root: List[UbahnMapStation]
 
     def __iter__(self):
@@ -110,11 +111,21 @@ def simplify_api_response(raw_response) -> List[Dict[str, Any]]:
         if "properties" in feature and "zoomStation" in feature["properties"]:
             station |= feature["properties"]["zoomStation"]
         else:
-            logger.warning("Unexpected feature format: no properties or zoomStation section")
+            logger.warning(
+                "Unexpected feature format: no properties or zoomStation section"
+            )
         if "geometry" in feature and "geometries" in feature["geometry"]:
             geometries = feature["geometry"]["geometries"]
-            points = [geometry for geometry in geometries if "type" in geometry and geometry["type"] == "Point"]
-            multipoints = [geometry for geometry in geometries if "type" in geometry and geometry["type"] == "MultiPoint"]
+            points = [
+                geometry
+                for geometry in geometries
+                if "type" in geometry and geometry["type"] == "Point"
+            ]
+            multipoints = [
+                geometry
+                for geometry in geometries
+                if "type" in geometry and geometry["type"] == "MultiPoint"
+            ]
             if len(points) > 0:
                 station["center_x"] = points[0]["coordinates"][0]
                 station["center_y"] = points[0]["coordinates"][1]
@@ -128,6 +139,8 @@ def simplify_api_response(raw_response) -> List[Dict[str, Any]]:
             else:
                 logger.warning("Unexpected geometry format: no multipoints")
         else:
-            logger.warning("Unexpected feature format: no geometry or geometries section")
+            logger.warning(
+                "Unexpected feature format: no geometry or geometries section"
+            )
         stations.append(station)
     return stations

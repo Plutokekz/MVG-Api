@@ -4,7 +4,13 @@ from typing import List, Optional
 from pydantic import BaseModel, RootModel, Field, field_validator
 
 from mvg_api.v3.network import NetworkLine
-from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, Occupancy, StationTransportType, TariffZones
+from mvg_api.v3.schemas import (
+    create_flexible_enum_validator,
+    MessageType,
+    Occupancy,
+    StationTransportType,
+    TariffZones,
+)
 
 
 class Station(BaseModel):
@@ -45,9 +51,12 @@ class Station(BaseModel):
     hasOutOfOrderElevator: bool
     """aggregated info whether there is at least one broken elevator at this station"""
 
-    _validate_transportTypes = field_validator('transportTypes', mode='before')(
-        create_flexible_enum_validator(StationTransportType, is_list=True))
-    _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
+    _validate_transportTypes = field_validator("transportTypes", mode="before")(
+        create_flexible_enum_validator(StationTransportType, is_list=True)
+    )
+    _validate_occupancy = field_validator("occupancy", mode="before")(
+        create_flexible_enum_validator(Occupancy)
+    )
 
 
 class Line(BaseModel):
@@ -73,6 +82,7 @@ class Line(BaseModel):
 
 class PathDescriptionItem(BaseModel):
     """unverified"""
+
     fromPathCoordIdx: int
     """unknown"""
     toPathCoordIdx: int
@@ -90,6 +100,7 @@ class Info(BaseModel):
     Examples for encountered messages:
     {'message': 'Vorübergehend verminderte Geschwindigkeit auf der Strecke', 'type': 'INCIDENT', 'network': 'ddb'}
     """
+
     message: str
     """The message text"""
     type: MessageType
@@ -97,7 +108,9 @@ class Info(BaseModel):
     network: str
     """unknown: provider of the message, encountered 'ddb'"""
 
-    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(MessageType))
+    _validate_type = field_validator("type", mode="before")(
+        create_flexible_enum_validator(MessageType)
+    )
 
 
 class Part(BaseModel):
@@ -136,7 +149,9 @@ class Part(BaseModel):
     realTime: bool
     """unknown: presumably whether the departure times are based on real time information"""
 
-    _validate_occupancy = field_validator('occupancy', mode='before')(create_flexible_enum_validator(Occupancy))
+    _validate_occupancy = field_validator("occupancy", mode="before")(
+        create_flexible_enum_validator(Occupancy)
+    )
 
 
 class TicketingInformation(BaseModel):
@@ -160,6 +175,7 @@ class Connection(BaseModel):
     """
     A single connection between the origin and destination.
     """
+
     uniqueId: int
     """A unique id to identify the connection. Does not change across requests."""
     parts: List[Part]
@@ -176,6 +192,7 @@ class Connection(BaseModel):
 
 class Connections(RootModel):
     """A list of connections as returned by the API."""
+
     root: List[Connection]
 
     def __iter__(self):

@@ -7,11 +7,16 @@ from typing import List, Optional
 from pydantic import field_validator, BaseModel, Field, RootModel
 
 from mvg_api.v3.network import NetworkLine
-from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, StationTransportType
+from mvg_api.v3.schemas import (
+    create_flexible_enum_validator,
+    MessageType,
+    StationTransportType,
+)
 
 
 class Link(BaseModel):
     """Link to an external resource, typically a pdf showing a line change or a construction timetable"""
+
     text: str
     """Display text of the link name"""
     url: str
@@ -20,6 +25,7 @@ class Link(BaseModel):
 
 class Line(BaseModel):
     "Line affected by the message"
+
     label: str
     """The line label, e.g. U4"""
     transportType: str
@@ -38,6 +44,7 @@ class Line(BaseModel):
 
 class PublicationDuration(BaseModel):
     """Duration specification of when the message is public (i.e. always if retrieved from the API)"""
+
     from_: int = Field(..., alias="from")
     """Begin timestamp in milliseconds"""
     to: Optional[int] = None
@@ -46,6 +53,7 @@ class PublicationDuration(BaseModel):
 
 class IncidentDuration(BaseModel):
     """Duration specification of when the message applies"""
+
     from_: int = Field(..., alias="from")
     """Begin timestamp in milliseconds"""
     to: Optional[int] = None
@@ -78,6 +86,7 @@ class Message(BaseModel):
     The website and presumably also the app cache these messages to display them in the
     departures or connections views on the respective service lines.
     """
+
     title: str
     """A short-ish title describing the message"""
     description: str
@@ -105,9 +114,12 @@ class Message(BaseModel):
     eventTypes: List[EventType]
     """General event types, presumably as wrapper for multiple lines of the same transport type"""
 
-    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(MessageType))
-    _validate_transportTypes = field_validator('eventTypes', mode='before')(
-        create_flexible_enum_validator(EventType, is_list=True))
+    _validate_type = field_validator("type", mode="before")(
+        create_flexible_enum_validator(MessageType)
+    )
+    _validate_transportTypes = field_validator("eventTypes", mode="before")(
+        create_flexible_enum_validator(EventType, is_list=True)
+    )
 
     def event_types_to_stt(self) -> List[StationTransportType]:
         """Returns the messages event types as station transport types"""
@@ -116,6 +128,7 @@ class Message(BaseModel):
 
 class Messages(RootModel):
     """A list of messages as returned by the API"""
+
     root: List[Message]
 
     def __iter__(self):
@@ -139,7 +152,7 @@ class Messages(RootModel):
     @staticmethod
     def _default_sort_key(m: Message):
         type_order = {
-            MessageType.INCIDENT:        0,
+            MessageType.INCIDENT: 0,
             MessageType.SCHEDULE_CHANGE: 1,
         }
         type_rank = type_order.get(m.type, 5)

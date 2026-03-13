@@ -40,7 +40,7 @@ class MVGRequests:
         origin_latitude: Optional[float] = None,
         origin_longitude: Optional[float] = None,
         destination_latitude: Optional[float] = None,
-        destination_longitude: Optional[float] = None
+        destination_longitude: Optional[float] = None,
     ) -> httpx.Request:
         param = httpx.QueryParams(
             {
@@ -98,9 +98,7 @@ class MVGRequests:
         url = f"{MVGRequests.url}api/bgw-pt/v3/lines/{station_id}"
         if station_id is None:
             url = f"{MVGRequests.url}api/bgw-pt/v3/lines"
-        return httpx.Request(
-            "GET", url, headers=headers
-        )
+        return httpx.Request("GET", url, headers=headers)
 
     @staticmethod
     def locations(
@@ -130,7 +128,9 @@ class MVGRequests:
         )
 
     @staticmethod
-    def messages(headers: Dict[str, str], message_type: Optional[str] = None) -> httpx.Request:
+    def messages(
+        headers: Dict[str, str], message_type: Optional[str] = None
+    ) -> httpx.Request:
         param = httpx.QueryParams({"messageType": message_type})
         return httpx.Request(
             "GET",
@@ -140,7 +140,9 @@ class MVGRequests:
         )
 
     @staticmethod
-    def nearby(headers: Dict[str, str], latitude: float, longitude: float) -> httpx.Request:
+    def nearby(
+        headers: Dict[str, str], latitude: float, longitude: float
+    ) -> httpx.Request:
         param = httpx.QueryParams({"latitude": latitude, "longitude": longitude})
         return httpx.Request(
             "GET",
@@ -167,7 +169,10 @@ class MVGRequests:
     ) -> httpx.Request:
         param = httpx.QueryParams({"hash": hash_, "world": world})
         return httpx.Request(
-            "GET", f"{MVGRequests.url}api/bgw-pt/v3/stations", headers=headers, params=param
+            "GET",
+            f"{MVGRequests.url}api/bgw-pt/v3/stations",
+            headers=headers,
+            params=param,
         )
 
     @staticmethod
@@ -177,7 +182,9 @@ class MVGRequests:
         )
 
     @staticmethod
-    def ubahn_map(headers: Dict[str, str], uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> httpx.Request:
+    def ubahn_map(
+        headers: Dict[str, str], uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58"
+    ) -> httpx.Request:
         return httpx.Request(
             "GET",
             f"{MVGRequests.url}.rest/mvgInteractiveImageMap/api/v1/featureCollections/{uuid}",
@@ -189,4 +196,8 @@ class MVGRequests:
         url = f"{MVGRequests.url}.rest/mvgZoom/api/stations/{efa_id}"
         if efa_id is None:
             url = f"{MVGRequests.url}.rest/mvgZoom/api/stations"
-        return httpx.Request("GET", url, headers=headers,)
+        return httpx.Request(
+            "GET",
+            url,
+            headers=headers,
+        )

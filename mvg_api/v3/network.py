@@ -5,7 +5,6 @@ import re
 from enum import Enum
 import logging
 
-
 logger = logging.getLogger("apivis")
 logger.setLevel(logging.DEBUG)
 
@@ -17,6 +16,7 @@ class NetworkTransportType(Enum):
     to style the respective line indicators and there are additional transport types like fussweg or
     sev that are not "offered" by a station.
     """
+
     UBAHN = "UBAHN"
     TRAM = "TRAM"
     NACHT_TRAM = "NACHT_TRAM"
@@ -36,7 +36,7 @@ class NetworkTransportType(Enum):
 
 
 @total_ordering
-class NetworkLine():
+class NetworkLine:
     """
     Uniform description of a specific line with transport type.
     This is necessary because the official api uses different keys to describe transport type and line label.
@@ -66,7 +66,9 @@ class NetworkLine():
         train_type = ""
         details = {}
         if isinstance(any_line_descriptor, Aushang):
-            transport_type = any_line_descriptor.scheduleKind.value  # special case because enum
+            transport_type = (
+                any_line_descriptor.scheduleKind.value
+            )  # special case because enum
             line_label = any_line_descriptor.scheduleName
         elif isinstance(any_line_descriptor, ConnectionLine):
             transport_type = any_line_descriptor.transportType
@@ -109,11 +111,16 @@ class NetworkLine():
             details = {
                 "id": any_line_descriptor.id,
                 "direction": any_line_descriptor.direction,
-                "stations": ", ".join([f"{s.name} ({s.id})" for s in any_line_descriptor.stations]),
+                "stations": ", ".join(
+                    [f"{s.name} ({s.id})" for s in any_line_descriptor.stations]
+                ),
             }
         else:
-            logger.error("Unknown line descriptor type %s with data %s",
-                         f"{type(any_line_descriptor).__module__}.{type(any_line_descriptor).__name__}", any_line_descriptor)
+            logger.error(
+                "Unknown line descriptor type %s with data %s",
+                f"{type(any_line_descriptor).__module__}.{type(any_line_descriptor).__name__}",
+                any_line_descriptor,
+            )
 
         shared_details = {
             "transport_type": transport_type,
@@ -167,22 +174,22 @@ class NetworkLine():
         label = self.line_label
 
         type_order = {
-            NetworkTransportType.UBAHN:        0,
-            NetworkTransportType.TRAM:         1,
-            NetworkTransportType.NACHT_TRAM:   2,
-            NetworkTransportType.BUS:          3,
-            NetworkTransportType.EXPRESS_BUS:  3,
+            NetworkTransportType.UBAHN: 0,
+            NetworkTransportType.TRAM: 1,
+            NetworkTransportType.NACHT_TRAM: 2,
+            NetworkTransportType.BUS: 3,
+            NetworkTransportType.EXPRESS_BUS: 3,
             NetworkTransportType.REGIONAL_BUS: 3,
-            NetworkTransportType.NACHT_BUS:    4,
-            NetworkTransportType.SBAHN:        5,
-            NetworkTransportType.BAHN:         6,
-            NetworkTransportType.BAHN_FERN:    6,
+            NetworkTransportType.NACHT_BUS: 4,
+            NetworkTransportType.SBAHN: 5,
+            NetworkTransportType.BAHN: 6,
+            NetworkTransportType.BAHN_FERN: 6,
         }
         type_rank = type_order.get(tt, 10)
 
         if type_rank == type_order[NetworkTransportType.BUS]:  # any bus
             # Numbers-first: "50" < "500" < "500X" < "9000" < "X234"
-            m = re.match(r'^(\d+)(.*)', label)
+            m = re.match(r"^(\d+)(.*)", label)
             if m:
                 label_key = (0, int(m.group(1)), m.group(2))
             else:
@@ -212,7 +219,11 @@ class NetworkLine():
                 title += f"{k}: {v}&#010;"
         return title
 
-    def line_color(self, tram_colors: bool = False) -> str:  # pylint: disable=too-many-return-statements,too-many-branches,too-many-statements
+    def line_color(
+        self, tram_colors: bool = False
+    ) -> (
+        str
+    ):  # pylint: disable=too-many-return-statements,too-many-branches,too-many-statements
         """
         :param tram_colors: true when individual tram line colors should be returned or false for the generic tram red.
         :return: the color primarily associated with this network line.
@@ -339,7 +350,11 @@ class NetworkLine():
             return "#fff104"
         if self.transport_type == NetworkTransportType.UNKNOWN:
             return "#fd0097"
-        logger.warning("No-yet-known transport type '%s' and line '%s' encountered", self.transport_type, self.line_label)
+        logger.warning(
+            "No-yet-known transport type '%s' and line '%s' encountered",
+            self.transport_type,
+            self.line_label,
+        )
         return "#fd0097"
 
     def line_color_split(self) -> str:

@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 from typing import List
-from pydantic import BaseModel, RootModel,  field_validator
+from pydantic import BaseModel, RootModel, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, StationTransportType, TariffZones
+from mvg_api.v3.schemas import (
+    create_flexible_enum_validator,
+    StationTransportType,
+    TariffZones,
+)
 
 
 class Station(BaseModel):
     """Information about a station"""
+
     globalId: str
     """IFOPT global id of the station"""
     name: str
@@ -32,8 +37,9 @@ class Station(BaseModel):
     distanceInMeters: int
     """Linear distance to the station in meters"""
 
-    _validate_transportTypes = field_validator('transportTypes', mode='before')(
-        create_flexible_enum_validator(StationTransportType, is_list=True))
+    _validate_transportTypes = field_validator("transportTypes", mode="before")(
+        create_flexible_enum_validator(StationTransportType, is_list=True)
+    )
 
     def tariff_zones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""
@@ -42,6 +48,7 @@ class Station(BaseModel):
 
 class Stations(RootModel):
     """A list of nearby stations with the respective linear distance"""
+
     root: List[Station]
 
     def __iter__(self):

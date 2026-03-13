@@ -10,6 +10,7 @@ from mvg_api.v3.schemas import create_flexible_enum_validator
 
 class TransportDeviceStatus(Enum):
     """Status of the device. Note that planned is not a status, but may be derived from the planned information."""
+
     IN_BETRIEB = "IN_BETRIEB"
     WARTUNG = "WARTUNG"
     AUSSER_BETRIEB = "AUSSER_BETRIEB"
@@ -38,6 +39,7 @@ class TransportDevice(BaseModel):
     The coordinates refer to the zoom maps available on
     https://www.mvg.de/.rest/mvgZoom/api/stations/$efaId/map
     """
+
     description: str
     """Nicetext description of the location"""
     identifier: str
@@ -54,16 +56,21 @@ class TransportDevice(BaseModel):
     """X coordinate of the device on the zoom plan"""
     ycoordinate: int
     """Y coordinate of the device on the zoom plan"""
-    planned:  Optional[PlannedMaintenance]
+    planned: Optional[PlannedMaintenance]
     """Information about planned maintenance"""
 
     # flexible validators such that pydantic does not fail if a value that is not in the enum is encountered
-    _validate_status = field_validator('status', mode='before')(create_flexible_enum_validator(TransportDeviceStatus))
-    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(TransportDeviceType))
+    _validate_status = field_validator("status", mode="before")(
+        create_flexible_enum_validator(TransportDeviceStatus)
+    )
+    _validate_type = field_validator("type", mode="before")(
+        create_flexible_enum_validator(TransportDeviceType)
+    )
 
 
 class ZoomStation(BaseModel):
     """Contains all zoom information about a station"""
+
     efaId: int
     """The divaId/efaId of the station"""
     name: str
@@ -75,14 +82,17 @@ class ZoomStation(BaseModel):
     aggregatedStatusFAHRSTUHL: TransportDeviceStatus
     """Aggregated status of elevators: 'AUSSER_BETRIEB' as soon as one is not operational."""
 
-    _validate_aggregatedStatusROLLTREPPE = field_validator('aggregatedStatusROLLTREPPE', mode='before')(
-        create_flexible_enum_validator(TransportDeviceStatus))
-    _validate_aggregatedStatusFAHRSTUHL = field_validator('aggregatedStatusFAHRSTUHL', mode='before')(
-        create_flexible_enum_validator(TransportDeviceStatus))
+    _validate_aggregatedStatusROLLTREPPE = field_validator(
+        "aggregatedStatusROLLTREPPE", mode="before"
+    )(create_flexible_enum_validator(TransportDeviceStatus))
+    _validate_aggregatedStatusFAHRSTUHL = field_validator(
+        "aggregatedStatusFAHRSTUHL", mode="before"
+    )(create_flexible_enum_validator(TransportDeviceStatus))
 
 
 class ZoomStations(RootModel):
     """A list of zoom station information for all stations"""
+
     root: List[ZoomStation]
 
     def __iter__(self):

@@ -8,7 +8,11 @@ import logging
 from pydantic import field_validator, BaseModel, RootModel
 
 from mvg_api.v3.network import NetworkLine
-from mvg_api.v3.schemas import create_flexible_enum_validator, MessageType, StationTransportType
+from mvg_api.v3.schemas import (
+    create_flexible_enum_validator,
+    MessageType,
+    StationTransportType,
+)
 
 logger = logging.getLogger("mvg_api.v3.schemas.ticker")
 logger.setLevel(logging.DEBUG)
@@ -16,12 +20,14 @@ logger.setLevel(logging.DEBUG)
 
 class TickerMessageType(Enum):
     """Type of the ticker message."""
+
     DISRUPTION = "DISRUPTION"
     PLANNED = "PLANNED"
 
 
 class Station(BaseModel):
     """Station on a line affected by the message"""
+
     id: str
     """IFOPT global id of the station"""
     name: str
@@ -30,6 +36,7 @@ class Station(BaseModel):
 
 class Line(BaseModel):
     """Line affected by the message"""
+
     id: str
     """The line label, without char e.g. 4 (for U4)"""
     name: str
@@ -77,6 +84,7 @@ class DownloadLink(BaseModel):
 
 class IncidentDurationItem(BaseModel):
     """Duration specification of when the message applies"""
+
     fromDate: str
     """Begin datetime"""
     toDate: Optional[str]
@@ -85,6 +93,7 @@ class IncidentDurationItem(BaseModel):
 
 class ActiveDuration(BaseModel):
     """Duration specification of when the message is public (i.e. always if retrieved from the API)"""
+
     fromDate: str
     """Begin datetime"""
     toDate: Optional[str]
@@ -93,6 +102,7 @@ class ActiveDuration(BaseModel):
 
 class Message(BaseModel):
     """A message about service disruptions, both planned disruptions and unplanned incidents."""
+
     id: str
     """A UUID, presumably to identify the message during its lifetime"""
     type: TickerMessageType
@@ -121,11 +131,18 @@ class Message(BaseModel):
 
     def incidents_to_stt(self) -> List[StationTransportType]:
         """Returns the incident types as list of station transport types"""
-        return [i.to_station_transport_type() for i in self.incidents if isinstance(i, IncidentType)]
+        return [
+            i.to_station_transport_type()
+            for i in self.incidents
+            if isinstance(i, IncidentType)
+        ]
 
-    _validate_type = field_validator('type', mode='before')(create_flexible_enum_validator(TickerMessageType))
-    _validate_incidents = field_validator('incidents', mode='before')(
-        create_flexible_enum_validator(IncidentType, is_list=True))
+    _validate_type = field_validator("type", mode="before")(
+        create_flexible_enum_validator(TickerMessageType)
+    )
+    _validate_incidents = field_validator("incidents", mode="before")(
+        create_flexible_enum_validator(IncidentType, is_list=True)
+    )
 
     def type_common(self) -> Optional[MessageType]:
         """Obtain common representation of a message type."""
@@ -139,6 +156,7 @@ class Message(BaseModel):
 
 class Messages(RootModel):
     """A list of ticker messages as returned by the API"""
+
     root: List[Message]
 
     def __iter__(self):
@@ -162,7 +180,7 @@ class Messages(RootModel):
     @staticmethod
     def _default_sort_key(m: Message):
         type_order = {
-            MessageType.INCIDENT:        0,
+            MessageType.INCIDENT: 0,
             MessageType.SCHEDULE_CHANGE: 1,
         }
         type_rank = type_order.get(m.type_common(), 5)

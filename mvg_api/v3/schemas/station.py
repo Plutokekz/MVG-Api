@@ -3,11 +3,16 @@ from __future__ import annotations
 from typing import List, Optional
 from pydantic import BaseModel, field_validator
 
-from mvg_api.v3.schemas import create_flexible_enum_validator, StationTransportType, TariffZones
+from mvg_api.v3.schemas import (
+    create_flexible_enum_validator,
+    StationTransportType,
+    TariffZones,
+)
 
 
 class Station(BaseModel):
     """Information about a station"""
+
     name: str
     """Name of the station"""
     place: str
@@ -27,8 +32,9 @@ class Station(BaseModel):
     longitude: float
     """The longitude of the location"""
 
-    _validate_products = field_validator('products', mode='before')(
-        create_flexible_enum_validator(StationTransportType, is_list=True))
+    _validate_products = field_validator("products", mode="before")(
+        create_flexible_enum_validator(StationTransportType, is_list=True)
+    )
 
     def tariff_zones_common(self) -> TariffZones:
         """Obtain common representation of tariffZones."""

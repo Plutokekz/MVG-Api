@@ -17,6 +17,7 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
     enum and present a variable of a common enum type, while simultaneously being robust against the
     ignorance of additional value as well as MVG api changes (which definitely do happen).
     """
+
     def validate_single(v):
         if isinstance(v, enum_class):
             return v
@@ -24,8 +25,12 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
             try:
                 return enum_class(v)
             except ValueError:
-                logger.warning("Unknown %s value '%s'. Known values: %s. Adding dynamically.",
-                               enum_class.__name__, v, ",".join([e.value for e in enum_class]))
+                logger.warning(
+                    "Unknown %s value '%s'. Known values: %s. Adding dynamically.",
+                    enum_class.__name__,
+                    v,
+                    ",".join([e.value for e in enum_class]),
+                )
                 # Dynamically create a new member and add it to the enum
                 new_member = object.__new__(enum_class)
                 new_member._value_ = v  # pylint: disable=W0212
@@ -48,6 +53,7 @@ def create_flexible_enum_validator(enum_class: Type[Enum], is_list: bool = False
 
 class MessageType(Enum):
     """Type of information on a connection or a general message or a ticker message."""
+
     INCIDENT = "INCIDENT"
     SCHEDULE_CHANGE = "SCHEDULE_CHANGE"
     EARLY_TERMINATION = "EARLY_TERMINATION"
@@ -56,6 +62,7 @@ class MessageType(Enum):
 
 class Occupancy(str, Enum):
     """Occupancy of a service in general or at a specific station."""
+
     UNKNOWN = "UNKNOWN"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
@@ -67,6 +74,7 @@ class StationTransportType(Enum):
     Transport types offered at a station.
     This is a limited set of transport types compared to the transport types that can be found on a service line.
     """
+
     UBAHN = "UBAHN"
     TRAM = "TRAM"
     BUS = "BUS"
@@ -83,12 +91,16 @@ class TariffZones:
         if zones in (None, ""):
             self._zones = []
         elif isinstance(zones, str):
-            self._zones = [int(z) for z in zones.replace("m", "0").replace("M", "0").split('|')]
+            self._zones = [
+                int(z) for z in zones.replace("m", "0").replace("M", "0").split("|")
+            ]
         elif isinstance(zones, list) and all(isinstance(z, int) for z in zones):
             self._zones = zones
         else:
             self._zones = []
-            logger.error("Invalid argument to TariffZones: type=%s zones=%s", type(zones), zones)
+            logger.error(
+                "Invalid argument to TariffZones: type=%s zones=%s", type(zones), zones
+            )
         self._zones.sort()
         for z in self._zones:
             if z not in range(0, 13):

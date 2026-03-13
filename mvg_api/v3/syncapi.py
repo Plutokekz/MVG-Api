@@ -28,7 +28,6 @@ from mvg_api.v3.schemas import (
 )
 from mvg_api.v3.requests import MVGRequests, RequestFailed
 
-
 logger = logging.getLogger("mvg-api")
 logger.setLevel(logging.DEBUG)
 
@@ -40,7 +39,9 @@ class SyncApi:
     do_log_responses: bool
     headers: Dict[str, str]
 
-    def __init__(self, client: Optional[httpx.Client] = None, do_log_responses: bool = False):
+    def __init__(
+        self, client: Optional[httpx.Client] = None, do_log_responses: bool = False
+    ):
         """
         Creates a new API instance to send requests the MVG backend.
         This instance can be used to send multiple requests, thereby reusing the http client.
@@ -107,7 +108,9 @@ class SyncApi:
         routing_date_time: str,
         *,
         routing_date_time_is_arrival: bool = False,
-        transport_types: Optional[str] = "SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN",
+        transport_types: Optional[
+            str
+        ] = "SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN",
         route_type: Optional[str] = "LEAST_TIME",
         change_speed: Optional[str] = "NORMAL",
         accessibility_options: Optional[str] = None,
@@ -138,8 +141,12 @@ class SyncApi:
         :param destination_longitude: the longitude of the destination station
         :return: a list of connections
         """
-        if via_station_id and (not via_dwell_time_minutes or int(via_dwell_time_minutes) <= 0):
-            logger.warning("Via dwelltime must be > 0 when via station is specified; ignoring via station.")
+        if via_station_id and (
+            not via_dwell_time_minutes or int(via_dwell_time_minutes) <= 0
+        ):
+            logger.warning(
+                "Via dwelltime must be > 0 when via station is specified; ignoring via station."
+            )
             via_station_id = None
             via_dwell_time_minutes = None
         response = self._send_request(
@@ -198,7 +205,9 @@ class SyncApi:
         :param station_id: global id of a station or none to get all lines
         :return: a list of lines
         """
-        response = self._send_request(MVGRequests.lines(self.headers, station_id=station_id))
+        response = self._send_request(
+            MVGRequests.lines(self.headers, station_id=station_id)
+        )
         return line.Lines(response)
 
     def get_locations(
@@ -219,7 +228,9 @@ class SyncApi:
         if query == "":  # 400 Bad Request - query must not be empty
             return location.Locations([])
         response = self._send_request(
-            MVGRequests.locations(self.headers, query, limit_address_poi, limit_stations, location_types)
+            MVGRequests.locations(
+                self.headers, query, limit_address_poi, limit_stations, location_types
+            )
         )
         return location.Locations(response)
 
@@ -232,14 +243,20 @@ class SyncApi:
         response = self._send_request(MVGRequests.messages(self.headers, message_type))
         return messages.Messages(response)
 
-    def get_nearby(self, latitude: Optional[float], longitude: Optional[float]) -> nearby.Stations:
+    def get_nearby(
+        self, latitude: Optional[float], longitude: Optional[float]
+    ) -> nearby.Stations:
         """
         Get a list of nearby stations with the respective linear distance.
         :return: a list of stations
         """
-        if latitude is None or longitude is None:  # 400 Bad Request - lat/lon must not be empty
+        if (
+            latitude is None or longitude is None
+        ):  # 400 Bad Request - lat/lon must not be empty
             return nearby.Stations([])
-        response = self._send_request(MVGRequests.nearby(self.headers, latitude, longitude))
+        response = self._send_request(
+            MVGRequests.nearby(self.headers, latitude, longitude)
+        )
         return nearby.Stations(response)
 
     def get_station_ids(self) -> List[str]:
@@ -276,9 +293,7 @@ class SyncApi:
         :param world: unknown, does not change the result, except for a different hash.
         :return: a list of MVV stations.
         """
-        response = self._send_request(
-            MVGRequests.stations(self.headers, hash_, world)
-        )
+        response = self._send_request(MVGRequests.stations(self.headers, hash_, world))
         return stations.Stations(**response)
 
     def get_ticker(self) -> ticker.Messages:
@@ -290,7 +305,9 @@ class SyncApi:
         response = self._send_request(MVGRequests.ticker(self.headers))
         return ticker.Messages(response)
 
-    def get_ubahn_map(self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> ubahn_map.UbahnMap:
+    def get_ubahn_map(
+        self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58"
+    ) -> ubahn_map.UbahnMap:
         """
         Get pixel coordinate information about all ubahn stations to display on the network map.
         Practical use in conjunction with get_zoom for all stations
@@ -300,7 +317,9 @@ class SyncApi:
         response = self._send_request(MVGRequests.ubahn_map(self.headers, uuid))
         return ubahn_map.UbahnMap(ubahn_map.simplify_api_response(response))
 
-    def get_zoom(self, efa_id: Optional[str] = None) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
+    def get_zoom(
+        self, efa_id: Optional[str] = None
+    ) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
         """
         Get zoom information that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
         If no efa id is specified, the status of all stations is returned.
@@ -336,7 +355,9 @@ class SyncApi:
         """
 
         matching_locations = self.get_locations(query)
-        matching_stations = [l for l in matching_locations if l.type == location.LocationType.STATION]
+        matching_stations = [
+            l for l in matching_locations if l.type == location.LocationType.STATION
+        ]
         if matching_stations:
             return matching_stations[0]
         return None

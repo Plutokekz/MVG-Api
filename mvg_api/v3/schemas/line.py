@@ -28,6 +28,7 @@ class Line(BaseModel):
 
 class Lines(RootModel):
     """A list of service lines at a station or globally as returned by the API."""
+
     root: List[Line]
 
     def __iter__(self):
@@ -39,7 +40,9 @@ class Lines(RootModel):
     def __len__(self):
         return len(self.root)
 
-    def sorted(self, *, key=lambda l: l.to_network_line(), reverse: bool = False) -> Lines:
+    def sorted(
+        self, *, key=lambda l: l.to_network_line(), reverse: bool = False
+    ) -> Lines:
         """
         Sorts the messages to present them in a more sensible ordering by transport type and linenumber.
         :param key: key to sort with, default to sorting by type and then network line.

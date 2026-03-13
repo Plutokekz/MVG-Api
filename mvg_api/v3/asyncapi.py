@@ -27,7 +27,6 @@ from mvg_api.v3.schemas import (
 )
 from mvg_api.v3.requests import MVGRequests, RequestFailed
 
-
 logger = logging.getLogger("mvg-api")
 logger.setLevel(logging.DEBUG)
 
@@ -39,7 +38,9 @@ class AsyncApi:
     do_log_responses: bool
     headers: Dict[str, str]
 
-    def __init__(self, client: Optional[httpx.AsyncClient] = None, do_log_responses: bool = False):
+    def __init__(
+        self, client: Optional[httpx.AsyncClient] = None, do_log_responses: bool = False
+    ):
         """
         Creates a new API instance to send requests the MVG backend.
         This instance can be used to send multiple requests, thereby reusing the http client.
@@ -106,7 +107,9 @@ class AsyncApi:
         routing_date_time: str,
         *,
         routing_date_time_is_arrival: bool = False,
-        transport_types: Optional[str] = "SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN",
+        transport_types: Optional[
+            str
+        ] = "SCHIFF,UBAHN,TRAM,SBAHN,BUS,REGIONAL_BUS,BAHN",
         route_type: Optional[str] = "LEAST_TIME",
         change_speed: Optional[str] = "NORMAL",
         accessibility_options: Optional[str] = None,
@@ -137,8 +140,12 @@ class AsyncApi:
         :param destination_longitude: the longitude of the destination station
         :return: a list of connections
         """
-        if via_station_id and (not via_dwell_time_minutes or int(via_dwell_time_minutes) <= 0):
-            logger.warning("Via dwelltime must be > 0 when via station is specified; ignoring via station.")
+        if via_station_id and (
+            not via_dwell_time_minutes or int(via_dwell_time_minutes) <= 0
+        ):
+            logger.warning(
+                "Via dwelltime must be > 0 when via station is specified; ignoring via station."
+            )
             via_station_id = None
             via_dwell_time_minutes = None
         response = await self._send_request(
@@ -197,7 +204,9 @@ class AsyncApi:
         :param station_id: global id of a station or none to get all lines
         :return: a list of lines
         """
-        response = await self._send_request(MVGRequests.lines(self.headers, station_id=station_id))
+        response = await self._send_request(
+            MVGRequests.lines(self.headers, station_id=station_id)
+        )
         return line.Lines(response)
 
     async def get_locations(
@@ -218,27 +227,39 @@ class AsyncApi:
         if query == "":  # 400 Bad Request - query must not be empty
             return location.Locations([])
         response = await self._send_request(
-            MVGRequests.locations(self.headers, query, limit_address_poi, limit_stations, location_types)
+            MVGRequests.locations(
+                self.headers, query, limit_address_poi, limit_stations, location_types
+            )
         )
         return location.Locations(response)
 
-    async def get_messages(self, message_type: Optional[str] = None) -> messages.Messages:
+    async def get_messages(
+        self, message_type: Optional[str] = None
+    ) -> messages.Messages:
         """
         Get all messages about incidents or schedule changes.
         :param message_type: filters messages by type; available types are INCIDENT,SCHEDULE_CHANGE
         :return: a list of messages
         """
-        response = await self._send_request(MVGRequests.messages(self.headers, message_type))
+        response = await self._send_request(
+            MVGRequests.messages(self.headers, message_type)
+        )
         return messages.Messages(response)
 
-    async def get_nearby(self, latitude: Optional[float], longitude: Optional[float]) -> nearby.Stations:
+    async def get_nearby(
+        self, latitude: Optional[float], longitude: Optional[float]
+    ) -> nearby.Stations:
         """
         Get a list of nearby stations with the respective linear distance.
         :return: a list of stations
         """
-        if latitude is None or longitude is None:  # 400 Bad Request - lat/lon must not be empty
+        if (
+            latitude is None or longitude is None
+        ):  # 400 Bad Request - lat/lon must not be empty
             return nearby.Stations([])
-        response = await self._send_request(MVGRequests.nearby(self.headers, latitude, longitude))
+        response = await self._send_request(
+            MVGRequests.nearby(self.headers, latitude, longitude)
+        )
         return nearby.Stations(response)
 
     async def get_station_ids(self) -> List[str]:
@@ -258,7 +279,9 @@ class AsyncApi:
         """
         if station_id == "":  # identical to get_stations endpoint if empty
             return None
-        response = await self._send_request(MVGRequests.station(self.headers, station_id))
+        response = await self._send_request(
+            MVGRequests.station(self.headers, station_id)
+        )
         return station.Station(**response)
 
     async def get_stations(
@@ -289,7 +312,9 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.ticker(self.headers))
         return ticker.Messages(response)
 
-    async def get_ubahn_map(self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58") -> ubahn_map.UbahnMap:
+    async def get_ubahn_map(
+        self, uuid: str = "a5ac8f68-1f4a-45c0-acc2-7cbdb3740f58"
+    ) -> ubahn_map.UbahnMap:
         """
         Get pixel coordinate information about all ubahn stations to display on the network map.
         Practical use in conjunction with get_zoom for all stations
@@ -299,7 +324,9 @@ class AsyncApi:
         response = await self._send_request(MVGRequests.ubahn_map(self.headers, uuid))
         return ubahn_map.UbahnMap(ubahn_map.simplify_api_response(response))
 
-    async def get_zoom(self, efa_id: Optional[str] = None) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
+    async def get_zoom(
+        self, efa_id: Optional[str] = None
+    ) -> Union[zoom.ZoomStation, zoom.ZoomStations]:
         """
         Get zoom information that contains the status, names and positions of escalators and elevators in an MVG (typically ubahn) station.
         If no efa id is specified, the status of all stations is returned.
@@ -335,7 +362,9 @@ class AsyncApi:
         """
 
         matching_locations = await self.get_locations(query)
-        matching_stations = [l for l in matching_locations if l.type == location.LocationType.STATION]
+        matching_stations = [
+            l for l in matching_locations if l.type == location.LocationType.STATION
+        ]
         if matching_stations:
             return matching_stations[0]
         return None
